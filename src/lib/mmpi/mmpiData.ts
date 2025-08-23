@@ -571,8 +571,3 @@ export const mmpiQuestions = [
     { "id": "566", "metin": "Son soru (örnek)", "secenekler": [{"metin": "DOĞRU", "puan": 1}, {"metin": "YANLIŞ", "puan": 0}] }
 ] as const;
 
-// Not: Puanlama anahtarları, K-düzeltmesi ve T-skoru norm tabloları
-// bu dosyadan KALDIRILDI. Tekil ve resmi kaynak dosyalar kullanılacaktır:
-// - Puanlama anahtarları: src/lib/mmpi/data/scoringKeys.ts (scoringKeys, kCorrectionFactors)
-// - Türk normları: src/lib/mmpi/data/turkishNorms.ts (turkishNorms, kCorrectionRatios)
-// Bu dosyada SADECE soruların ham verisi tutulur.
