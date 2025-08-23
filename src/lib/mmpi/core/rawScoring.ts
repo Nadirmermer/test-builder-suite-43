@@ -5,6 +5,10 @@ import { scoringKeys } from '../data/scoringKeys';
 
 /**
  * Belirli bir ölçek için ham puan hesapla
+ * @param scaleId - Ölçek kimliği (L, F, K, Hs, D, Hy, Pd, Mf, Pa, Pt, Sc, Ma, Si)
+ * @param answers - Cevaplar objesi (soru ID -> puan)
+ * @param gender - Cinsiyet (Mf ölçeği için zorunlu)
+ * @returns Ham puan
  */
 export function calculateRawScore(
   scaleId: string,
@@ -67,6 +71,9 @@ export function calculateRawScore(
 
 /**
  * Tüm ölçekler için ham puanları hesapla
+ * @param answers - Cevaplar objesi
+ * @param gender - Cinsiyet
+ * @returns Tüm ölçeklerin ham puanları
  */
 export function calculateAllRawScores(
   answers: Record<string, number>,

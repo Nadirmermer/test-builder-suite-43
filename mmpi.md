@@ -1,6 +1,6 @@
 # MMPI - Türk Normları ve Kod Yorumlamaları Sistemi
 
-## Son Durum (Güncellenmiş)
+## Son Durum (Güncellenmiş - 2025)
 
 MMPI sistemi tamamen Türk normlarına göre yeniden yapılandırıldı, duplikasyonlar temizlendi ve kod yorumları Türkçe yapıldı:
 
@@ -13,7 +13,7 @@ src/lib/mmpi/
 │   └── validity.ts          # Geçerlik değerlendirme (resmi konfigürasyonlar)
 ├── data/
 │   ├── turkishNorms.ts      # Resmi Türk normları (M, SD) + T-skor hesaplama
-│   ├── scoringKeys.ts       # Puanlama anahtarları (cinsiyet-duyarlı Mf)
+│   ├── scoringKeys.ts       # ✅ DÜZELTILDI: Doğru madde numaraları (kullanıcı verisi)
 │   └── validityConfigurations.ts # 15 resmi geçerlik konfigürasyonu
 ├── interpretations/
 │   ├── codeTypes.ts         # İkili, Üçlü, Dörtlü Kodlar (150+ kod)
@@ -34,9 +34,40 @@ src/lib/mmpi/
 │   └── gender.ts            # Cinsiyet normalizasyon yardımcıları
 ├── adapter.ts               # UI format dönüştürücü
 ├── mmpiData.ts             # MMPI soru metinleri (sadece sorular)
-├── mmpiInterpretation.ts   # Kapsamlı klinik yorumlama
+├── mmpiInterpretation.ts   # Kapsamlı klinik yorumlama (Legacy uyumluluk)
 └── index.ts                # Tek giriş noktası (export hub)
 ```
+
+## Son Güncellemeler ✅
+
+### 1. Madde Numaraları Düzeltildi
+- ✅ **Kullanıcı Verisi**: Kesin ve doğru madde numaraları uygulandı
+- ✅ **L alt testi**: 15 madde (sadece yanlış puanlanan)
+- ✅ **F alt testi**: 64 madde (44 doğru, 20 yanlış)
+- ✅ **K alt testi**: 30 madde (1 doğru, 29 yanlış)
+- ✅ **Klinik ölçekler**: Tüm madde sayıları doğrulandı
+- ✅ **Mf ölçeği**: Cinsiyet-özel madde numaraları (*işaretli sorular kadınlarda ters)
+
+### 2. PDF Raporunda İyileştirmeler
+- ✅ **Türkçe Karakter Desteği**: Roboto font kullanımı ile ç, ğ, ş, ı, ö, ü harfleri
+- ✅ **MMPI Profil Tablosu**: Grafik yerine detaylı tablo görünümü
+- ✅ **Görsel Çubuk Grafik**: Her ölçek için renk-kodlu çubuk gösterimi
+- ✅ **T-Skoru Seviyeleri**: Normal/Yükseltilmiş/Klinik renk kodlaması
+
+### 3. Madde Sayıları (Doğrulanmış)
+- **L**: 15 madde - Yalan ölçeği
+- **F**: 64 madde - Sıklık ölçeği  
+- **K**: 30 madde - Düzeltme ölçeği
+- **Hs**: 33 madde - Hipokondriazis
+- **D**: 60 madde - Depresyon
+- **Hy**: 60 madde - Histeri
+- **Pd**: 50 madde - Psikopatik Sapma
+- **Mf**: 60 madde - Kadınlık-Erkeklik (cinsiyet-özel)
+- **Pa**: 40 madde - Paranoya
+- **Pt**: 48 madde - Psikasteni (K-düzeltmeli)
+- **Sc**: 78 madde - Şizofreni (K-düzeltmeli)
+- **Ma**: 46 madde - Hipomani (K-düzeltmeli)
+- **Si**: 70 madde - Sosyal İçedönüklük
 
 ## Temel Özellikler ✅
 
@@ -72,7 +103,7 @@ src/lib/mmpi/
 - K: M=11.82, SD=3.8
 - Hs+0.5K: M=15.89, SD=4.88
 - D: M=23.86, SD=5.08
-- Hy: M=18.12, SD=5.31  ✅ **DÜZELTİLDİ**
+- Hy: M=18.12, SD=5.31  ✅ **DÜZELTİLMİŞ**
 - Pd+0.4K: M=22.84, SD=4.51
 - Mf: M=32.98, SD=3.67
 - Pa: M=11.93, SD=4.17
@@ -101,6 +132,14 @@ Resmi tabloya göre K ham puanından düzeltme değerleri:
 2. **Tek T-skor hesaplama**: Sadece `calculateTScore` (turkishNorms.ts) kullanılıyor
 3. **Tek K-düzeltme**: Sadece `applyKCorrection` (turkishNorms.ts) kullanılıyor
 4. **Klinik norm karşılaştırması**: Kaldırıldı (gereksiz karmaşıklık)
+
+## PDF Rapor İyileştirmeleri ✅
+
+- **Türkçe Karakter Desteği**: Roboto font ile tam Türkçe destek
+- **MMPI Profil Tablosu**: Detaylı ölçek tablosu (ham puan, T-skoru, seviye)
+- **Görsel Çubuk Grafik**: Her ölçek için renk-kodlu çubuk gösterimi
+- **T-Skoru Renk Kodlaması**: Yeşil (Normal), Turuncu (Yükseltilmiş), Kırmızı (Klinik)
+- **Grafik Açıklaması**: Referans değerleri ve anlamları
 
 ## Grafik İyileştirmeleri ✅
 
@@ -133,7 +172,7 @@ Resmi tabloya göre K ham puanından düzeltme değerleri:
 
 ### Data Modülleri (Norm Verileri)
 - `turkishNorms.ts` → M/SD değerleri + T-skor hesaplama + K-düzeltme
-- `scoringKeys.ts` → Puanlama anahtarları
+- `scoringKeys.ts` → ✅ **DÜZELTILDI**: Doğru puanlama anahtarları
 - `validityConfigurations.ts` → 15 resmi geçerlik konfigürasyonu
 
 ### Interpretation Modülleri (Yorumlama)
@@ -148,8 +187,9 @@ Resmi tabloya göre K ham puanından düzeltme değerleri:
 
 ## Son Değişiklikler (Bu Güncelleme)
 
-1. ✅ **Duplikasyon Temizleme**: `determineTScoreLevel` kaldırıldı
-2. ✅ **Grafik Y Ekseni**: 600px yükseklik, 25-125 aralık
-3. ✅ **Türkçe Yorumlar**: Tüm core dosyalarda Türkçe açıklamalar
-4. ✅ **Kadın Hy Normu**: Düzeltildi (18.12, SD=5.31)
-5. ✅ **Import Düzenleme**: determineLevel validity.ts'den import ediliyor
+1. ✅ **Madde Numaraları**: Kullanıcı tarafından sağlanan kesin ve doğru verilerle güncellendi
+2. ✅ **PDF Türkçe Karakter**: Roboto font ile tam Türkçe destek
+3. ✅ **PDF MMPI Grafik**: Detaylı profil tablosu ve görsel çubuk grafik eklendi
+4. ✅ **Grafik Y Ekseni**: 600px yükseklik, 25-125 aralık
+5. ✅ **Türkçe Yorumlar**: Tüm core dosyalarda Türkçe açıklamalar
+6. ✅ **Import Düzenleme**: determineLevel validity.ts'den import ediliyor

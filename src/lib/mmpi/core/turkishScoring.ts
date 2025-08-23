@@ -7,6 +7,9 @@ import { determineLevel } from './validity';
 
 /**
  * Ham puanları T-skorlarına dönüştür (Türk normlarına göre)
+ * @param rawScores - Ham puanlar
+ * @param gender - Cinsiyet
+ * @returns T-skorları
  */
 export function convertRawScoresToTScores(
   rawScores: Record<string, number>,
@@ -51,10 +54,11 @@ export function convertRawScoresToTScores(
   return tScores;
 }
 
-// Duplikasyon kaldırıldı - determineLevel fonksiyonu validity.ts'de
-
 /**
  * Geçerlik durumunu belirle (ölçek bazında) - L, F, K için farklı kurallar
+ * @param tScore - T-skoru
+ * @param scaleId - Ölçek kimliği
+ * @returns Geçerlik durumu
  */
 export function determineScaleValidity(tScore: number, scaleId: string): 'valid' | 'borderline' | 'invalid' {
   switch (scaleId) {
@@ -79,6 +83,11 @@ export function determineScaleValidity(tScore: number, scaleId: string): 'valid'
 
 /**
  * Genel profil geçerliliğini belirle - Türk norm kriterlerine göre
+ * @param LScore - L T-skoru
+ * @param FScore - F T-skoru
+ * @param KScore - K T-skoru
+ * @param unansweredCount - Cevaplanmayan soru sayısı
+ * @returns Profil geçerlik durumu
  */
 export function determineProfileValidity(
   LScore: number,
@@ -106,6 +115,11 @@ export function determineProfileValidity(
 
 /**
  * MMPI ölçek sonucu oluştur - Ham puan, T-skoru, seviye ve geçerlik bilgisiyle
+ * @param rawScore - Ham puan
+ * @param tScore - T-skoru
+ * @param scaleId - Ölçek kimliği
+ * @param scaleType - Ölçek tipi
+ * @returns MMPI ölçek sonucu
  */
 export function createScaleResult(
   rawScore: number,

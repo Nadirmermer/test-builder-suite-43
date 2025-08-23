@@ -2,23 +2,28 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import { TestSonucu } from '@/types';
 
-// Register Turkish-compatible fonts
+// Türkçe karakter desteği için font kaydı
 try {
   Font.register({
-    family: 'DejaVu',
+    family: 'Roboto',
     fonts: [
-      { src: 'https://fonts.gstatic.com/s/dejavusans/v1/DejaVuSans.ttf' },
-      { src: 'https://fonts.gstatic.com/s/dejavusans/v1/DejaVuSans-Bold.ttf', fontWeight: 'bold' },
+      { 
+        src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto-Regular.ttf',
+        fontWeight: 'normal'
+      },
+      { 
+        src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto-Bold.ttf', 
+        fontWeight: 'bold' 
+      },
     ],
   });
 } catch (error) {
-  // Use fallback fonts that support Turkish characters
-  console.warn('Custom font loading failed, using default fonts with Turkish support');
+  console.warn('Roboto font yüklenemedi, varsayılan font kullanılacak');
 }
 
 const styles = StyleSheet.create({
   page: {
-    fontFamily: 'Times-Roman',
+    fontFamily: 'Roboto',
     fontSize: 11,
     paddingTop: 35,
     paddingBottom: 65,
@@ -254,6 +259,84 @@ const formatDate = (date: Date | string) => {
   }).format(dateObj);
 };
 
+// PDF için MMPI profil tablosu (görsel grafik yerine)
+const MMPIProfileTable: React.FC<{ testSonucu: TestSonucu }> = ({ testSonucu }) => {
+  if (!testSonucu.mmpiSonuclari) return null;
+
+  const { gecerlikOlcekleri, klinikOlcekler } = testSonucu.mmpiSonuclari;
+  
+  // Tüm ölçekleri birleştir
+  const allScales = [
+    { name: 'L (Yalan)', score: gecerlikOlcekleri.L?.tSkoru || 50, raw: gecerlikOlcekleri.L?.hammaddePuan || 0, type: 'validity' },
+    { name: 'F (Sıklık)', score: gecerlikOlcekleri.F?.tSkoru || 50, raw: gecerlikOlcekleri.F?.hammaddePuan || 0, type: 'validity' },
+    { name: 'K (Düzeltme)', score: gecerlikOlcekleri.K?.tSkoru || 50, raw: gecerlikOlcekleri.K?.hammaddePuan || 0, type: 'validity' },
+    { name: 'Hs (Hipokondriazis)', score: klinikOlcekler.Hs?.tSkoru || 50, raw: klinikOlcekler.Hs?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'D (Depresyon)', score: klinikOlcekler.D?.tSkoru || 50, raw: klinikOlcekler.D?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Hy (Histeri)', score: klinikOlcekler.Hy?.tSkoru || 50, raw: klinikOlcekler.Hy?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Pd (Psikopatik Sapma)', score: klinikOlcekler.Pd?.tSkoru || 50, raw: klinikOlcekler.Pd?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Mf (Erkeklik-Kadınlık)', score: klinikOlcekler.Mf?.tSkoru || 50, raw: klinikOlcekler.Mf?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Pa (Paranoya)', score: klinikOlcekler.Pa?.tSkoru || 50, raw: klinikOlcekler.Pa?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Pt (Psikasteni)', score: klinikOlcekler.Pt?.tSkoru || 50, raw: klinikOlcekler.Pt?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Sc (Şizofreni)', score: klinikOlcekler.Sc?.tSkoru || 50, raw: klinikOlcekler.Sc?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Ma (Hipomani)', score: klinikOlcekler.Ma?.tSkoru || 50, raw: klinikOlcekler.Ma?.hammaddePuan || 0, type: 'clinical' },
+    { name: 'Si (Sosyal İçedönüklük)', score: klinikOlcekler.Si?.tSkoru || 50, raw: klinikOlcekler.Si?.hammaddePuan || 0, type: 'clinical' }
+  ];
+
+  return (
+    <View style={{ marginVertical: 15 }}>
+      <Text style={{ fontSize: 11, fontWeight: 'bold', marginBottom: 10, textAlign: 'center' }}>
+        MMPI Profil Skorları
+      </Text>
+      
+      {/* Tablo başlığı */}
+      <View style={styles.tableHeader}>
+        <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Ölçek</Text>
+        <Text style={styles.tableHeaderCell}>Ham Puan</Text>
+        <Text style={styles.tableHeaderCell}>T-Skoru</Text>
+        <Text style={styles.tableHeaderCell}>Seviye</Text>
+        <Text style={[styles.tableHeaderCell, { flex: 2 }]}>Grafik Gösterim</Text>
+      </View>
+      
+      {/* Tablo satırları */}
+      {allScales.map((scale, index) => {
+        const level = scale.score >= 70 ? 'Klinik' : scale.score >= 65 ? 'Yükseltilmiş' : scale.score >= 45 ? 'Normal' : 'Düşük';
+        const levelColor = scale.score >= 70 ? '#dc2626' : scale.score >= 65 ? '#f59e0b' : '#059669';
+        
+        // Basit çubuk grafiği için genişlik hesaplama (30-120 arası)
+        const barWidth = Math.max(5, Math.min(100, ((scale.score - 30) / 90) * 100));
+        
+        return (
+          <View key={scale.name} style={[styles.tableRow, index % 2 === 1 && styles.tableRowAlt]}>
+            <Text style={[styles.tableCell, { flex: 2, textAlign: 'left', fontSize: 9 }]}>
+              {scale.name}
+            </Text>
+            <Text style={styles.tableCell}>{scale.raw}</Text>
+            <Text style={[styles.tableCell, { fontWeight: 'bold' }]}>{Math.round(scale.score)}</Text>
+            <Text style={[styles.tableCell, { color: levelColor, fontSize: 8 }]}>{level}</Text>
+            <View style={[styles.tableCell, { flex: 2, flexDirection: 'row', alignItems: 'center' }]}>
+              {/* Basit çubuk grafik */}
+              <View style={{
+                width: `${barWidth}%`,
+                height: 8,
+                backgroundColor: levelColor,
+                marginRight: 5
+              }} />
+              <Text style={{ fontSize: 7, color: '#666' }}>{Math.round(scale.score)}</Text>
+            </View>
+          </View>
+        );
+      })}
+      
+      {/* Referans açıklaması */}
+      <View style={{ marginTop: 10, padding: 8, backgroundColor: '#f9fafb' }}>
+        <Text style={{ fontSize: 8, color: '#666', textAlign: 'center' }}>
+          T-Skoru Değerlendirme: 45-65 Normal, 65-69 Yükseltilmiş, 70+ Klinik Anlamlılık
+        </Text>
+      </View>
+    </View>
+  );
+};
+
 export const TestReportPDF: React.FC<TestReportPDFProps> = ({ testSonucu }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -293,6 +376,12 @@ export const TestReportPDF: React.FC<TestReportPDFProps> = ({ testSonucu }) => (
       {testSonucu.mmpiSonuclari && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>MMPI Profil Analizi</Text>
+          
+          {/* MMPI Profil Tablosu */}
+          <View style={{ marginBottom: 20 }}>
+            <Text style={[styles.sectionTitle, { fontSize: 12, marginBottom: 8 }]}>Kişilik Profili Tablosu</Text>
+            <MMPIProfileTable testSonucu={testSonucu} />
+          </View>
           
           {/* Geçerlik Ölçekleri */}
           <View style={{ marginBottom: 15 }}>
