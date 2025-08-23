@@ -1,5 +1,5 @@
 // Service Worker for PWA functionality
-const CACHE_NAME = 'psikotest-v1';
+const CACHE_NAME = 'psikotest-v2'; // Updated cache version to clear old manifest
 const urlsToCache = [
   '/',
   '/manifest.json'

@@ -9,7 +9,7 @@ export interface Danisan {
   telefon?: string;
   adres?: string;
   notlar?: string;
-  eklenmeTarihi: Date;
+  eklenmeTarihi: Date | string; // Date in DB, string in Redux state
 }
 
 export interface TestSonucu {
@@ -17,7 +17,7 @@ export interface TestSonucu {
   danisanId: number;
   testId: string; // e.g., "bde-01"
   testAdi: string;
-  tamamlanmaTarihi: Date;
+  tamamlanmaTarihi: Date | string; // Date in DB, string in Redux state
   puan: number;
   sonucYorumu: string;
   cevaplar: { soruId: string; verilenPuan: number }[];
@@ -27,25 +27,16 @@ export interface TestSonucu {
     ad: string;
     baskın?: boolean;
   }>;
-  // MMPI özel sonuç alanları
+  // MMPI özel sonuç alanları - Sadeleştirilmiş
   mmpiSonuclari?: {
     gecerlikOlcekleri: Record<string, {
       hammaddePuan: number;
       tSkoru: number;
-      durum: 'gecerli' | 'sınırda' | 'gecersiz';
     }>;
     klinikOlcekler: Record<string, {
       hammaddePuan: number;
       tSkoru: number;
-      seviye: 'normal' | 'yükseltilmiş' | 'klinik';
     }>;
-    profilKodu: string;
-    gecerlikDurumu: 'gecerli' | 'sınırlı' | 'gecersiz';
-    uygulanabilirYorumlar: string[];
-    riskDeğerlendirmesi: {
-      genel: 'düşük' | 'orta' | 'yüksek';
-      alanlar: Record<string, string>;
-    };
   };
 }
 

@@ -12,7 +12,7 @@ import { TestSonucu } from '@/types';
 import TestResultChart from '@/components/test/TestResultChart';
 import { pdf } from '@react-pdf/renderer';
 import { TestReportPDF } from '@/components/pdf/TestReportPDF';
-import { generateMMPIInterpretation, fromPublicResults } from '@/lib/mmpi';
+import { fromPublicResults } from '@/lib/mmpi';
 import TestResultEditModal from '@/components/test/TestResultEditModal';
 
 export default function RaporDetayPage() {
@@ -195,94 +195,104 @@ export default function RaporDetayPage() {
       {/* Test Sonucu Grafikleri */}
       <TestResultChart testSonucu={testSonucu} showOverallScore={false} />
 
-      {/* MMPI Kapsamlı Yorumlama */}
+      {/* MMPI Detaylı Skorlar */}
       {testSonucu.mmpiSonuclari && (() => {
         const mmpiResults = fromPublicResults(testSonucu.mmpiSonuclari);
-        // Cinsiyet bilgisini al - burada selectedDanisan'dan alabilir ya da testSonucu'ndan
-        const gender = selectedDanisan?.cinsiyet as 'Erkek' | 'Kadin' | undefined;
-        const interpretation = generateMMPIInterpretation(mmpiResults, gender);
+        
+        // Ölçek isimleri
+        const validityScaleNames: Record<string, string> = {
+          L: 'Yalan (L)',
+          F: 'Sıklık (F)', 
+          K: 'Düzeltme (K)'
+        };
+        
+        const clinicalScaleNames: Record<string, string> = {
+          Hs: 'Hipokondriazis',
+          D: 'Depresyon',
+          Hy: 'Histeri',
+          Pd: 'Psikopatik Sapma',
+          Mf: 'Maskülinite-Femininite',
+          Pa: 'Paranoya',
+          Pt: 'Psikasteni',
+          Sc: 'Şizofreni',
+          Ma: 'Hipomani',
+          Si: 'Sosyal İçedönüklük'
+        };
+        
         return (
           <div className="space-y-6">
-            {/* Geçerlik Yorumu */}
+            {/* Geçerlik Ölçekleri */}
             <Card>
               <CardHeader>
-                <CardTitle>Geçerlik Profili Analizi</CardTitle>
+                <CardTitle>Geçerlik Ölçekleri</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Testin geçerlik durumunu gösteren ölçekler
+                </p>
               </CardHeader>
               <CardContent>
-                <div className="p-4 bg-secondary/50 rounded-lg">
-                  <p className="text-foreground leading-relaxed whitespace-pre-line">
-                    {interpretation.validityInterpretation}
-                  </p>
+                <div className="grid gap-4">
+                  {Object.entries(mmpiResults.validityScales).map(([scaleId, scale]) => (
+                    <div key={scaleId} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="w-8 text-center">
+                          {scaleId}
+                        </Badge>
+                        <span className="font-medium">{validityScaleNames[scaleId] || scaleId}</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-muted-foreground">
+                          Ham: {scale.rawScore}
+                        </span>
+                        <span className="font-bold text-lg">
+                          T: {scale.tScore}
+                        </span>
+                        <Badge 
+                          variant={scale.tScore >= 70 ? 'destructive' : 
+                                  scale.tScore >= 65 ? 'secondary' : 'default'}
+                        >
+                          {scale.tScore >= 70 ? 'Klinik' : 
+                           scale.tScore >= 65 ? 'Yükseltilmiş' : 'Normal'}
+                        </Badge>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Klinik Ölçek Yorumları */}
-            {interpretation.individualScaleInterpretations.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Klinik Ölçek Analizi</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {interpretation.individualScaleInterpretations.map((interp, idx) => (
-                    <div key={idx} className="p-4 bg-secondary/50 rounded-lg">
-                      <p className="text-foreground leading-relaxed whitespace-pre-line">
-                        {interp}
-                      </p>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Kod Tipi Yorumları */}
-            {interpretation.codeTypeInterpretations.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Profil Kod Tipi Analizi</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {interpretation.codeTypeInterpretations.map((interp, idx) => (
-                    <div key={idx} className="p-4 bg-secondary/50 rounded-lg">
-                      <p className="text-foreground leading-relaxed whitespace-pre-line">
-                        {interp}
-                      </p>
-                    </div>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Genel Özet */}
+            {/* Klinik Ölçekler */}
             <Card>
               <CardHeader>
-                <CardTitle>Genel Değerlendirme</CardTitle>
+                <CardTitle>Klinik Ölçekler</CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Kişilik ve psikolojik özellikleri gösteren ölçekler
+                </p>
               </CardHeader>
               <CardContent>
-                <div className="p-4 bg-secondary/50 rounded-lg">
-                  <p className="text-foreground leading-relaxed">
-                    {interpretation.overallSummary}
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-
-
-            {/* Klinik Öneriler */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Klinik Öneriler</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {interpretation.clinicalRecommendations.map((rec, idx) => (
-                    <div key={idx} className="flex items-start gap-2">
-                      <Badge variant="outline" className="mt-1">
-                        {idx + 1}
-                      </Badge>
-                      <p className="text-foreground text-sm leading-relaxed">
-                        {rec}
-                      </p>
+                <div className="grid gap-4">
+                  {Object.entries(mmpiResults.clinicalScales).map(([scaleId, scale]) => (
+                    <div key={scaleId} className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg">
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="w-8 text-center">
+                          {scaleId}
+                        </Badge>
+                        <span className="font-medium">{clinicalScaleNames[scaleId] || scaleId}</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-sm text-muted-foreground">
+                          Ham: {scale.rawScore}
+                        </span>
+                        <span className="font-bold text-lg">
+                          T: {scale.tScore}
+                        </span>
+                        <Badge 
+                          variant={scale.tScore >= 70 ? 'destructive' : 
+                                  scale.tScore >= 65 ? 'secondary' : 'default'}
+                        >
+                          {scale.tScore >= 70 ? 'Klinik' : 
+                           scale.tScore >= 65 ? 'Yükseltilmiş' : 'Normal'}
+                        </Badge>
+                      </div>
                     </div>
                   ))}
                 </div>

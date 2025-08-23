@@ -68,7 +68,14 @@ export const testleriYukle = createAsyncThunk(
 export const danisanTestSonuclari = createAsyncThunk(
   'testler/danisanSonuclari',
   async (danisanId: number) => {
-    return await testSonucuService.danisanSonuclari(danisanId);
+    const sonuclar = await testSonucuService.danisanSonuclari(danisanId);
+    // Date objelerini string'e çevir Redux state için
+    return sonuclar.map(sonuc => ({
+      ...sonuc,
+      tamamlanmaTarihi: sonuc.tamamlanmaTarihi instanceof Date 
+        ? sonuc.tamamlanmaTarihi.toISOString() 
+        : sonuc.tamamlanmaTarihi
+    }));
   }
 );
 
@@ -77,7 +84,13 @@ export const testSonucuKaydet = createAsyncThunk(
   'testler/sonucKaydet',
   async (testSonucu: Omit<TestSonucu, 'id'>) => {
     const id = await testSonucuService.ekle(testSonucu);
-    return { ...testSonucu, id };
+    return { 
+      ...testSonucu, 
+      id,
+      tamamlanmaTarihi: testSonucu.tamamlanmaTarihi instanceof Date 
+        ? testSonucu.tamamlanmaTarihi.toISOString() 
+        : testSonucu.tamamlanmaTarihi
+    };
   }
 );
 
@@ -95,7 +108,13 @@ export const testSonucuGuncelle = createAsyncThunk(
   'testler/sonucGuncelle',
   async ({ id, testSonucu }: { id: number; testSonucu: Partial<TestSonucu> }) => {
     await testSonucuService.guncelle(id, testSonucu);
-    return { id, testSonucu };
+    const guncelSonuc = testSonucu.tamamlanmaTarihi ? {
+      ...testSonucu,
+      tamamlanmaTarihi: testSonucu.tamamlanmaTarihi instanceof Date 
+        ? testSonucu.tamamlanmaTarihi.toISOString() 
+        : testSonucu.tamamlanmaTarihi
+    } : testSonucu;
+    return { id, testSonucu: guncelSonuc };
   }
 );
 

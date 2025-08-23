@@ -1,29 +1,9 @@
-import React from 'react';
-import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { TestSonucu } from '@/types';
 
-// Türkçe karakter desteği için font kaydı
-try {
-  Font.register({
-    family: 'Roboto',
-    fonts: [
-      { 
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto-Regular.ttf',
-        fontWeight: 'normal'
-      },
-      { 
-        src: 'https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto-Bold.ttf', 
-        fontWeight: 'bold' 
-      },
-    ],
-  });
-} catch (error) {
-  console.warn('Roboto font yüklenemedi, varsayılan font kullanılacak');
-}
-
+// PDF styles using default fonts (no custom font loading)
 const styles = StyleSheet.create({
   page: {
-    fontFamily: 'Roboto',
     fontSize: 11,
     paddingTop: 35,
     paddingBottom: 65,
@@ -411,11 +391,11 @@ export const TestReportPDF: React.FC<TestReportPDFProps> = ({ testSonucu }) => (
             </View>
           </View>
 
-          {/* Profil Kodu ve Durum */}
+          {/* MMPI Profil Özeti */}
           <View style={{ marginBottom: 15 }}>
-            <Text style={styles.mmpiProfileCode}>Profil Kodu: {testSonucu.mmpiSonuclari.profilKodu}</Text>
+            <Text style={styles.mmpiProfileCode}>MMPI Kişilik Profili</Text>
             <Text style={styles.mmpiValidityStatus}>
-              Geçerlik Durumu: {testSonucu.mmpiSonuclari.gecerlikDurumu === 'gecerli' ? 'Geçerli' : 'Geçersiz'}
+              Türkçe Normlar ile Değerlendirilmiştir
             </Text>
           </View>
         </View>

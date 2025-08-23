@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TestSonucu } from '@/types';
-import MMPIResultChart from './MMPIResultChart';
+import MMPIProfileChart from './MMPIProfileChart';
 
 interface TestResultChartProps {
   testSonucu: TestSonucu;
@@ -12,7 +12,7 @@ interface TestResultChartProps {
 export default function TestResultChart({ testSonucu, showOverallScore = true }: TestResultChartProps) {
   // MMPI için özel grafik bileşenini kullan
   if (testSonucu.mmpiSonuclari) {
-    return <MMPIResultChart testSonucu={testSonucu} />;
+    return <MMPIProfileChart testSonucu={testSonucu} />;
   }
 
   // Alt ölçek puanları varsa grafik verisi hazırla
@@ -79,8 +79,8 @@ export default function TestResultChart({ testSonucu, showOverallScore = true }:
                 />
                 <YAxis />
                 <Tooltip 
-                  formatter={(value: any) => [value.toFixed(2), 'Puan']}
-                  labelFormatter={(label: any, payload: any) => {
+                  formatter={(value: number) => [value.toFixed(2), 'Puan']}
+                  labelFormatter={(label: string, payload: { payload: { fullName: string } }[]) => {
                     if (payload && payload[0]) {
                       const data = payload[0].payload;
                       return `${data.fullName}`;

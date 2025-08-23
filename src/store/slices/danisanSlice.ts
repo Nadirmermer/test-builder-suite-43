@@ -22,7 +22,14 @@ const initialState: DanisanState = {
 export const danisanlariYukle = createAsyncThunk(
   'danisanlar/yukle',
   async () => {
-    return await danisanService.tumunuGetir();
+    const danisanlar = await danisanService.tumunuGetir();
+    // Date objelerini string'e çevir Redux state için
+    return danisanlar.map(danisan => ({
+      ...danisan,
+      eklenmeTarihi: danisan.eklenmeTarihi instanceof Date 
+        ? danisan.eklenmeTarihi.toISOString() 
+        : danisan.eklenmeTarihi
+    }));
   }
 );
 
@@ -30,7 +37,13 @@ export const danisanEkle = createAsyncThunk(
   'danisanlar/ekle',
   async (danisan: Omit<Danisan, 'id'>) => {
     const id = await danisanService.ekle(danisan);
-    return { ...danisan, id };
+    return { 
+      ...danisan, 
+      id,
+      eklenmeTarihi: danisan.eklenmeTarihi instanceof Date 
+        ? danisan.eklenmeTarihi.toISOString() 
+        : danisan.eklenmeTarihi
+    };
   }
 );
 
@@ -38,7 +51,13 @@ export const danisanGuncelle = createAsyncThunk(
   'danisanlar/guncelle',
   async ({ id, danisan }: { id: number; danisan: Partial<Danisan> }) => {
     await danisanService.guncelle(id, danisan);
-    return { id, danisan };
+    const guncelDanisan = danisan.eklenmeTarihi ? {
+      ...danisan,
+      eklenmeTarihi: danisan.eklenmeTarihi instanceof Date 
+        ? danisan.eklenmeTarihi.toISOString() 
+        : danisan.eklenmeTarihi
+    } : danisan;
+    return { id, danisan: guncelDanisan };
   }
 );
 
@@ -53,7 +72,13 @@ export const danisanSil = createAsyncThunk(
 export const danisanGetir = createAsyncThunk(
   'danisanlar/getir',
   async (id: number) => {
-    return await danisanService.getir(id);
+    const danisan = await danisanService.getir(id);
+    return {
+      ...danisan,
+      eklenmeTarihi: danisan.eklenmeTarihi instanceof Date 
+        ? danisan.eklenmeTarihi.toISOString() 
+        : danisan.eklenmeTarihi
+    };
   }
 );
 

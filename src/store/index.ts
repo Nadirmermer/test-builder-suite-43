@@ -14,8 +14,9 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ['danisanlar/ekle/fulfilled', 'danisanlar/guncelle/fulfilled'],
-        ignoredPaths: ['danisanlar.items.eklenmeTarihi', 'testler.aktifOturum.baslamaTarihi'],
+        // Belirli action'ları yoksay, gerekirse
+        ignoredActions: [],
+        ignoredPaths: [],
       },
     }),
 });

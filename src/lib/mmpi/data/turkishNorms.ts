@@ -87,9 +87,9 @@ export function calculateTScore(
   }
   
   const tScore = 50 + (10 * (rawScore - normData.M) / normData.SD);
-  
-  // T-skoru sınırları (30-120) - ondalık sayı olarak hesapla
-  const boundedScore = Math.max(30, Math.min(120, tScore));
+
+  // T-skoru sınırları (20-120) - ondalık sayı olarak hesapla
+  const boundedScore = Math.max(20, Math.min(120, tScore));
   return Math.round(boundedScore * 10) / 10; // Bir ondalık basamak
 }
 

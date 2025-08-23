@@ -14,7 +14,7 @@ import { TestTanimi } from '@/types';
 import { testSonucuService } from '@/lib/db';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { calculateMMPIScores, generateMMPISummary, toPublicResults } from '@/lib/mmpi';
+import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector } from '@/hooks/useRedux';
 import GenderSelectionModal from './GenderSelectionModal';
 
@@ -219,7 +219,6 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
     try {
       // MMPI puanlama motoru ile hesaplama
       const results = calculateMMPIScores(cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadın' ? 'Kadin' : 'Erkek');
-      const genelOzet = generateMMPISummary(results);
       const mmpiSonuclari = toPublicResults(results);
       
       // Toplam T-skoru hesaplama (genel puan için)
@@ -232,7 +231,7 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
         testAdi: test.testAdi + " (Hızlı)",
         tamamlanmaTarihi: new Date(),
         puan: Math.round(toplamTSkoru / Object.keys(mmpiSonuclari.klinikOlcekler).length) || 50,
-        sonucYorumu: genelOzet,
+        sonucYorumu: 'MMPI test sonuçları hesaplandı.',
         cevaplar: [
           ...Object.entries(cevaplar).map(([soruId, verilenPuan]) => ({
             soruId,
@@ -251,9 +250,7 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
 
       toast({
         title: "Test Tamamlandı", 
-        description: results.validityStatus === 'valid' 
-          ? "MMPI hızlı analizi başarıyla tamamlandı ve kaydedildi." 
-          : "MMPI hızlı testi tamamlandı ancak geçerlilik sorunu tespit edildi."
+        description: "MMPI analizi başarıyla tamamlandı ve kaydedildi."
       });
 
       onComplete();

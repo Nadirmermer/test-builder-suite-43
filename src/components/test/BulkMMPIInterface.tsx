@@ -14,7 +14,7 @@ import { TestTanimi } from '@/types';
 import { testSonucuService } from '@/lib/db';
 import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { calculateMMPIScores, generateMMPISummary, toPublicResults } from '@/lib/mmpi';
+import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector } from '@/hooks/useRedux';
 import GenderSelectionModal from './GenderSelectionModal';
 
@@ -127,7 +127,6 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
       
       // MMPI puanlama motoru ile hesaplama
       const results = calculateMMPIScores(cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadın' ? 'Kadin' : 'Erkek');
-      const genelOzet = generateMMPISummary(results);
       const mmpiSonuclari = toPublicResults(results);
       
       // Toplam T-skoru hesaplama (genel puan için)
@@ -140,7 +139,7 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
         testAdi: test.testAdi + " (Toplu)",
         tamamlanmaTarihi: new Date(),
         puan: Math.round(toplamTSkoru / Object.keys(mmpiSonuclari.klinikOlcekler).length) || 50,
-        sonucYorumu: genelOzet,
+        sonucYorumu: 'MMPI test sonuçları hesaplandı.',
         cevaplar: [
           ...Object.entries(cevaplar).map(([soruId, verilenPuan]) => ({
             soruId,
@@ -156,9 +155,7 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
 
       toast({
         title: "Test Tamamlandı", 
-        description: results.validityStatus === 'valid' 
-          ? "MMPI toplu analizi başarıyla tamamlandı ve kaydedildi." 
-          : "MMPI toplu testi tamamlandı ancak geçerlilik sorunu tespit edildi."
+        description: "MMPI toplu analizi başarıyla tamamlandı ve kaydedildi."
       });
 
       onComplete();
