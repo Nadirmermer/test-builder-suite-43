@@ -1,5 +1,5 @@
 // MMPI Sonuç Adaptörü - İç format ile UI format arası dönüşüm
-import { MMPIResults } from './core/scoring';
+import { MMPIResults } from './scoring';
 import { TestSonucu } from '@/types';
 
 // UI için mevcut TestSonucu.mmpiSonuclari formatı ile uyumlu tip

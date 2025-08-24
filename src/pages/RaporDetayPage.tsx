@@ -17,7 +17,7 @@ import MMPIValidityScaleInterpretation from '@/components/test/MMPIValidityScale
 import MMPIClinicalScaleInterpretation from '@/components/test/MMPIClinicalScaleInterpretation';
 import { MMPICodeAnalysis } from '@/components/test/MMPICodeAnalysis';
 import TestResultChart from '@/components/test/TestResultChart';
-import { analyzeCodeTypes } from '@/lib/mmpi/interpretations/codeAnalysis';
+import { analyzeCodeTypes } from '@/lib/mmpi/interpretations/codes/analyzer';
 import { 
   ArrowLeft, 
   Calendar, 

@@ -16,6 +16,7 @@ import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector } from '@/hooks/useRedux';
+import { createDanisanUrl } from '@/utils/urlUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 
 interface FastMMPIInterfaceProps {
@@ -112,16 +113,7 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
     
     // İlerlemeyi kaydet
     saveProgressToStorage(newCevaplar, newBosCevaplar);
-    
-    // Otomatik olarak bir sonraki soruya geç
-    const nextIndex = focusedQuestion + 1;
-    if (nextIndex < toplamSoru) {
-      setFocusedQuestion(nextIndex);
-      setTimeout(() => {
-        inputRefs.current[nextIndex]?.focus();
-      }, 100);
-    }
-  }, [focusedQuestion, toplamSoru, cevaplar, bosCevaplar, saveProgressToStorage]);
+  }, [cevaplar, bosCevaplar, saveProgressToStorage]);
 
   const handleInputChange = (soruId: string, value: string, index: number) => {
     if (value === '') {
@@ -143,10 +135,28 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
     const lowerValue = value.toLowerCase();
     if (lowerValue === '1' || lowerValue === 'd') {
       handleCevap(soruId, 1);
+      // Auto-advance: bir sonraki soruya geç
+      const nextIndex = index + 1;
+      if (nextIndex < toplamSoru) {
+        setFocusedQuestion(nextIndex);
+        inputRefs.current[nextIndex]?.focus();
+      }
     } else if (lowerValue === '2' || lowerValue === 'y') {
       handleCevap(soruId, 0);
+      // Auto-advance: bir sonraki soruya geç
+      const nextIndex = index + 1;
+      if (nextIndex < toplamSoru) {
+        setFocusedQuestion(nextIndex);
+        inputRefs.current[nextIndex]?.focus();
+      }
     } else if (lowerValue === '3' || lowerValue === 'b') {
       handleCevap(soruId, 'bos');
+      // Auto-advance: bir sonraki soruya geç
+      const nextIndex = index + 1;
+      if (nextIndex < toplamSoru) {
+        setFocusedQuestion(nextIndex);
+        inputRefs.current[nextIndex]?.focus();
+      }
     }
   };
 
@@ -271,7 +281,12 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
   };
 
   const confirmExit = () => {
-    navigate(`/danisan/${danisanId}`);
+    if (danisan) {
+      const url = createDanisanUrl(danisan.adSoyad, danisan.id);
+      navigate(url);
+    } else {
+      navigate('/danisanlar');
+    }
   };
 
   const handleGenderSelectionComplete = () => {
@@ -282,6 +297,21 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const estimateRemainingTime = () => {
+    if (totalCevaplanan === 0 || elapsedTime === 0) return null;
+    
+    const averageTimePerQuestion = elapsedTime / totalCevaplanan;
+    const remainingQuestions = toplamSoru - totalCevaplanan;
+    const estimatedRemainingSeconds = remainingQuestions * averageTimePerQuestion;
+    
+    if (estimatedRemainingSeconds < 60) {
+      return `~${Math.round(estimatedRemainingSeconds)}s kaldı`;
+    } else {
+      const minutes = Math.round(estimatedRemainingSeconds / 60);
+      return `~${minutes}dk kaldı`;
+    }
   };
 
   // Cinsiyet seçimi ekranı
@@ -325,8 +355,13 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
           </div>
           <div className="flex items-center gap-2 flex-wrap">
             <Badge variant="outline" className="text-xs">
-              {formatTime(elapsedTime)}
+              ⏱️ {formatTime(elapsedTime)}
             </Badge>
+            {estimateRemainingTime() && (
+              <Badge variant="secondary" className="text-xs">
+                🎯 {estimateRemainingTime()}
+              </Badge>
+            )}
             <Badge variant="secondary" className="text-xs">
               {totalCevaplanan} / {toplamSoru}
             </Badge>
@@ -406,13 +441,26 @@ export default function FastMMPIInterface({ test, danisanId, onComplete }: FastM
                         }
                         onChange={(e) => handleInputChange(soru.id, e.target.value, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
-                        onFocus={() => setFocusedQuestion(index)}
-                        className="w-12 h-12 text-center text-lg font-bold"
+                        onFocus={(e) => {
+                          setFocusedQuestion(index);
+                          // İçeriği seç ki kullanıcı doğrudan yazabilsin
+                          e.target.select();
+                        }}
+                        className={`w-16 h-16 text-center text-xl font-bold border-2 rounded-lg transition-all duration-200 hover:border-primary focus:border-primary focus:ring-2 focus:ring-primary/20 ${
+                          cevaplar[soru.id] === 1 ? 'bg-green-100 border-green-500 text-green-800 dark:bg-green-950/30 dark:border-green-600 dark:text-green-400' :
+                          cevaplar[soru.id] === 0 ? 'bg-red-100 border-red-500 text-red-800 dark:bg-red-950/30 dark:border-red-600 dark:text-red-400' :
+                          bosCevaplar.has(soru.id) ? 'bg-orange-100 border-orange-500 text-orange-800 dark:bg-orange-950/30 dark:border-orange-600 dark:text-orange-400' :
+                          ''
+                        }`}
                         placeholder="?"
                         maxLength={1}
                       />
-                      <div className="text-xs text-muted-foreground text-center min-w-[50px]">
-                        <div className="font-mono">1/D/2/Y/3/B</div>
+                      <div className="text-xs text-muted-foreground text-center min-w-[60px]">
+                        <div className="font-mono bg-muted/50 rounded px-2 py-1 mb-1">
+                          <span className="text-green-600 font-semibold">1/D</span>
+                          <span className="text-red-600 font-semibold mx-1">2/Y</span>
+                          <span className="text-orange-600 font-semibold">3/B</span>
+                        </div>
                         {isAnswered && (
                           <Badge variant="secondary" className="mt-1 text-xs">
                             {cevaplar[soru.id] === 1 ? 'Doğru' : 'Yanlış'}

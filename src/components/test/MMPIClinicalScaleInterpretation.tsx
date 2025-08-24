@@ -4,21 +4,26 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { fromPublicResults } from '@/lib/mmpi';
-import { normalizeGender } from '@/lib/mmpi/utils/gender';
-import { HsScale, getHsSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/hsScale';
-import { DScale, getDSpikeInterpretation, getDRelationshipNote } from '@/lib/mmpi/interpretations/clinical/dScale';
-import { HyScale } from '@/lib/mmpi/interpretations/clinical/hyScale';
-import { PdScale } from '@/lib/mmpi/interpretations/clinical/pdScale';
-import { MfScale } from '@/lib/mmpi/interpretations/clinical/mfScale';
-import { PaScale, getPaSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/paScale';
-import { PtScale, getPtSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/ptScale';
-import { ScScale, getScSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/scScale';
-import { MaScale, getMaSpikeInterpretation, getMaInterpretationWarnings } from '@/lib/mmpi/interpretations/clinical/maScale';
-import { SiScale, getSiSpikeInterpretation, getSiAgeConsiderations, getSiRelationshipImplications, getSiScaleCombinations } from '@/lib/mmpi/interpretations/clinical/siScale';
+import { normalizeGender } from '@/lib/mmpi/core/gender-utils';
+import { HsScale, getHsSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/hs-scale';
+import { DScale, getDSpikeInterpretation, getDRelationshipNote } from '@/lib/mmpi/interpretations/clinical/d-scale';
+import { HyScale } from '@/lib/mmpi/interpretations/clinical/hy-scale';
+import { PdScale } from '@/lib/mmpi/interpretations/clinical/pd-scale';
+import { MfScale } from '@/lib/mmpi/interpretations/clinical/mf-scale';
+import { PaScale, getPaSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/pa-scale';
+import { PtScale, getPtSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/pt-scale';
+import { ScScale, getScSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/sc-scale';
+import { MaScale, getMaSpikeInterpretation, getMaInterpretationWarnings } from '@/lib/mmpi/interpretations/clinical/ma-scale';
+import { SiScale, getSiSpikeInterpretation, getSiAgeConsiderations, getSiRelationshipImplications, getSiScaleCombinations } from '@/lib/mmpi/interpretations/clinical/si-scale';
 
 interface MMPIClinicalScaleInterpretationProps {
   testSonucu: TestSonucu;
   danisanCinsiyet?: string; // Mf ölçeği için gerekli
+}
+
+interface ScaleResult {
+  tScore: number;
+  rawScore: number;
 }
 
 interface ClinicalInterpretationData {
@@ -244,7 +249,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
 
   // Spike analizi - sadece bir ölçeğin 70+ olması
   const elevatedScales = Object.entries(mmpiResults.clinicalScales)
-    .filter(([_, scale]) => scale.tScore >= 70);
+    .filter(([_, scale]) => (scale as ScaleResult).tScore >= 70);
   
   const isHsSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Hs';
   const isDSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'D';
@@ -406,7 +411,8 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
         </CardHeader>
         <CardContent>
           <Accordion type="single" collapsible className="w-full">
-            {Object.entries(mmpiResults.clinicalScales).map(([scaleId, scale], index) => {
+            {Object.entries(mmpiResults.clinicalScales).map(([scaleId, scaleData], index) => {
+              const scale = scaleData as ScaleResult;
               const hasInterpretation = interpretableScales.includes(scaleId);
               
               let interpretation = null;

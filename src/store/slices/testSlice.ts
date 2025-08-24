@@ -38,7 +38,7 @@ export const testleriYukle = createAsyncThunk(
       }
       
       // MMPI testini ayrı olarak ekle (lib'den import)
-      const { mmpiQuestions } = await import('@/lib/mmpi/mmpiData');
+      const { mmpiQuestions } = await import('@/lib/mmpi/data/questions');
       const mmpiTest: TestTanimi = {
         id: 'mmpi',
         testAdi: 'MMPI Minnesota Çok Yönlü Kişilik Envanteri',

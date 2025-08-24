@@ -2,11 +2,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { testleriYukle } from '@/store/slices/testSlice';
+import { danisanGetir } from '@/store/slices/danisanSlice';
 import StandardTestInterface from '@/components/test/StandardTestInterface';
 import FastTestInterface from '@/components/test/FastTestInterface';
 import MMPITestInterface from '@/components/test/MMPITestInterface';
 import FastMMPIInterface from '@/components/test/FastMMPIInterface';
 import BulkMMPIInterface from '@/components/test/BulkMMPIInterface';
+import { createDanisanUrl } from '@/utils/urlUtils';
 
 import { TestTanimi } from '@/types';
 
@@ -19,6 +21,7 @@ export default function TestInterfacePage() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { mevcutTestler } = useAppSelector((state) => state.testler);
+  const { selectedDanisan } = useAppSelector((state) => state.danisanlar);
   const [selectedTest, setSelectedTest] = useState<TestTanimi | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -30,6 +33,13 @@ export default function TestInterfacePage() {
   }, [dispatch, mevcutTestler.length]);
 
   useEffect(() => {
+    // Danışan bilgilerini yükle
+    if (danisanId) {
+      dispatch(danisanGetir(parseInt(danisanId)));
+    }
+  }, [danisanId, dispatch]);
+
+  useEffect(() => {
     if (testId && mevcutTestler.length > 0) {
       const test = mevcutTestler.find(t => t.id === testId);
       if (test) {
@@ -37,13 +47,23 @@ export default function TestInterfacePage() {
         setLoading(false);
       } else {
         // Test bulunamadı, geri dön
-        navigate(`/danisan/${danisanId}`);
+        if (selectedDanisan) {
+          const url = createDanisanUrl(selectedDanisan.adSoyad, selectedDanisan.id);
+          navigate(url);
+        } else {
+          navigate('/danisanlar');
+        }
       }
     }
-  }, [testId, mevcutTestler, navigate, danisanId]);
+  }, [testId, mevcutTestler, navigate, danisanId, selectedDanisan]);
 
   const handleComplete = () => {
-    navigate(`/danisan/${danisanId}`);
+    if (selectedDanisan) {
+      const url = createDanisanUrl(selectedDanisan.adSoyad, selectedDanisan.id);
+      navigate(url);
+    } else {
+      navigate('/danisanlar');
+    }
   };
 
   if (loading) {

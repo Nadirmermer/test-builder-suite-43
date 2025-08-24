@@ -16,6 +16,7 @@ import { testOturumuBaslat, cevapGuncelle, soruIndexGuncelle, testOturumuBitir, 
 import { TestTanimi, TestOturumu, Danisan } from '@/types';
 import { danisanService } from '@/lib/db';
 import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli } from '@/utils/testUtils';
+import { createDanisanUrl } from '@/utils/urlUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 
 
@@ -207,7 +208,12 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
 
   const confirmExit = () => {
     dispatch(testOturumuBitir());
-    navigate(`/danisan/${danisanId}`);
+    if (danisan) {
+      const url = createDanisanUrl(danisan.adSoyad, danisan.id);
+      navigate(url);
+    } else {
+      navigate('/danisanlar');
+    }
   };
 
   const formatTime = (seconds: number) => {

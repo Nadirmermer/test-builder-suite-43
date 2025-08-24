@@ -2,20 +2,29 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiSearch, FiUsers } from 'react-icons/fi';
+import { FiPlus, FiUser, FiSearch, FiUsers } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import DanisanCard from '@/components/danisan/DanisanCard';
 import YeniDanisanModal from '@/components/danisan/YeniDanisanModal';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
+import { danisanlariYukle } from '@/store/slices/danisanSlice';
 import { Danisan } from '@/types';
+import { createDanisanUrl } from '@/utils/urlUtils';
 
 export default function DanisanlarPage() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { items: danisanlar, loading } = useAppSelector((state) => state.danisanlar);
   const [searchTerm, setSearchTerm] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [filteredDanisanlar, setFilteredDanisanlar] = useState<Danisan[]>([]);
+
+  // Danışanları yükle
+  useEffect(() => {
+    dispatch(danisanlariYukle());
+  }, [dispatch]);
 
   // Arama filtreleme
   useEffect(() => {
@@ -32,7 +41,8 @@ export default function DanisanlarPage() {
   }, [danisanlar, searchTerm]);
 
   const handleDanisanClick = (danisan: Danisan) => {
-    navigate(`/danisan/${danisan.id}`);
+    const url = createDanisanUrl(danisan.adSoyad, danisan.id);
+    navigate(url);
   };
 
   return (

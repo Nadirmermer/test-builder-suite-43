@@ -16,6 +16,7 @@ import { toast } from '@/hooks/use-toast';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector } from '@/hooks/useRedux';
+import { createDanisanUrl } from '@/utils/urlUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 
 interface BulkMMPIInterfaceProps {
@@ -62,7 +63,7 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
       }
       
       // Geçersiz karakter kontrolü
-      const invalidChars = textInput.replace(/[DYdy*\s]/g, '');
+      const invalidChars = textInput.replace(/[DYdy*3\s]/g, '');
       if (invalidChars.length > 0) {
         errors.push(`Geçersiz karakterler bulundu: ${[...new Set(invalidChars)].join(', ')}`);
       }
@@ -85,7 +86,7 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
           cevaplar[soru.id] = 1; // Doğru
         } else if (char === 'Y') {
           cevaplar[soru.id] = 0; // Yanlış
-        } else if (char === '*') {
+        } else if (char === '*' || char === '3') {
           bosCevaplar.add(soru.id); // Boş/Bilmiyorum
         }
       }
@@ -105,7 +106,7 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
       return;
     }
 
-    const invalidChars = textInput.replace(/[DYdy*\s]/g, '');
+    const invalidChars = textInput.replace(/[DYdy*3\s]/g, '');
     if (invalidChars.length > 0) {
       toast({
         title: "Geçersiz Karakterler",
@@ -176,7 +177,12 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
   };
 
   const confirmExit = () => {
-    navigate(`/danisan/${danisanId}`);
+    if (danisan) {
+      const url = createDanisanUrl(danisan.adSoyad, danisan.id);
+      navigate(url);
+    } else {
+      navigate('/danisanlar');
+    }
   };
 
   const handleGenderSelectionComplete = () => {
@@ -237,13 +243,13 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
           <AlertDescription className="text-sm">
             <strong>MMPI Toplu Giriş Talimatları:</strong>
             <br />
-            • 566 karakterlik cevap dizinini buraya yapıştırın
+            • Tam 566 karakterlik cevap dizinini buraya yapıştırın
             <br />
-            • <strong>D</strong> = Doğru, <strong>Y</strong> = Yanlış, <strong>*</strong> = Bilmiyorum
+            • <strong className="text-green-600">D</strong> = Doğru, <strong className="text-red-600">Y</strong> = Yanlış, <strong className="text-orange-600">*</strong> veya <strong className="text-orange-600">3</strong> = Bilmiyorum/Boş
             <br />
             • Cevaplar arasında boşluk bırakmayın
             <br />
-            • Örnek: DYYDY*DDYY...
+            • Örnek: <code className="bg-muted px-2 py-1 rounded text-sm">DYYDY3DDYY...</code> veya <code className="bg-muted px-2 py-1 rounded text-sm">DYYDY*DDYY...</code>
           </AlertDescription>
         </Alert>
 
@@ -282,11 +288,27 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
             />
             
             {/* Karakter İstatistikleri */}
-            <div className="flex gap-4 text-sm text-muted-foreground">
-              <span>D: {(textInput.match(/D/g) || []).length}</span>
-              <span>Y: {(textInput.match(/Y/g) || []).length}</span>
-              <span>*: {(textInput.match(/\*/g) || []).length}</span>
-              <span>Toplam: {currentLength}</span>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div className="flex items-center gap-2 bg-green-50 dark:bg-green-950/20 p-2 rounded-lg">
+                <div className="w-3 h-3 bg-green-500 rounded"></div>
+                <span className="font-medium">D (Doğru):</span>
+                <span className="font-bold text-green-600">{(textInput.match(/D/g) || []).length}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-red-50 dark:bg-red-950/20 p-2 rounded-lg">
+                <div className="w-3 h-3 bg-red-500 rounded"></div>
+                <span className="font-medium">Y (Yanlış):</span>
+                <span className="font-bold text-red-600">{(textInput.match(/Y/g) || []).length}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-orange-50 dark:bg-orange-950/20 p-2 rounded-lg">
+                <div className="w-3 h-3 bg-orange-500 rounded"></div>
+                <span className="font-medium">*/3 (Boş):</span>
+                <span className="font-bold text-orange-600">{((textInput.match(/\*/g) || []).length + (textInput.match(/3/g) || []).length)}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-950/20 p-2 rounded-lg">
+                <div className="w-3 h-3 bg-blue-500 rounded"></div>
+                <span className="font-medium">Toplam:</span>
+                <span className="font-bold text-blue-600">{currentLength}</span>
+              </div>
             </div>
           </CardContent>
         </Card>

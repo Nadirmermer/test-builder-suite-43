@@ -85,12 +85,3 @@ export const scoringKeys = {
     yanlis: [25, 33, 57, 91, 99, 119, 126, 143, 193, 208, 229, 231, 254, 262, 281, 296, 309, 353, 359, 371, 391, 400, 415, 440, 446, 449, 450, 451, 462, 469, 479, 481, 482, 505, 521, 547] 
   }
 };
-
-// K-düzeltme faktörleri
-export const kCorrectionFactors = {
-  Hs: 0.5,    // Hipokondriazis
-  Pd: 0.4,    // Psikopatik Sapma  
-  Pt: 1.0,    // Psikastenik
-  Sc: 1.0,    // Şizofreni
-  Ma: 0.2     // Hipomani
-};

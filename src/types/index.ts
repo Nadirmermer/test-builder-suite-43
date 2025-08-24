@@ -62,60 +62,17 @@ export interface TestTanimi {
   puanlamaAnahtari?: Record<string, { dogru?: number[]; yanlis?: number[] }>;
   k_duzeltmesi?: Record<string, number>;
   t_skoru_tablolari?: {
-    Erkek: Record<string, Record<string, number>>;
-    Kadin: Record<string, Record<string, number>>;
-  };
-  // MMPI özel alanları
-  mmpiYapilandirmasi?: {
-    gecerlikOlcekleri: Record<string, MMPIOlcek>;
-    klinikOlcekler: Record<string, MMPIOlcek>;
-    normTablolari: MMPINormTablosu[];
-    yorumKurallari: MMPIYorumKurali[];
-    profilGrafigi: MMPIProfilAyarlari;
-  };
+  Erkek: Record<string, Record<string, number>>;
+  Kadin: Record<string, Record<string, number>>;
+};
+}export interface AltOlcek {
+  ad: string;
+  sorular: string[];
 }
 
 export interface AltOlcek {
   ad: string;
   sorular: string[];
-}
-
-// MMPI özel tip tanımları
-export interface MMPIOlcek {
-  ad: string;
-  kisaAd: string;
-  aciklama: string;
-  sorular: string[];
-  puanlamaYontemi: 'dogru-yanlis' | 'yanlis-dogru' | 'karma';
-  kritikSeviye?: number;
-}
-
-export interface MMPINormTablosu {
-  cinsiyet: 'Erkek' | 'Kadin';
-  yasAraligi: [number, number];
-  olcek: string;
-  hammaddenTSkoruTablosu: Record<number, number>;
-}
-
-export interface MMPIYorumKurali {
-  id: string;
-  kosul: string; // JavaScript expression olarak değerlendirilecek
-  oncelik: number;
-  yorum: string;
-  kategori: 'genel' | 'gecerlik' | 'klinik' | 'profil';
-}
-
-export interface MMPIProfilAyarlari {
-  tip: 'profil-grafigi';
-  baslik: string;
-  gecerlikOlcekleriGoster: boolean;
-  klinikOlcekleriGoster: boolean;
-  tSkoruSiniri: number;
-  riskSeviyeSinirlari: {
-    dusuk: number;
-    orta: number;
-    yuksek: number;
-  };
 }
 
 export interface TestSorusu {

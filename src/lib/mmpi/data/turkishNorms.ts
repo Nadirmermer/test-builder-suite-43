@@ -1,7 +1,7 @@
 // MMPI Türk Normları - Resmi Uygulama Kitabından
 // T = 50 + 10*(X - M)/SD formülü ile hesaplama
 
-import { getKCorrectionValue } from '../utils/kCorrectionTable';
+import { getKCorrectionValue } from './k-correction-table';
 
 export interface NormData {
   M: number;  // Ortalama

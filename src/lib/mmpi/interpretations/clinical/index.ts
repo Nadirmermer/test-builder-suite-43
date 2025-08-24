@@ -1,15 +1,12 @@
 // MMPI Klinik Ölçekler Yorumlama Modülleri
 
-export * from './hsScale';
-export * from './dScale';
-export * from './hyScale';
-export * from './pdScale';
-export * from './mfScale';
-export * from './paScale';
-export * from './ptScale';
-export * from './scScale';
-export * from './maScale';
-export * from './siScale';
-
-// Tüm klinik ölçekler tamamlandı! 🎉
-// Şimdi kod kombinasyon analizi sistemini populate etme zamanı
+export * from './hs-scale';
+export * from './d-scale';
+export * from './hy-scale';
+export * from './pd-scale';
+export * from './mf-scale';
+export * from './pa-scale';
+export * from './pt-scale';
+export * from './sc-scale';
+export * from './ma-scale';
+export * from './si-scale';

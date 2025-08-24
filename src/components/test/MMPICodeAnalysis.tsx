@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, AlertTriangle, BarChart, Brain, Lightbulb, Shield, TrendingUp, Users } from 'lucide-react';
-import { CodeTypeInterpretation } from "@/lib/mmpi/interpretations/codeAnalysis";
+import { CodeTypeInterpretation } from "@/lib/mmpi/interpretations/codes/analyzer";
 
 interface MMPICodeAnalysisProps {
   codeTypes: CodeTypeInterpretation[];

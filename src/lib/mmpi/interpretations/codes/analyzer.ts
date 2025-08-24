@@ -1,16 +1,16 @@
 // MMPI Kod Analizi - Ana Koordinatör Dosyası
 // Kod interpretasyonlarını ayrı modüllerden import eder ve koordine eder
 
-import { normalizeGender } from '../utils/gender';
-import { CodeTypeInterpretation } from './codes/types';
-import { getSingleCodeInterpretation } from './codes/singleCodes';
-import { getTwoPointCodeInterpretation } from './codes/twoCodes';
-import { getThreePointCodeInterpretation } from './codes/threeCodes';
-import { getFourPointCodeInterpretation } from './codes/fourCodes';
-import { getFivePointCodeInterpretation } from './codes/fiveCodes';
+import { normalizeGender } from '../../core/gender-utils';
+import { CodeTypeInterpretation } from './types';
+import { getSingleCodeInterpretation } from './single-codes';
+import { getTwoPointCodeInterpretation } from './two-codes';
+import { getThreePointCodeInterpretation } from './three-codes';
+import { getFourPointCodeInterpretation } from './four-codes';
+import { getFivePointCodeInterpretation } from './five-codes';
 
 // Re-export types for external use
-export type { CodeTypeInterpretation } from './codes/types';
+export type { CodeTypeInterpretation } from './types';
 
 /**
  * MMPI Kod Tiplerini Analiz Etme

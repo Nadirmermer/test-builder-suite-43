@@ -16,11 +16,15 @@ import { danisanGetir, danisanSil } from '@/store/slices/danisanSlice';
 import { danisanTestSonuclari, testSonucuSil } from '@/store/slices/testSlice';
 import { toast } from 'sonner';
 import { TestTanimi } from '@/types';
+import { extractDanisanIdFromUrl } from '@/utils/urlUtils';
 
 export default function DanisanDetayPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  
+  // URL'den ID extract et
+  const danisanId = id ? extractDanisanIdFromUrl(id) : null;
   
   const { selectedDanisan } = useAppSelector((state) => state.danisanlar);
   const { mevcutTestler, testSonuclari } = useAppSelector((state) => state.testler);
@@ -34,14 +38,16 @@ export default function DanisanDetayPage() {
   const [editModalOpen, setEditModalOpen] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      const danisanId = parseInt(id);
+    if (danisanId) {
       Promise.all([
         dispatch(danisanGetir(danisanId)),
         dispatch(danisanTestSonuclari(danisanId))
       ]).finally(() => setLoading(false));
+    } else {
+      // Geçersiz URL ise ana sayfaya yönlendir
+      navigate('/danisanlar');
     }
-  }, [id, dispatch]);
+  }, [danisanId, dispatch, navigate]);
 
   useEffect(() => {
     setFilteredTests(mevcutTestler);
@@ -58,7 +64,7 @@ export default function DanisanDetayPage() {
 
   const handleMethodSelect = (method: 'standard' | 'fast' | 'bulk') => {
     // Test interface sayfasına yönlendir
-    navigate(`/test-interface/${method}/${selectedTest?.id}/${id}`);
+    navigate(`/test-interface/${method}/${selectedTest?.id}/${danisanId}`);
   };
 
   const handleTestComplete = () => {
@@ -66,15 +72,15 @@ export default function DanisanDetayPage() {
     setTestMode(null);
     setSelectedTest(null);
     // Test sonuçlarını yeniden yükle
-    if (id) {
-      dispatch(danisanTestSonuclari(parseInt(id)));
+    if (danisanId) {
+      dispatch(danisanTestSonuclari(danisanId));
     }
   };
 
   const handleDeleteDanisan = async () => {
-    if (window.confirm(`${selectedDanisan?.adSoyad} adlı danışanı ve tüm test sonuçlarını silmek istediğinizden emin misiniz?`)) {
+    if (danisanId && window.confirm(`${selectedDanisan?.adSoyad} adlı danışanı ve tüm test sonuçlarını silmek istediğinizden emin misiniz?`)) {
       try {
-        await dispatch(danisanSil(parseInt(id!))).unwrap();
+        await dispatch(danisanSil(danisanId)).unwrap();
         toast.success('Danışan başarıyla silindi');
         navigate('/');
       } catch (error) {
@@ -89,8 +95,8 @@ export default function DanisanDetayPage() {
         await dispatch(testSonucuSil(testResultId)).unwrap();
         toast.success('Test sonucu başarıyla silindi');
         // Refresh test results
-        if (id) {
-          dispatch(danisanTestSonuclari(parseInt(id)));
+        if (danisanId) {
+          dispatch(danisanTestSonuclari(danisanId));
         }
       } catch (error) {
         toast.error('Test sonucu silinirken hata oluştu');
@@ -384,7 +390,7 @@ export default function DanisanDetayPage() {
           open={testModalOpen}
           onOpenChange={setTestModalOpen}
           test={selectedTest}
-          danisanId={parseInt(id!)}
+          danisanId={danisanId!}
           onMethodSelect={handleMethodSelect}
         />
       )}

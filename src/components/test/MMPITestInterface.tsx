@@ -14,6 +14,7 @@ import { testSonucuService } from '@/lib/db';
 import { toast } from '@/hooks/use-toast';
 import { useAppSelector } from '@/hooks/useRedux';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
+import { createDanisanUrl } from '@/utils/urlUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 import { danisanService } from '@/lib/db';
 interface MMPITestInterfaceProps {
@@ -145,10 +146,12 @@ export default function MMPITestInterface({
 
       const key = e.key.toLowerCase();
       if (key === '1' || key === 'd') {
+        e.preventDefault();
         handleCevap(1);
       } else if (key === '2' || key === 'y') {
+        e.preventDefault();
         handleCevap(0);
-      } else if (key === '3' || key === ' ') {
+      } else if (key === '3' || key === 'b' || key === ' ') {
         e.preventDefault();
         handleCevap('bos');
       }
@@ -229,7 +232,12 @@ export default function MMPITestInterface({
     setShowExitDialog(true);
   };
   const confirmExit = () => {
-    navigate(`/danisan/${danisanId}`);
+    if (danisan) {
+      const url = createDanisanUrl(danisan.adSoyad, danisan.id);
+      navigate(url);
+    } else {
+      navigate('/danisanlar');
+    }
   };
   const handleGenderSelectionComplete = () => {
     setShowGenderSelection(false);
@@ -288,7 +296,7 @@ export default function MMPITestInterface({
             <AlertDescription className="text-sm">
               <strong>MMPI Talimatları:</strong> Her ifadeyi dikkatlice okuyun ve kendiniz için "DOĞRU" mu yoksa "YANLIŞ" mı olduğuna karar verin.
               <br />
-              <strong>Klavye:</strong> 1/D = Doğru, 2/Y = Yanlış, 3/Boşluk = Bilmiyorum
+              <strong>Klavye:</strong> 1/D = Doğru, 2/Y = Yanlış, 3/B/Boşluk = Bilmiyorum
             </AlertDescription>
           </Alert>}
 
