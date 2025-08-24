@@ -145,15 +145,14 @@ export default function MMPIProfileChart({
     }
   ];
 
-  const CustomDot = (props: { cx: number, cy: number, payload: ChartDataPoint, dataKey: string }) => {
-    const { cx, cy, payload, dataKey } = props;
-    const tSkoru = payload[dataKey];
+  const CustomDot = ({ cx, cy, payload, dataKey }: { cx: number, cy: number, payload: ChartDataPoint, dataKey: string }) => {
+    const tSkoru = payload[dataKey as keyof ChartDataPoint];
     
     if (tSkoru === undefined || tSkoru === null) {
       return null;
     }
 
-    const color = tSkoru >= 70 ? 'hsl(var(--destructive))' : tSkoru >= 65 ? 'hsl(var(--warning))' : 'hsl(var(--primary))';
+    const color = (tSkoru as number) >= 70 ? 'hsl(var(--destructive))' : (tSkoru as number) >= 65 ? 'hsl(var(--warning))' : 'hsl(var(--primary))';
     return <circle cx={cx} cy={cy} r={5} fill={color} stroke="white" strokeWidth={2} />;
   };
 

@@ -26,16 +26,16 @@ export function convertRawScoresToTScores(
   
   // Klinik ölçekler
   const clinicalScales = [
-    { id: 'Hs', normKey: 'Hs+5K (1)', hasKCorrection: true },
-    { id: 'D', normKey: 'D (2)', hasKCorrection: false },
-    { id: 'Hy', normKey: 'Hy (3)', hasKCorrection: false },
-    { id: 'Pd', normKey: 'Pd+4K (4)', hasKCorrection: true },
-    { id: 'Mf', normKey: 'Mf (5)', hasKCorrection: false },
-    { id: 'Pa', normKey: 'Pa (6)', hasKCorrection: false },
-    { id: 'Pt', normKey: 'Pt+1K (7)', hasKCorrection: true },
-    { id: 'Sc', normKey: 'Sc+1K (8)', hasKCorrection: true },
-    { id: 'Ma', normKey: 'Ma+2K (9)', hasKCorrection: true },
-    { id: 'Si', normKey: 'Si (10)', hasKCorrection: false }
+    { id: 'Hs', normKey: 'Hs+5K', hasKCorrection: true },
+    { id: 'D', normKey: 'D', hasKCorrection: false },
+    { id: 'Hy', normKey: 'Hy', hasKCorrection: false },
+    { id: 'Pd', normKey: 'Pd+4K', hasKCorrection: true },
+    { id: 'Mf', normKey: 'Mf', hasKCorrection: false },
+    { id: 'Pa', normKey: 'Pa', hasKCorrection: false },
+    { id: 'Pt', normKey: 'Pt+1K', hasKCorrection: true },
+    { id: 'Sc', normKey: 'Sc+1K', hasKCorrection: true },
+    { id: 'Ma', normKey: 'Ma+2K', hasKCorrection: true },
+    { id: 'Si', normKey: 'Si', hasKCorrection: false }
   ];
   
   for (const scale of clinicalScales) {
@@ -52,5 +52,3 @@ export function convertRawScoresToTScores(
   
   return tScores;
 }
-
-// Geçerlik değerlendirme fonksiyonları kaldırıldı - Sadece puan hesaplaması
