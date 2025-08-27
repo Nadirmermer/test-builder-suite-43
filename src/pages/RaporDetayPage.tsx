@@ -15,9 +15,7 @@ import { TestReportPDF } from '@/components/pdf/TestReportPDF';
 import TestResultEditModal from '@/components/test/TestResultEditModal';
 import MMPIValidityScaleInterpretation from '@/components/test/MMPIValidityScaleInterpretation';
 import MMPIClinicalScaleInterpretation from '@/components/test/MMPIClinicalScaleInterpretation';
-import { MMPICodeAnalysis } from '@/components/test/MMPICodeAnalysis';
 import TestResultChart from '@/components/test/TestResultChart';
-import { analyzeCodeTypes } from '@/lib/mmpi/interpretations/codes/analyzer';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -129,42 +127,6 @@ export default function RaporDetayPage() {
   };
 
   // Test durumu analizi
-  // MMPI kod analizi hesaplaması
-  const getCodeAnalysis = () => {
-    if (!testSonucu?.mmpiSonuclari) return [];
-    
-    try {
-      const mmpiData = fromPublicResults(testSonucu.mmpiSonuclari);
-      const clinicalScales = {
-        'Hs': { tScore: mmpiData.clinicalScales.Hs.tScore, rawScore: mmpiData.clinicalScales.Hs.rawScore },
-        'D': { tScore: mmpiData.clinicalScales.D.tScore, rawScore: mmpiData.clinicalScales.D.rawScore },
-        'Hy': { tScore: mmpiData.clinicalScales.Hy.tScore, rawScore: mmpiData.clinicalScales.Hy.rawScore },
-        'Pd': { tScore: mmpiData.clinicalScales.Pd.tScore, rawScore: mmpiData.clinicalScales.Pd.rawScore },
-        'Mf': { tScore: mmpiData.clinicalScales.Mf.tScore, rawScore: mmpiData.clinicalScales.Mf.rawScore },
-        'Pa': { tScore: mmpiData.clinicalScales.Pa.tScore, rawScore: mmpiData.clinicalScales.Pa.rawScore },
-        'Pt': { tScore: mmpiData.clinicalScales.Pt.tScore, rawScore: mmpiData.clinicalScales.Pt.rawScore },
-        'Sc': { tScore: mmpiData.clinicalScales.Sc.tScore, rawScore: mmpiData.clinicalScales.Sc.rawScore },
-        'Ma': { tScore: mmpiData.clinicalScales.Ma.tScore, rawScore: mmpiData.clinicalScales.Ma.rawScore },
-        'Si': { tScore: mmpiData.clinicalScales.Si.tScore, rawScore: mmpiData.clinicalScales.Si.rawScore }
-      };
-
-      // Validity ölçeklerini de ekleyelim
-      const allScales = {
-        ...clinicalScales,
-        'F': { tScore: mmpiData.validityScales.F.tScore, rawScore: mmpiData.validityScales.F.rawScore },
-        'K': { tScore: mmpiData.validityScales.K.tScore, rawScore: mmpiData.validityScales.K.rawScore },
-        'L': { tScore: mmpiData.validityScales.L.tScore, rawScore: mmpiData.validityScales.L.rawScore }
-      };
-      
-      return analyzeCodeTypes(allScales, danisan?.cinsiyet as 'Erkek' | 'Kadin');
-    } catch (error) {
-      console.error('Kod analizi hesaplama hatası:', error);
-      return [];
-    }
-  };
-
-  const codeTypes = getCodeAnalysis();
-
   const getTestStatus = () => {
     if (!testSonucu) return null;
     
@@ -342,13 +304,12 @@ export default function RaporDetayPage() {
 
       {/* Ana İçerik - Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
           {testSonucu.mmpiSonuclari ? (
             <>
               <TabsTrigger value="validity">Geçerlik</TabsTrigger>
               <TabsTrigger value="clinical">Klinik Ölçekler</TabsTrigger>
-              <TabsTrigger value="codes">Kod Analizi</TabsTrigger>
             </>
           ) : (
             <TabsTrigger value="results">Sonuçlar</TabsTrigger>
@@ -398,13 +359,6 @@ export default function RaporDetayPage() {
               testSonucu={testSonucu} 
               danisanCinsiyet={danisan?.cinsiyet}
             />
-          </TabsContent>
-        )}
-
-        {/* Kod Analizi (Sadece MMPI) */}
-        {testSonucu.mmpiSonuclari && (
-          <TabsContent value="codes" className="space-y-6">
-            <MMPICodeAnalysis codeTypes={codeTypes} />
           </TabsContent>
         )}
 

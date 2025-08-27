@@ -5,6 +5,3 @@ export * from './validity';
 
 // Klinik Ölçekler
 export * from './clinical';
-
-// Kod Kombinasyonları
-export * from './codes';
