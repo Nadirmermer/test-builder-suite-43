@@ -108,7 +108,7 @@ export const testSonucuOzelPuanlamaIleKaydet = createAsyncThunk(
     cevaplar: Record<string, number>; 
   }) => {
     // SCL-90-R için özel puanlama
-    if (test.id === 'scl-90-r') {
+    if (test.id === 'scl-90-r-semptom-tarama-listesi') {
       const cevapArray = Object.keys(cevaplar)
         .sort((a, b) => parseInt(a) - parseInt(b))
         .map(key => cevaplar[key]);

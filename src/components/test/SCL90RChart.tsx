@@ -116,9 +116,9 @@ export default function SCL90RChart({ testSonucu, showOverallScore = true, chart
                   <ReferenceLine y={1.0} stroke="#f59e0b" strokeDasharray="5 5" label="Orta Üst Sınır" />
                   <Tooltip 
                     formatter={(value: number) => [value.toFixed(2), 'Ortalama Puan']}
-                    labelFormatter={(label: string, payload: unknown[]) => {
+                    labelFormatter={(label: string, payload: { payload: { fullName: string; seviye: string } }[]) => {
                       if (payload && Array.isArray(payload) && payload[0]) {
-                        const data = (payload[0] as any).payload;
+                        const data = payload[0].payload;
                         return `${data.fullName} - ${data.seviye}`;
                       }
                       return label;
@@ -159,9 +159,9 @@ export default function SCL90RChart({ testSonucu, showOverallScore = true, chart
                   />
                   <Tooltip 
                     formatter={(value: number) => [value.toFixed(2), 'Ortalama Puan']}
-                    labelFormatter={(label: string, payload: unknown[]) => {
+                    labelFormatter={(label: string, payload: { payload: { fullName: string; seviye: string } }[]) => {
                       if (payload && Array.isArray(payload) && payload[0]) {
-                        const data = (payload[0] as any).payload;
+                        const data = payload[0].payload;
                         return `${data.fullName} - ${data.seviye}`;
                       }
                       return label;

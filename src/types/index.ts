@@ -81,6 +81,9 @@ export interface TestSorusu {
   secenekler: TestSecenegi[];
 }
 
+// Soru tipi alias'ı geriye uyumluluk için
+export type Soru = TestSorusu;
+
 export interface TestSecenegi {
   metin: string;
   puan: number;

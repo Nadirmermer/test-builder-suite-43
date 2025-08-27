@@ -4,9 +4,8 @@ import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { testleriYukle } from '@/store/slices/testSlice';
 import { danisanGetir } from '@/store/slices/danisanSlice';
 import StandardTestInterface from '@/components/test/StandardTestInterface';
-import FastTestInterface from '@/components/test/FastTestInterface';
+import UniversalFastTestInterface from '@/components/test/UniversalFastTestInterface';
 import MMPITestInterface from '@/components/test/MMPITestInterface';
-import FastMMPIInterface from '@/components/test/FastMMPIInterface';
 import BulkMMPIInterface from '@/components/test/BulkMMPIInterface';
 import { createDanisanUrl } from '@/utils/urlUtils';
 
@@ -99,7 +98,7 @@ export default function TestInterfacePage() {
             onComplete={handleComplete}
           />
         ) : method === 'fast' ? (
-          <FastMMPIInterface
+          <UniversalFastTestInterface
             test={selectedTest}
             danisanId={parseInt(danisanId)}
             onComplete={handleComplete}
@@ -124,7 +123,7 @@ export default function TestInterfacePage() {
           onComplete={handleComplete}
         />
       ) : (
-        <FastTestInterface
+        <UniversalFastTestInterface
           test={selectedTest}
           danisanId={parseInt(danisanId)}
           onComplete={handleComplete}

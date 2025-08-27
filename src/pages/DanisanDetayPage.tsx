@@ -9,7 +9,7 @@ import TestApplicationModal from '@/components/test/TestApplicationModal';
 import TestInfoModal from '@/components/test/TestInfoModal';
 import TestSearch from '@/components/test/TestSearch';
 import StandardTestInterface from '@/components/test/StandardTestInterface';
-import FastTestInterface from '@/components/test/FastTestInterface';
+import UniversalFastTestInterface from '@/components/test/UniversalFastTestInterface';
 import DanisanGuncelleModal from '@/components/danisan/DanisanGuncelleModal';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { danisanGetir, danisanSil } from '@/store/slices/danisanSlice';

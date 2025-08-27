@@ -13,7 +13,7 @@ import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { testOturumuBaslat, cevapGuncelle, soruIndexGuncelle, testOturumuBitir, testSonucuKaydet } from '@/store/slices/testSlice';
-import { TestTanimi, TestOturumu, Danisan } from '@/types';
+import { TestTanimi, TestOturumu, Danisan, TestSorusu } from '@/types';
 import { danisanService } from '@/lib/db';
 import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
@@ -32,7 +32,7 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
   const isMobile = useIsMobile();
   
   const [danisan, setDanisan] = useState<Danisan | null>(null);
-  const [testSorulari, setTestSorulari] = useState<any[]>([]);
+  const [testSorulari, setTestSorulari] = useState<TestSorusu[]>([]);
   const [testTalimatlar, setTestTalimatlar] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [showGenderSelection, setShowGenderSelection] = useState(false);
@@ -92,7 +92,7 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
     dispatch(testOturumuBaslat(oturum));
 
     return () => clearInterval(interval);
-  }, [dispatch, loading]);
+  }, [dispatch, loading, oturum]);
 
   useEffect(() => {
     // Mevcut soru için önceki cevabı yükle
@@ -155,12 +155,13 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       altOlcekPuanlari = {};
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
-        const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
+        const altOlcekToplam = altOlcek.sorular.reduce((toplam: number, soruId) => {
           const soruIdStr = typeof soruId === 'number' ? soruId.toString() : soruId;
-          return toplam + (oturum.cevaplar[soruIdStr] || 0);
-        }, 0);
+          const puan = oturum.cevaplar[soruIdStr];
+          return toplam + (typeof puan === 'number' ? puan : 0);
+        }, 0) as number;
         
-        const ortalamaPuan = altOlcekToplam / altOlcek.toplamSoru;
+        const ortalamaPuan = altOlcekToplam / (altOlcek.toplamSoru || 1);
         const yuksek = ortalamaPuan >= 1.0; // SCL-90-R için 1.0 ve üzeri problemli
         
         altOlcekPuanlari![key] = {
@@ -180,11 +181,11 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       altOlcekPuanlari = {};
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
-        const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
+        const altOlcekToplam = altOlcek.sorular.reduce((toplam: number, soruId) => {
           const soruIdStr = typeof soruId === 'number' ? soruId.toString() : soruId;
           const puan = oturum.cevaplar[soruIdStr];
           return toplam + (typeof puan === 'number' ? puan : 0);
-        }, 0);
+        }, 0) as number;
         
         const ortalamaPuan = altOlcekToplam / altOlcek.sorular.length;
         const baskın = ortalamaPuan >= 4.0;
