@@ -53,7 +53,7 @@ export interface TestTanimi {
   anahtar_kelimeler?: string[];
   sureDakika?: number;
   formTuru?: 'standart' | 'cinsiyete-ozel' | 'mmpi-profil';
-  puanlamaTuru?: 'basit' | 'cinsiyete-ozel' | 'gorusmeci-degerlendirmesi' | 'coklu_alt_olcek' | 'mmpi-profil';
+  puanlamaTuru?: 'basit' | 'cinsiyete-ozel' | 'gorusmeci-degerlendirmesi' | 'coklu_alt_olcek' | 'mmpi-profil' | 'scl-90-r';
   formlar?: {
     Kadın?: TestSorusu[];
     Erkek?: TestSorusu[];
@@ -65,14 +65,14 @@ export interface TestTanimi {
   Erkek: Record<string, Record<string, number>>;
   Kadin: Record<string, Record<string, number>>;
 };
-}export interface AltOlcek {
-  ad: string;
-  sorular: string[];
 }
 
 export interface AltOlcek {
   ad: string;
+  kisaAd?: string;
+  aciklama?: string;
   sorular: string[];
+  toplamSoru?: number;
 }
 
 export interface TestSorusu {

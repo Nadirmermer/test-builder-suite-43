@@ -195,7 +195,31 @@ export default function FastTestInterface({ test, danisanId, onComplete }: FastT
       baskın?: boolean;
     }> | undefined;
 
-    if (test.puanlamaTuru === 'coklu_alt_olcek' && test.altOlcekler) {
+    if (test.puanlamaTuru === 'scl-90-r' && test.altOlcekler) {
+      // SCL-90-R puanlaması
+      altOlcekPuanlari = {};
+      
+      Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
+        const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
+          return toplam + (cevaplar[soruId] || 0);
+        }, 0);
+        
+        const ortalamaPuan = altOlcekToplam / (altOlcek.toplamSoru || altOlcek.sorular.length);
+        const yuksek = ortalamaPuan >= 1.0; // SCL-90-R için 1.0 ve üzeri problemli
+        
+        altOlcekPuanlari![key] = {
+          toplamPuan: altOlcekToplam,
+          ortalamaPuan: Math.round(ortalamaPuan * 100) / 100,
+          ad: altOlcek.ad,
+          baskın: yuksek
+        };
+      });
+      
+      // Genel Semptom Ortalaması (GSO) hesapla
+      const genelToplam = Object.values(cevaplar).reduce((toplam, puan) => toplam + puan, 0);
+      toplamPuan = Math.round((genelToplam / 90) * 100) / 100; // 90 soru için ortalama
+      
+    } else if (test.puanlamaTuru === 'coklu_alt_olcek' && test.altOlcekler) {
       // Çoklu alt ölçek puanlaması
       altOlcekPuanlari = {};
       
@@ -223,9 +247,26 @@ export default function FastTestInterface({ test, danisanId, onComplete }: FastT
     }
     
     // Sonuç yorumunu bul
-    const sonucYorumu = test.sonucYorumlari.find(yorum => 
-      toplamPuan >= yorum.aralik[0] && toplamPuan <= yorum.aralik[1]
-    )?.yorum || 'Sonuç yorumu bulunamadı';
+    let sonucYorumu = 'Sonuç yorumu bulunamadı';
+    
+    if (test.puanlamaTuru === 'scl-90-r') {
+      // SCL-90-R için özel yorum sistemi
+      if (toplamPuan >= 1.0) {
+        sonucYorumu = 'Yüksek seviye - Belirgin ruhsal belirtiler mevcuttur, profesyonel değerlendirme önerilir.';
+      } else if (toplamPuan >= 0.5) {
+        sonucYorumu = 'Orta düzey - Hafif düzeyde ruhsal belirtiler mevcuttur, takip önerilir.';
+      } else {
+        sonucYorumu = 'Normal seviye - Belirgin bir ruhsal sorun göstergesi bulunmamaktadır.';
+      }
+    } else {
+      // Standart yorum sistemi
+      const yorum = test.sonucYorumlari.find(yorum => 
+        toplamPuan >= yorum.aralik[0] && toplamPuan <= yorum.aralik[1]
+      );
+      if (yorum) {
+        sonucYorumu = yorum.yorum;
+      }
+    }
 
     // Test sonucunu kaydet
     const testSonucu = {

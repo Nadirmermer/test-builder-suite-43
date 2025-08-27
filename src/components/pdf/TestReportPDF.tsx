@@ -342,12 +342,28 @@ export const TestReportPDF: React.FC<TestReportPDFProps> = ({ testSonucu }) => (
         </View>
       </View>
 
-      {/* Toplam Puan - Sadece MMPI olmayan testler için */}
+      {/* Toplam Puan */}
       {!testSonucu.mmpiSonuclari && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Toplam Puan</Text>
+          <Text style={styles.sectionTitle}>
+            {testSonucu.testId === 'scl-90-r' ? 'Genel Semptom Ortalaması (GSO)' : 'Toplam Puan'}
+          </Text>
           <View style={styles.scoreCard}>
-            <Text style={styles.scoreValue}>{testSonucu.puan}</Text>
+            <Text style={styles.scoreValue}>
+              {testSonucu.testId === 'scl-90-r' ? 
+                (typeof testSonucu.puan === 'number' ? testSonucu.puan.toFixed(2) : testSonucu.puan) :
+                testSonucu.puan
+              }
+            </Text>
+            {testSonucu.testId === 'scl-90-r' && (
+              <Text style={{ fontSize: 10, color: '#666', marginTop: 4 }}>
+                Değerlendirme: {
+                  (typeof testSonucu.puan === 'number' && testSonucu.puan >= 1.0) ? 'Yüksek Seviye' :
+                  (typeof testSonucu.puan === 'number' && testSonucu.puan >= 0.5) ? 'Orta Düzey' :
+                  'Normal Seviye'
+                }
+              </Text>
+            )}
           </View>
         </View>
       )}
@@ -404,17 +420,65 @@ export const TestReportPDF: React.FC<TestReportPDFProps> = ({ testSonucu }) => (
       {/* Alt Ölçek Puanları (MMPI olmayan testler için) */}
       {!testSonucu.mmpiSonuclari && testSonucu.altOlcekPuanlari && Object.keys(testSonucu.altOlcekPuanlari).length > 0 && (
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Alt Ölçek Puanları</Text>
+          <Text style={styles.sectionTitle}>
+            {testSonucu.testId === 'scl-90-r' ? 'SCL-90-R Alt Ölçek Profili' : 'Alt Ölçek Puanları'}
+          </Text>
+          
+          {testSonucu.testId === 'scl-90-r' && (
+            <View style={{ marginBottom: 10, padding: 8, backgroundColor: '#f0f9ff', borderRadius: 4 }}>
+              <Text style={{ fontSize: 9, color: '#374151', textAlign: 'center' }}>
+                Değerlendirme Kriterleri: 0.0-0.5 Normal • 0.5-1.0 Orta Düzey • 1.0+ Yüksek Seviye
+              </Text>
+            </View>
+          )}
+          
           <View style={styles.subscaleGrid}>
-            {Object.entries(testSonucu.altOlcekPuanlari).map(([key, olcek]) => (
-              <View key={key} style={styles.subscaleCard}>
-                <Text style={styles.subscaleTitle}>{olcek.ad}</Text>
-                <Text style={styles.subscaleScore}>{olcek.toplamPuan}</Text>
-                {olcek.baskın && (
-                  <Text style={{ fontSize: 8, color: '#dc2626', marginTop: 2 }}>Baskın</Text>
-                )}
-              </View>
-            ))}
+            {Object.entries(testSonucu.altOlcekPuanlari).map(([key, olcek]) => {
+              // SCL-90-R için özel renklendirme
+              const isSCL = testSonucu.testId === 'scl-90-r';
+              const sclLevel = isSCL ? 
+                (olcek.ortalamaPuan >= 1.0 ? 'high' :
+                 olcek.ortalamaPuan >= 0.5 ? 'medium' : 'normal') : null;
+              
+              const cardStyle = isSCL ? {
+                ...styles.subscaleCard,
+                backgroundColor: sclLevel === 'high' ? '#fef2f2' : 
+                                sclLevel === 'medium' ? '#fff7ed' : '#f0fdf4',
+                borderColor: sclLevel === 'high' ? '#fecaca' : 
+                            sclLevel === 'medium' ? '#fed7aa' : '#bbf7d0',
+                borderWidth: 2
+              } : styles.subscaleCard;
+              
+              return (
+                <View key={key} style={cardStyle}>
+                  <Text style={styles.subscaleTitle}>{olcek.ad}</Text>
+                  <Text style={[
+                    styles.subscaleScore,
+                    isSCL && {
+                      color: sclLevel === 'high' ? '#dc2626' :
+                             sclLevel === 'medium' ? '#ea580c' : '#16a34a'
+                    }
+                  ]}>
+                    {isSCL ? olcek.ortalamaPuan.toFixed(2) : olcek.toplamPuan}
+                  </Text>
+                  {isSCL && (
+                    <Text style={{ 
+                      fontSize: 8, 
+                      color: sclLevel === 'high' ? '#dc2626' :
+                             sclLevel === 'medium' ? '#ea580c' : '#16a34a',
+                      marginTop: 2,
+                      fontWeight: 'bold'
+                    }}>
+                      {sclLevel === 'high' ? 'Yüksek' :
+                       sclLevel === 'medium' ? 'Orta' : 'Normal'}
+                    </Text>
+                  )}
+                  {!isSCL && olcek.baskın && (
+                    <Text style={{ fontSize: 8, color: '#dc2626', marginTop: 2 }}>Baskın</Text>
+                  )}
+                </View>
+              );
+            })}
           </View>
         </View>
       )}
