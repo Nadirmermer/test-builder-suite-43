@@ -71,7 +71,7 @@ export interface AltOlcek {
   ad: string;
   kisaAd?: string;
   aciklama?: string;
-  sorular: string[];
+  sorular: string[] | number[];
   toplamSoru?: number;
 }
 
@@ -115,6 +115,6 @@ export interface TestOturumu {
   yontem: TestUygulamaYontemi;
   cevaplar: Record<string, number>;
   aktifSoruIndex: number;
-  baslamaTarihi: Date;
-  baslangicZamani?: Date; // Add this for backward compatibility
+  baslamaTarihi: Date | string; // Date when creating, string in Redux state
+  baslangicZamani?: Date | string; // Add this for backward compatibility
 }

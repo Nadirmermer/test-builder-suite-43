@@ -3,6 +3,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { TestTanimi, TestSonucu, TestOturumu } from '@/types';
 import { testSonucuService } from '@/lib/db';
+import { calculateSCL90RScore } from '@/utils/testUtils';
 
 interface TestState {
   mevcutTestler: TestTanimi[];
@@ -94,6 +95,65 @@ export const testSonucuKaydet = createAsyncThunk(
   }
 );
 
+// Test sonucu özel puanlama ile kaydet (SCL-90-R gibi testler için)
+export const testSonucuOzelPuanlamaIleKaydet = createAsyncThunk(
+  'testler/sonucOzelPuanlamaKaydet',
+  async ({ 
+    oturum, 
+    test, 
+    cevaplar 
+  }: { 
+    oturum: TestOturumu; 
+    test: TestTanimi; 
+    cevaplar: Record<string, number>; 
+  }) => {
+    // SCL-90-R için özel puanlama
+    if (test.id === 'scl-90-r') {
+      const cevapArray = Object.keys(cevaplar)
+        .sort((a, b) => parseInt(a) - parseInt(b))
+        .map(key => cevaplar[key]);
+      
+      const sclSonuc = calculateSCL90RScore(cevapArray, test);
+      
+      if (sclSonuc) {
+        const testSonucu: Omit<TestSonucu, 'id'> = {
+          danisanId: oturum.danisanId,
+          testId: test.id,
+          testAdi: test.testAdi,
+          tamamlanmaTarihi: new Date(),
+          puan: sclSonuc.gso,
+          sonucYorumu: sclSonuc.genelSeviye,
+          cevaplar: Object.entries(cevaplar).map(([soruId, puan]) => ({
+            soruId,
+            verilenPuan: puan
+          })),
+          altOlcekPuanlari: sclSonuc.altOlcekler.reduce((acc, altOlcek) => {
+            acc[altOlcek.kisaAd] = {
+              toplamPuan: altOlcek.hamPuan,
+              ortalamaPuan: altOlcek.ortalamaPuan,
+              ad: altOlcek.ad,
+              baskın: altOlcek.ortalamaPuan >= 1.0
+            };
+            return acc;
+          }, {} as Record<string, { toplamPuan: number; ortalamaPuan: number; ad: string; baskın: boolean }>)
+        };
+        
+        const id = await testSonucuService.ekle(testSonucu);
+        return { 
+          ...testSonucu, 
+          id,
+          tamamlanmaTarihi: testSonucu.tamamlanmaTarihi instanceof Date 
+            ? testSonucu.tamamlanmaTarihi.toISOString() 
+            : testSonucu.tamamlanmaTarihi
+        };
+      }
+    }
+    
+    // Varsayılan puanlama
+    throw new Error('Desteklenmeyen test türü için özel puanlama');
+  }
+);
+
 // Test sonucu sil
 export const testSonucuSil = createAsyncThunk(
   'testler/sonucSil',
@@ -123,7 +183,17 @@ const testSlice = createSlice({
   initialState,
   reducers: {
     testOturumuBaslat: (state, action: PayloadAction<TestOturumu>) => {
-      state.aktifOturum = action.payload;
+      // Date objelerini string'e çevir Redux state için
+      const oturum = {
+        ...action.payload,
+        baslamaTarihi: action.payload.baslamaTarihi instanceof Date 
+          ? action.payload.baslamaTarihi.toISOString() 
+          : action.payload.baslamaTarihi,
+        baslangicZamani: action.payload.baslangicZamani instanceof Date 
+          ? action.payload.baslangicZamani.toISOString() 
+          : action.payload.baslangicZamani
+      };
+      state.aktifOturum = oturum;
     },
     
     cevapGuncelle: (state, action: PayloadAction<{ soruId: string; puan: number }>) => {
@@ -169,6 +239,11 @@ const testSlice = createSlice({
       
       // Test sonucu kaydet
       .addCase(testSonucuKaydet.fulfilled, (state, action) => {
+        state.testSonuclari.unshift(action.payload as TestSonucu);
+      })
+      
+      // Test sonucu özel puanlama ile kaydet
+      .addCase(testSonucuOzelPuanlamaIleKaydet.fulfilled, (state, action) => {
         state.testSonuclari.unshift(action.payload as TestSonucu);
       })
       

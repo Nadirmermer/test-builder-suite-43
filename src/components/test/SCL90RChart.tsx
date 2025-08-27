@@ -1,14 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { TestSonucu } from '@/types';
 
 interface SCL90RChartProps {
   testSonucu: TestSonucu;
   showOverallScore?: boolean;
+  chartType?: 'bar' | 'line';
 }
 
-export default function SCL90RChart({ testSonucu, showOverallScore = true }: SCL90RChartProps) {
+export default function SCL90RChart({ testSonucu, showOverallScore = true, chartType = 'line' }: SCL90RChartProps) {
   // SCL-90-R için renk kodlaması
   const getSCLColor = (ortalamaPuan: number) => {
     if (ortalamaPuan >= 1.0) return '#dc2626'; // Kırmızı - Problemli
@@ -92,44 +93,91 @@ export default function SCL90RChart({ testSonucu, showOverallScore = true }: SCL
         <CardContent>
           <div className="h-96 mb-6">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart 
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis 
-                  dataKey="name" 
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  fontSize={11}
-                  interval={0}
-                />
-                <YAxis 
-                  domain={[0, 4]}
-                  tickFormatter={(value) => value.toFixed(1)}
-                  fontSize={11}
-                />
-                <Tooltip 
-                  formatter={(value: number) => [value.toFixed(2), 'Ortalama Puan']}
-                  labelFormatter={(label: string, payload: any[]) => {
-                    if (payload && payload[0]) {
-                      const data = payload[0].payload;
-                      return `${data.fullName} - ${data.seviye}`;
-                    }
-                    return label;
-                  }}
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--background))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Bar 
-                  dataKey="puan" 
-                  radius={[4, 4, 0, 0]}
-                />
-              </BarChart>
+              {chartType === 'line' ? (
+                <LineChart 
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="name" 
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    fontSize={11}
+                    interval={0}
+                  />
+                  <YAxis 
+                    domain={[0, 4]}
+                    tickFormatter={(value) => value.toFixed(1)}
+                    fontSize={11}
+                  />
+                  <ReferenceLine y={0.5} stroke="#22c55e" strokeDasharray="5 5" label="Normal Üst Sınır" />
+                  <ReferenceLine y={1.0} stroke="#f59e0b" strokeDasharray="5 5" label="Orta Üst Sınır" />
+                  <Tooltip 
+                    formatter={(value: number) => [value.toFixed(2), 'Ortalama Puan']}
+                    labelFormatter={(label: string, payload: unknown[]) => {
+                      if (payload && Array.isArray(payload) && payload[0]) {
+                        const data = (payload[0] as any).payload;
+                        return `${data.fullName} - ${data.seviye}`;
+                      }
+                      return label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Line 
+                    type="monotone"
+                    dataKey="puan" 
+                    stroke="#8884d8"
+                    strokeWidth={3}
+                    dot={{ fill: '#8884d8', strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8, stroke: '#8884d8', strokeWidth: 2 }}
+                  />
+                </LineChart>
+              ) : (
+                <BarChart 
+                  data={chartData}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 80 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis 
+                    dataKey="name" 
+                    angle={-45}
+                    textAnchor="end"
+                    height={80}
+                    fontSize={11}
+                    interval={0}
+                  />
+                  <YAxis 
+                    domain={[0, 4]}
+                    tickFormatter={(value) => value.toFixed(1)}
+                    fontSize={11}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [value.toFixed(2), 'Ortalama Puan']}
+                    labelFormatter={(label: string, payload: unknown[]) => {
+                      if (payload && Array.isArray(payload) && payload[0]) {
+                        const data = (payload[0] as any).payload;
+                        return `${data.fullName} - ${data.seviye}`;
+                      }
+                      return label;
+                    }}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Bar 
+                    dataKey="puan" 
+                    radius={[4, 4, 0, 0]}
+                  />
+                </BarChart>
+              )}
             </ResponsiveContainer>
           </div>
 

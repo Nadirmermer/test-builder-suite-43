@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { testOturumuBaslat, testOturumuBitir, testSonucuKaydet } from '@/store/slices/testSlice';
+import { testOturumuBaslat, testOturumuBitir, testSonucuKaydet, testSonucuOzelPuanlamaIleKaydet } from '@/store/slices/testSlice';
 import { TestTanimi, Danisan } from '@/types';
 import { danisanService } from '@/lib/db';
 import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli } from '@/utils/testUtils';
@@ -186,7 +186,35 @@ export default function FastTestInterface({ test, danisanId, onComplete }: FastT
       return;
     }
 
-    // Puanlama türüne göre hesaplama yap
+    // SCL-90-R için özel puanlama kullan
+    if (test.id === 'scl-90-r') {
+      try {
+        const sonuc = await dispatch(testSonucuOzelPuanlamaIleKaydet({
+          oturum: {
+            testId: test.id,
+            danisanId: danisan!.id!,
+            yontem: 'hizli',
+            cevaplar,
+            aktifSoruIndex: 0,
+            baslamaTarihi: new Date()
+          },
+          test,
+          cevaplar
+        })).unwrap();
+
+        dispatch(testOturumuBitir());
+        
+        if (sonuc) {
+          navigate(createDanisanUrl(danisan!.id!, `/rapor/${sonuc.id}`));
+        }
+        return;
+      } catch (error) {
+        console.error('Test sonucu kaydedilemedi:', error);
+        return;
+      }
+    }
+
+    // Diğer testler için varsayılan puanlama
     let toplamPuan = 0;
     let altOlcekPuanlari: Record<string, {
       toplamPuan: number;
@@ -195,37 +223,14 @@ export default function FastTestInterface({ test, danisanId, onComplete }: FastT
       baskın?: boolean;
     }> | undefined;
 
-    if (test.puanlamaTuru === 'scl-90-r' && test.altOlcekler) {
-      // SCL-90-R puanlaması
-      altOlcekPuanlari = {};
-      
-      Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
-        const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
-          return toplam + (cevaplar[soruId] || 0);
-        }, 0);
-        
-        const ortalamaPuan = altOlcekToplam / (altOlcek.toplamSoru || altOlcek.sorular.length);
-        const yuksek = ortalamaPuan >= 1.0; // SCL-90-R için 1.0 ve üzeri problemli
-        
-        altOlcekPuanlari![key] = {
-          toplamPuan: altOlcekToplam,
-          ortalamaPuan: Math.round(ortalamaPuan * 100) / 100,
-          ad: altOlcek.ad,
-          baskın: yuksek
-        };
-      });
-      
-      // Genel Semptom Ortalaması (GSO) hesapla
-      const genelToplam = Object.values(cevaplar).reduce((toplam, puan) => toplam + puan, 0);
-      toplamPuan = Math.round((genelToplam / 90) * 100) / 100; // 90 soru için ortalama
-      
-    } else if (test.puanlamaTuru === 'coklu_alt_olcek' && test.altOlcekler) {
+    if (test.puanlamaTuru === 'coklu_alt_olcek' && test.altOlcekler) {
       // Çoklu alt ölçek puanlaması
       altOlcekPuanlari = {};
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
         const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
-          return toplam + (cevaplar[soruId] || 0);
+          const soruIdStr = typeof soruId === 'number' ? soruId.toString() : soruId;
+          return toplam + (cevaplar[soruIdStr] || 0);
         }, 0);
         
         const ortalamaPuan = altOlcekToplam / altOlcek.sorular.length;

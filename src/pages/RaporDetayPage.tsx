@@ -16,6 +16,7 @@ import TestResultEditModal from '@/components/test/TestResultEditModal';
 import MMPIValidityScaleInterpretation from '@/components/test/MMPIValidityScaleInterpretation';
 import MMPIClinicalScaleInterpretation from '@/components/test/MMPIClinicalScaleInterpretation';
 import TestResultChart from '@/components/test/TestResultChart';
+import SCL90RChart from '@/components/test/SCL90RChart';
 import { 
   ArrowLeft, 
   Calendar, 
@@ -324,7 +325,12 @@ export default function RaporDetayPage() {
               <CardTitle>Test Grafikleri</CardTitle>
             </CardHeader>
             <CardContent>
-              <TestResultChart testSonucu={testSonucu} showOverallScore={false} />
+              {/* SCL-90-R için özel grafik */}
+              {testSonucu.testId === 'scl-90-r' ? (
+                <SCL90RChart testSonucu={testSonucu} showOverallScore={false} chartType="line" />
+              ) : (
+                <TestResultChart testSonucu={testSonucu} showOverallScore={false} />
+              )}
             </CardContent>
           </Card>
 

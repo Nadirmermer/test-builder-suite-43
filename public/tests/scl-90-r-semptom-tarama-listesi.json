@@ -9,452 +9,2342 @@
     {
       "id": "1",
       "metin": "Baş ağrısı",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
-      "id": "2", 
+      "id": "2",
       "metin": "Sinirlilik ya da içinin titremesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "3",
       "metin": "Zihinden atamadığınız yineleyici (tekrarlayıcı) hoşa gitmeyen düşünceler",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "4",
       "metin": "Baygınlık ve baş dönmeler",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "5",
       "metin": "Cinsel arzuya ilginin kaybı",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "6",
       "metin": "Başkaları tarafından eleştirilme duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "7",
       "metin": "Herhangi bir kimsenin düşüncelerinizi kontrol edebileceği fikri",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "8",
       "metin": "Sorunlarınızdan pek çoğu için başkalarının suçlanması gerektiği fikri",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "9",
       "metin": "Olayları anımsamada (hatırlamada) güçlülük",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "10",
       "metin": "Dikkatsizlik veya sakarlıkla ilgili endişeler",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "11",
       "metin": "Kolayca gücenme, rahatsız olma hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "12",
       "metin": "Göğüs veya kalp bölgesinde ağrılar",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "13",
       "metin": "Caddelerde veya açık alanlarda korku hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "14",
       "metin": "Enerjinizde azalma veya yavaşlama hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "15",
       "metin": "Yaşamınızın sona ermesi düşünceleri",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "16",
       "metin": "Başka kişilerin duymadıkları sesleri duyma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "17",
       "metin": "Titreme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "18",
       "metin": "Çoğu kişiye güvenilmemesi gerektiği düşüncesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "19",
       "metin": "İştah azalması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "20",
       "metin": "Kolayca ağlama",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "21",
       "metin": "Karşı cinsten kişilerle ilgili utangaçlık ve rahatsızlık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "22",
       "metin": "Tuzağa düşürülmüş veya tuzağa yakalanmış hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "23",
       "metin": "Bir neden olmaksızın aniden korkuya kapılma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "24",
       "metin": "Kontrol edilmeyen öfke patlamaları",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "25",
       "metin": "Evden dışarı yalnız çıkma korkusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "26",
       "metin": "Olanlar için kendini suçlama",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "27",
       "metin": "Belin alt kısmında ağrılar",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "28",
       "metin": "İşlerin yapılmasında erteleme düşüncesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "29",
       "metin": "Yalnız hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "30",
       "metin": "Karamsarlık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "31",
       "metin": "Her şey için çok fazla endişe duyma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "32",
       "metin": "Her şeye karşı ilgisizlik hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "33",
       "metin": "Korku hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "34",
       "metin": "Duygularınızın kolayca incitilebilmesi hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "35",
       "metin": "Diğer insanların sizin düşündüklerinizi bilmesi hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "36",
       "metin": "Başkalarının sizi anlamadığı veya hissedemeyeceği duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "37",
       "metin": "Başkalarının sizi sevmediği ya da dostça olmayan davranışlar gösterdiği hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "38",
       "metin": "İşlerin doğru yapıldığından emin olabilmek için çok yavaş yapmak",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "39",
       "metin": "Kalbin çok hızlı çarpması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "40",
       "metin": "Bulantı veya midede rahatsızlık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "41",
       "metin": "Kendini başkalarından aşağı görme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "42",
       "metin": "Adele (kas) ağrıları",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "43",
       "metin": "Başkalarının sizi gözlediği veya hakkınızda konuştuğu hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "44",
       "metin": "Uykuya dalmada güçlük",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "45",
       "metin": "Yaptığınız işleri bir ya da birkaç kez kontrol etme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "46",
       "metin": "Karar vermede güçlük",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "47",
       "metin": "Otobüs, tren, metro gibi araçlarla yolculuk etme korkusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "48",
       "metin": "Nefes almada güçlük",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "49",
       "metin": "Soğuk ve sıcak basması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "50",
       "metin": "Sizi korkutan belirli uğraş, yer veya nesnelerden kaçınma durumu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "51",
       "metin": "Hiç bir şey düşünmeme hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "52",
       "metin": "Bedeninizin bazı kısımlarında uyuşma, karıncalanma olması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "53",
       "metin": "Boğazınıza bir yumru tıkanmış hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "54",
       "metin": "Gelecek konusunda ümitsizlik",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "55",
       "metin": "Düşüncelerinizi bir konuya yoğunlaştırmada güçlülük",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "56",
       "metin": "Bedeninizin çeşitli kısımlarında zayıflılık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "57",
       "metin": "Gerginlik veya coşku hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "58",
       "metin": "Kol ve bacaklarda ağırlık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "59",
       "metin": "Ölüm ya da ölme düşünceleri",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "60",
       "metin": "Aşırı yemek yeme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "61",
       "metin": "İnsanlar size batığı veya hakkınızda konuştuğu zaman rahatsızlık duyma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "62",
       "metin": "Size ait olmayan düşüncelere sahip olma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "63",
       "metin": "Bir başkasına vurmak, zarar vermek, yaralamak dürtülerinin olması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "64",
       "metin": "Sabahın erken saatlerinde uyanma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "65",
       "metin": "Yıkanma, sayma, dokunma gibi bazı hareketleri yenileme hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "66",
       "metin": "Uykuda huzursuzluk, rahat uyuyamama",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "67",
       "metin": "Bazı şeyleri kırıp dökme isteği",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "68",
       "metin": "Başkalarının yanında kendini çok sıkılgan hissetme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "69",
-      "metin": "Kalabalık arasında kendinizi rahat hissetme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "metin": "Başkalarının yanında kendini çok sıkılgan hissetme",
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "70",
       "metin": "Çarşı, sinema gibi kalabalık yerlerde rahatsızlık hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "71",
       "metin": "Her şeyin bir yük gibi görünmesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "72",
       "metin": "Dehşet ve panik nöbetleri",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "73",
       "metin": "Toplum içinde yer içerken huzursuzluk hissi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "74",
       "metin": "Sık sık tartışmaya girme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "75",
       "metin": "Yalnız bıraktığınızda sinirlilik hali",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "76",
       "metin": "Başkalarının sizi başarılarınız için yeterince takdir etmediği duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "77",
       "metin": "Başkalarıyla birlikte olunan durumlarda bile yalnızlık hissetme",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "78",
       "metin": "Yerinizde durmayacak ölçüde rahatsızlık duyma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "79",
       "metin": "Değersizlik duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "80",
       "metin": "Size kötü bir şey olacakmış duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "81",
       "metin": "Bağırma ya da eşyaları fırlatma",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "82",
       "metin": "Topluluk içinde bayılacağınız korkusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "83",
       "metin": "Eğer izin verirseniz insanların sizi sömüreceği duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "84",
       "metin": "Cinsellik konusunda sizi çok rahatsız eden düşüncelerinizin olması",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "85",
       "metin": "Günahlarınızdan dolayı cezalandırmanız gerektiği düşüncesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "86",
       "metin": "Korkutucu türden düşünce ve hayaller",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "87",
       "metin": "Bedeninizde ciddi bir rahatsızlık olduğu düşüncesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "88",
       "metin": "Başka bir kişiye karşı asla yakınlık duymama",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "89",
       "metin": "Suçluluk duygusu",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     },
     {
       "id": "90",
       "metin": "Aklınızda bir bozukluğun olduğu düşüncesi",
-      "secenekler": ["Hiç", "Çok az", "Orta derecede", "Oldukça fazla", "Aşırı düzeyde"]
+      "secenekler": [
+        {
+          "metin": "Hiç",
+          "puan": 0
+        },
+        {
+          "metin": "Çok az",
+          "puan": 1
+        },
+        {
+          "metin": "Orta derecede",
+          "puan": 2
+        },
+        {
+          "metin": "Oldukça fazla",
+          "puan": 3
+        },
+        {
+          "metin": "Aşırı düzeyde",
+          "puan": 4
+        }
+      ]
     }
   ],
   "altOlcekler": {
@@ -462,89 +2352,198 @@
       "ad": "Somatizasyon",
       "kisaAd": "SOM",
       "aciklama": "Vücudun kalp, damar, mide, bağırsak, solunum ve diğer sistemlerdeki fonksiyon bozukluklarıyla ilgili sıkıntıları yansıtır.",
-      "sorular": [1, 4, 12, 27, 40, 42, 48, 52, 53, 56, 58, 28],
+      "sorular": [
+        1,
+        4,
+        12,
+        27,
+        40,
+        42,
+        48,
+        49,
+        52,
+        53,
+        56,
+        58
+      ],
       "toplamSoru": 12
     },
     "obsesif_kompulsif": {
       "ad": "Obsesif-Kompulsif Belirtiler",
       "kisaAd": "O-C",
       "aciklama": "Tekrar eden düşünceler ve suçlamayla karakterize edilen obsesif-kompulsif sendromları tespit eder.",
-      "sorular": [3, 9, 10, 28, 38, 45, 46, 51, 55, 65],
+      "sorular": [
+        3,
+        9,
+        10,
+        28,
+        38,
+        45,
+        46,
+        51,
+        55,
+        65
+      ],
       "toplamSoru": 10
     },
     "kisisel_duyarlilik": {
       "ad": "Kişiler Arası Duyarlılık",
       "kisaAd": "INT",
       "aciklama": "Kişiler arası ilişkilerde kendini küçük görme ve rahatsızlık hissetme durumlarını yansıtır.",
-      "sorular": [6, 21, 34, 36, 37, 41, 61, 69, 73],
+      "sorular": [
+        6,
+        21,
+        34,
+        36,
+        37,
+        41,
+        61,
+        69,
+        73
+      ],
       "toplamSoru": 9
     },
     "depresyon": {
       "ad": "Depresyon",
-      "kisaAd": "DEP", 
+      "kisaAd": "DEP",
       "aciklama": "Genel karamsarlık, ümitsizlik, güdülenme eksikliği ve intihar düşüncelerini içerir.",
-      "sorular": [5, 14, 15, 20, 22, 26, 29, 30, 31, 32, 54, 71, 79],
+      "sorular": [
+        5,
+        14,
+        15,
+        20,
+        22,
+        26,
+        29,
+        30,
+        31,
+        32,
+        54,
+        71,
+        79
+      ],
       "toplamSoru": 13
     },
     "anksiyete": {
       "ad": "Anksiyete",
       "kisaAd": "ANX",
       "aciklama": "Klinik kaygının içerdiği belirti ve davranışları (rahatsızlık, sinirlilik, gerginlik) gösterir.",
-      "sorular": [2, 17, 23, 33, 39, 57, 72, 78, 80, 86],
+      "sorular": [
+        2,
+        17,
+        23,
+        33,
+        39,
+        57,
+        72,
+        78,
+        80,
+        86
+      ],
       "toplamSoru": 10
     },
     "ofke_dusmanlik": {
       "ad": "Öfke-Düşmanlık",
       "kisaAd": "HOS",
       "aciklama": "Kızma, huzursuz olma, karşı koyma, düşmanlık ve saldırganlık özelliklerini vurgular.",
-      "sorular": [11, 24, 63, 67, 74, 81],
+      "sorular": [
+        11,
+        24,
+        63,
+        67,
+        74,
+        81
+      ],
       "toplamSoru": 6
     },
     "fobik_anksiyete": {
       "ad": "Fobik Anksiyete",
       "kisaAd": "PHOB",
       "aciklama": "Belirli bir nesneye, duruma karşı ısrarlı korku tepkisini yansıtır.",
-      "sorular": [13, 25, 47, 50, 70, 75, 82],
+      "sorular": [
+        13,
+        25,
+        47,
+        50,
+        70,
+        75,
+        82
+      ],
       "toplamSoru": 7
     },
     "paranoid_dusunce": {
       "ad": "Paranoid Düşünce",
       "kisaAd": "PAR",
       "aciklama": "Yansıtıcı düşünceler, düşmanlık, şüpheci, büyüklük ve merkeziyetçi düşünceleri yansıtır.",
-      "sorular": [8, 18, 43, 68, 76, 83],
+      "sorular": [
+        8,
+        18,
+        43,
+        68,
+        76,
+        83
+      ],
       "toplamSoru": 6
     },
     "psikotizm": {
       "ad": "Psikotizm",
       "kisaAd": "PSY",
       "aciklama": "İçe kapanma, kendini yalnızlığa bırakma, tek başına sürdürülen hayat stilini yansıtır.",
-      "sorular": [7, 16, 35, 62, 77, 84, 85, 87, 88, 90],
+      "sorular": [
+        7,
+        16,
+        35,
+        62,
+        77,
+        84,
+        85,
+        87,
+        88,
+        90
+      ],
       "toplamSoru": 10
     },
     "ek_maddeler": {
       "ad": "Ek Maddeler",
       "kisaAd": "EK",
       "aciklama": "Uyku bozuklukları, iştah bozuklukları ve suçluluk ile ilgili belirtileri yansıtır.",
-      "sorular": [19, 44, 59, 60, 64, 66, 89],
+      "sorular": [
+        19,
+        44,
+        59,
+        60,
+        64,
+        66,
+        89
+      ],
       "toplamSoru": 7
     }
   },
   "puanlamaTuru": "scl-90-r",
   "sonucYorumlari": [
     {
-      "minPuan": 0,
-      "maxPuan": 0.5,
-      "yorum": "Normal seviye - Belirgin bir ruhsal sorun göstergesi bulunmamaktadır."
+      "aralik": [
+        0,
+        0.5
+      ],
+      "yorum": "Normal seviye - Belirgin bir ruhsal sorun göstergesi bulunmamaktadır.",
+      "seviye": "minimal"
     },
     {
-      "minPuan": 0.5,
-      "maxPuan": 1.0,
-      "yorum": "Orta düzey - Hafif düzeyde ruhsal belirtiler mevcuttur, takip önerilir."
+      "aralik": [
+        0.5,
+        1
+      ],
+      "yorum": "Orta düzey - Hafif düzeyde ruhsal belirtiler mevcuttur, takip önerilir.",
+      "seviye": "hafif"
     },
     {
-      "minPuan": 1.0,
-      "maxPuan": 4.0,
-      "yorum": "Yüksek seviye - Belirgin ruhsal belirtiler mevcuttur, profesyonel değerlendirme önerilir."
+      "aralik": [
+        1,
+        4
+      ],
+      "yorum": "Yüksek seviye - Belirgin ruhsal belirtiler mevcuttur, profesyonel değerlendirme önerilir.",
+      "seviye": "siddetli"
     }
   ]
 }

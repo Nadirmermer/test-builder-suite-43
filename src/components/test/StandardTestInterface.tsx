@@ -156,7 +156,8 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
         const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
-          return toplam + (oturum.cevaplar[soruId] || 0);
+          const soruIdStr = typeof soruId === 'number' ? soruId.toString() : soruId;
+          return toplam + (oturum.cevaplar[soruIdStr] || 0);
         }, 0);
         
         const ortalamaPuan = altOlcekToplam / altOlcek.toplamSoru;
@@ -180,7 +181,9 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
         const altOlcekToplam = altOlcek.sorular.reduce((toplam, soruId) => {
-          return toplam + (oturum.cevaplar[soruId] || 0);
+          const soruIdStr = typeof soruId === 'number' ? soruId.toString() : soruId;
+          const puan = oturum.cevaplar[soruIdStr];
+          return toplam + (typeof puan === 'number' ? puan : 0);
         }, 0);
         
         const ortalamaPuan = altOlcekToplam / altOlcek.sorular.length;
@@ -362,7 +365,7 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
           </CardHeader>
           <CardContent>
             <RadioGroup
-              value={selectedAnswer?.toString()}
+              value={selectedAnswer?.toString() || ""}
               onValueChange={(value) => handleAnswerSelect(parseInt(value))}
               className="space-y-3 sm:space-y-4"
             >
