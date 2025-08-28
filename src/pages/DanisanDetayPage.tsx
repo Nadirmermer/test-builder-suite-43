@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiUser, FiClipboard, FiCalendar, FiTrash2 } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiClipboard, FiCalendar, FiTrash2, FiStar } from 'react-icons/fi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,6 +14,7 @@ import DanisanGuncelleModal from '@/components/danisan/DanisanGuncelleModal';
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux';
 import { danisanGetir, danisanSil } from '@/store/slices/danisanSlice';
 import { danisanTestSonuclari, testSonucuSil } from '@/store/slices/testSlice';
+import { toggleFavoriteTest } from '@/store/slices/uiSlice';
 import { toast } from 'sonner';
 import { TestTanimi } from '@/types';
 import { extractDanisanIdFromUrl } from '@/utils/urlUtils';
@@ -28,6 +29,7 @@ export default function DanisanDetayPage() {
   
   const { selectedDanisan } = useAppSelector((state) => state.danisanlar);
   const { mevcutTestler, testSonuclari } = useAppSelector((state) => state.testler);
+  const { favoriteTests } = useAppSelector((state) => state.ui);
   const [loading, setLoading] = useState(true);
   const [filteredTests, setFilteredTests] = useState<TestTanimi[]>([]);
   const [selectedTest, setSelectedTest] = useState<TestTanimi | null>(null);
@@ -50,8 +52,19 @@ export default function DanisanDetayPage() {
   }, [danisanId, dispatch, navigate]);
 
   useEffect(() => {
-    setFilteredTests(mevcutTestler);
-  }, [mevcutTestler]);
+    // Testleri sırala: favoriler önce, sonra alfabetik
+    const sortedTests = [...mevcutTestler].sort((a, b) => {
+      const aIsFavorite = favoriteTests.includes(a.id);
+      const bIsFavorite = favoriteTests.includes(b.id);
+      
+      if (aIsFavorite && !bIsFavorite) return -1;
+      if (!aIsFavorite && bIsFavorite) return 1;
+      
+      return a.testAdi.localeCompare(b.testAdi, 'tr-TR');
+    });
+    
+    setFilteredTests(sortedTests);
+  }, [mevcutTestler, favoriteTests]);
 
   const handleTestSelect = (test: TestTanimi) => {
     setSelectedTest(test);
@@ -102,6 +115,10 @@ export default function DanisanDetayPage() {
         toast.error('Test sonucu silinirken hata oluştu');
       }
     }
+  };
+
+  const handleToggleFavorite = (testId: string) => {
+    dispatch(toggleFavoriteTest(testId));
   };
 
   if (loading) {
@@ -292,6 +309,9 @@ export default function DanisanDetayPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-2">
                             <h4 className="font-semibold text-foreground">{test.testAdi}</h4>
+                            {favoriteTests.includes(test.id) && (
+                              <FiStar className="h-4 w-4 text-yellow-500 fill-current" />
+                            )}
                             {test.kategori && (
                               <Badge variant="outline" className="text-xs">
                                 {test.kategori}
@@ -304,13 +324,23 @@ export default function DanisanDetayPage() {
                             {test.sureDakika && <span>~{test.sureDakika} dakika</span>}
                           </div>
                         </div>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleTestSelect(test)}
-                        >
-                          Testi Uygula
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => handleToggleFavorite(test.id)}
+                            className="p-2"
+                          >
+                            <FiStar className={`h-4 w-4 ${favoriteTests.includes(test.id) ? 'text-yellow-500 fill-current' : 'text-muted-foreground'}`} />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleTestSelect(test)}
+                          >
+                            Testi Uygula
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ))}

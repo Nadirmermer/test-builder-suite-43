@@ -8,6 +8,7 @@ interface UIState {
   activeModal: string | null;
   darkMode: boolean;
   sidebarCollapsed: boolean;
+  favoriteTests: string[];
 }
 
 const initialState: UIState = {
@@ -16,6 +17,7 @@ const initialState: UIState = {
   activeModal: null,
   darkMode: false,
   sidebarCollapsed: false,
+  favoriteTests: JSON.parse(localStorage.getItem('favoriteTests') || '[]'),
 };
 
 const uiSlice = createSlice({
@@ -61,6 +63,19 @@ const uiSlice = createSlice({
     toggleSidebar: (state) => {
       state.sidebarCollapsed = !state.sidebarCollapsed;
     },
+    
+    toggleFavoriteTest: (state, action: PayloadAction<string>) => {
+      const testId = action.payload;
+      const index = state.favoriteTests.indexOf(testId);
+      
+      if (index > -1) {
+        state.favoriteTests.splice(index, 1);
+      } else {
+        state.favoriteTests.push(testId);
+      }
+      
+      localStorage.setItem('favoriteTests', JSON.stringify(state.favoriteTests));
+    },
   },
 });
 
@@ -71,6 +86,7 @@ export const {
   toggleDarkMode,
   initializeDarkMode,
   toggleSidebar,
+  toggleFavoriteTest,
 } = uiSlice.actions;
 
 export default uiSlice.reducer;
