@@ -5,6 +5,7 @@ import { testleriYukle } from '@/store/slices/testSlice';
 import { danisanGetir } from '@/store/slices/danisanSlice';
 import StandardTestInterface from '@/components/test/StandardTestInterface';
 import UniversalFastTestInterface from '@/components/test/UniversalFastTestInterface';
+import FastTestInterface from '@/components/test/FastTestInterface';
 import MMPITestInterface from '@/components/test/MMPITestInterface';
 import BulkMMPIInterface from '@/components/test/BulkMMPIInterface';
 import { createDanisanUrl } from '@/utils/urlUtils';
@@ -98,11 +99,7 @@ export default function TestInterfacePage() {
             onComplete={handleComplete}
           />
         ) : method === 'fast' ? (
-          <UniversalFastTestInterface
-            test={selectedTest}
-            danisanId={parseInt(danisanId)}
-            onComplete={handleComplete}
-          />
+          <FastTestInterface />
         ) : (
           <MMPITestInterface
             test={selectedTest}
@@ -123,11 +120,7 @@ export default function TestInterfacePage() {
           onComplete={handleComplete}
         />
       ) : (
-        <UniversalFastTestInterface
-          test={selectedTest}
-          danisanId={parseInt(danisanId)}
-          onComplete={handleComplete}
-        />
+        <FastTestInterface />
       )}
     </div>
   );

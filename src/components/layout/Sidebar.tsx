@@ -34,8 +34,8 @@ export default function Sidebar() {
   return <aside className={cn("h-screen bg-sidebar border-r border-sidebar-border transition-all duration-300 flex flex-col relative", sidebarCollapsed ? "w-16" : "w-64")}>
       {/* Collapse Toggle Button */}
       <div className="absolute -right-3 top-6 z-10">
-        <Button variant="outline" size="icon" onClick={() => dispatch(toggleSidebar())} className="h-6 w-6 bg-background border shadow-sm hover:bg-secondary">
-          <FiMenu className="h-3 w-3" />
+        <Button variant="outline" size="icon" onClick={() => dispatch(toggleSidebar())} className="h-8 w-8 bg-background border shadow-sm hover:bg-secondary">
+          <FiMenu className="h-4 w-4" />
         </Button>
       </div>
 

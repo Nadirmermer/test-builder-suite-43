@@ -15,9 +15,10 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { testOturumuBaslat, cevapGuncelle, soruIndexGuncelle, testOturumuBitir, testSonucuKaydet } from '@/store/slices/testSlice';
 import { TestTanimi, TestOturumu, Danisan, TestSorusu } from '@/types';
 import { danisanService } from '@/lib/db';
-import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli } from '@/utils/testUtils';
+import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import GenderSelectionModal from './GenderSelectionModal';
+import EducationSelectionModal from './EducationSelectionModal';
 
 
 interface StandardTestInterfaceProps {
@@ -36,6 +37,7 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
   const [testTalimatlar, setTestTalimatlar] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [showGenderSelection, setShowGenderSelection] = useState(false);
+  const [showEducationSelection, setShowEducationSelection] = useState(false);
   
   const [oturum, setOturum] = useState<TestOturumu>({
     testId: test.id,
@@ -43,7 +45,7 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
     yontem: 'standart',
     aktifSoruIndex: 0,
     cevaplar: {},
-    baslamaTarihi: new Date(),
+    baslamaTarihi: new Date().toISOString(),
   });
 
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -61,6 +63,13 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
           // Cinsiyet kontrolü yap
           if (isCinsiyetGerekli(test, danisanData)) {
             setShowGenderSelection(true);
+            setLoading(false);
+            return;
+          }
+          
+          // Eğitim durumu kontrolü yap
+          if (isEgitimDurumuGerekli(test, danisanData)) {
+            setShowEducationSelection(true);
             setLoading(false);
             return;
           }
@@ -272,12 +281,33 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
     const danisanData = await danisanService.getir(danisanId);
     if (danisanData) {
       setDanisan(danisanData);
+      
+      // Eğitim durumu kontrolü de yap
+      if (isEgitimDurumuGerekli(test, danisanData)) {
+        setShowEducationSelection(true);
+        setShowGenderSelection(false);
+        return;
+      }
+      
       const sorular = getTestSorulari(test, danisanData);
       const talimatlar = getTestTalimatlar(test, danisanData);
       setTestSorulari(sorular);
       setTestTalimatlar(talimatlar);
     }
     setShowGenderSelection(false);
+  };
+
+  const handleEducationSelectionComplete = async () => {
+    // Eğitim durumu seçildikten sonra danışan bilgilerini yeniden yükle
+    const danisanData = await danisanService.getir(danisanId);
+    if (danisanData) {
+      setDanisan(danisanData);
+      const sorular = getTestSorulari(test, danisanData);
+      const talimatlar = getTestTalimatlar(test, danisanData);
+      setTestSorulari(sorular);
+      setTestTalimatlar(talimatlar);
+    }
+    setShowEducationSelection(false);
   };
 
   if (loading) {
@@ -297,6 +327,16 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
         test={test}
         danisan={danisan}
         onComplete={handleGenderSelectionComplete}
+      />
+    );
+  }
+
+  if (showEducationSelection && danisan) {
+    return (
+      <EducationSelectionModal
+        test={test}
+        danisan={danisan}
+        onComplete={handleEducationSelectionComplete}
       />
     );
   }

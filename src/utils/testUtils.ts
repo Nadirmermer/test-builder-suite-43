@@ -54,6 +54,25 @@ export function isCinsiyetGerekli(test: TestTanimi, danisan: Danisan): boolean {
 }
 
 /**
+ * Eğitim durumu gerektiren testler için kontrol eder
+ */
+export function isEgitimDurumuGerekli(test: TestTanimi, danisan: Danisan): boolean {
+  // MMPI gibi cinsiyete özgü testler aynı zamanda eğitim durumu da gerektirir
+  if (test.formTuru === 'cinsiyete-ozel') {
+    return !danisan.egitimDurumu || danisan.egitimDurumu === 'Belirtmek istemiyorum';
+  }
+  
+  // Diğer karmaşık testler için manuel kontrol
+  const egitimGerektiren = ['young-sema-olcegi-ysq'];
+  
+  if (!egitimGerektiren.includes(test.id)) {
+    return false;
+  }
+  
+  return !danisan.egitimDurumu || danisan.egitimDurumu === 'Belirtmek istemiyorum';
+}
+
+/**
  * SCL-90-R testi için özel puanlama fonksiyonu
  */
 export function calculateSCL90RScore(cevaplar: (number | undefined)[], test: TestTanimi) {

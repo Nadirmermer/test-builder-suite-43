@@ -18,8 +18,10 @@ import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { testSonucuOzelPuanlamaIleKaydet } from '@/store/slices/testSlice';
-import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli } from '@/utils/testUtils';
+import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli } from '@/utils/testUtils';
+import { getTestInputSettings, convertKeyboardInputToAnswer } from '@/utils/testResponseUtils';
 import GenderSelectionModal from './GenderSelectionModal';
+import EducationSelectionModal from './EducationSelectionModal';
 
 interface UniversalFastTestInterfaceProps {
   test: TestTanimi;
@@ -37,6 +39,10 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
   const [testOturumu, setTestOturumu] = useState<TestOturumu | null>(null);
   const [loading, setLoading] = useState(true);
   const [showGenderSelection, setShowGenderSelection] = useState(false);
+  const [showEducationSelection, setShowEducationSelection] = useState(false);
+  
+  // Test response settings - dinamik cevap ayarları
+  const [testInputSettings, setTestInputSettings] = useState<ReturnType<typeof getTestInputSettings> | null>(null);
   
   const [cevaplar, setCevaplar] = useState<Record<string, number>>({});
   const [bosCevaplar, setBosCevaplar] = useState<Set<string>>(new Set());
@@ -61,10 +67,22 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
             setLoading(false);
             return;
           }
+
+          // Eğitim durumu kontrolü yap
+          if (isEgitimDurumuGerekli(test, danisanData)) {
+            setShowEducationSelection(true);
+            setLoading(false);
+            return;
+          }
           
           const sorular = getTestSorulari(test, danisanData);
           const talimatlar = getTestTalimatlar(test, danisanData);
           setTestSorulari(sorular);
+          
+          // Test input ayarlarını yükle
+          const inputSettings = getTestInputSettings(test);
+          setTestInputSettings(inputSettings);
+          
           setLoading(false);
         }
       } catch (error) {
@@ -75,6 +93,43 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
 
     loadDanisanAndTest();
   }, [danisanId, test]);
+
+  // Gender selection completed handler
+  const handleGenderSelectionComplete = async () => {
+    const danisanData = await danisanService.getir(danisanId);
+    if (danisanData) {
+      setDanisan(danisanData);
+      
+      // Eğitim durumu kontrolü yap
+      if (isEgitimDurumuGerekli(test, danisanData)) {
+        setShowGenderSelection(false);
+        setShowEducationSelection(true);
+        return;
+      }
+
+      setShowGenderSelection(false);
+      const sorular = getTestSorulari(test, danisanData);
+      setTestSorulari(sorular);
+      
+      const inputSettings = getTestInputSettings(test);
+      setTestInputSettings(inputSettings);
+    }
+  };
+
+  // Education selection completed handler
+  const handleEducationSelectionComplete = async () => {
+    const danisanData = await danisanService.getir(danisanId);
+    if (danisanData) {
+      setDanisan(danisanData);
+      setShowEducationSelection(false);
+      
+      const sorular = getTestSorulari(test, danisanData);
+      setTestSorulari(sorular);
+      
+      const inputSettings = getTestInputSettings(test);
+      setTestInputSettings(inputSettings);
+    }
+  };
 
   const toplamSoru = testSorulari.length;
   const cevaplanmisSoru = Object.keys(cevaplar).length;
@@ -90,59 +145,113 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
     return () => clearInterval(interval);
   }, []);
 
-  // Klavye navigasyonu
+  // Klavye navigasyonu - Dinamik test cevap sistemi
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     const currentInput = inputRefs.current[focusedQuestion];
-    if (!currentInput) return;
+    if (!currentInput || !testInputSettings) return;
 
-    if (e.key >= '0' && e.key <= '4') {
-      const value = parseInt(e.key);
-      const soruId = testSorulari[focusedQuestion]?.id?.toString();
-      
-      if (soruId) {
-        if (value === 0) {
-          setBosCevaplar(prev => new Set([...prev, soruId]));
-          setCevaplar(prev => {
-            const newState = { ...prev };
-            delete newState[soruId];
-            return newState;
-          });
-        } else {
-          setBosCevaplar(prev => {
-            const newSet = new Set([...prev]);
-            newSet.delete(soruId);
-            return newSet;
-          });
-          setCevaplar(prev => ({ ...prev, [soruId]: value }));
-        }
-        
-        // Sonraki soruya geç
-        if (focusedQuestion < toplamSoru - 1) {
-          setFocusedQuestion(focusedQuestion + 1);
-          setTimeout(() => {
-            inputRefs.current[focusedQuestion + 1]?.focus();
-          }, 50);
-        }
-      }
-      e.preventDefault();
-    } else if (e.key === 'ArrowUp') {
+    const soru = testSorulari[focusedQuestion];
+    if (!soru) return;
+
+    const soruId = soru.id?.toString();
+    if (!soruId) return;
+
+    // Navigasyon tuşları
+    if (e.key === 'ArrowUp' || e.key === 'PageUp') {
       if (focusedQuestion > 0) {
         setFocusedQuestion(focusedQuestion - 1);
         setTimeout(() => {
           inputRefs.current[focusedQuestion - 1]?.focus();
+          inputRefs.current[focusedQuestion - 1]?.select();
         }, 50);
       }
       e.preventDefault();
-    } else if (e.key === 'ArrowDown') {
+      return;
+    }
+    
+    if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      if (focusedQuestion < toplamSoru - 1) {
+        setFocusedQuestion(focusedQuestion + 1);
+        setTimeout(() => {
+          inputRefs.current[focusedQuestion + 1]?.focus();
+          inputRefs.current[focusedQuestion + 1]?.select();
+        }, 50);
+      }
+      e.preventDefault();
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Enter ile sonraki soruya geç
       if (focusedQuestion < toplamSoru - 1) {
         setFocusedQuestion(focusedQuestion + 1);
         setTimeout(() => {
           inputRefs.current[focusedQuestion + 1]?.focus();
         }, 50);
       }
+      return;
+    }
+
+    // Tab tuşu ile boş cevaplı soruya git
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      if (bosCevaplar.size > 0) {
+        const ilkBosCevap = Array.from(bosCevaplar)[0];
+        const bosCevapIndex = testSorulari.findIndex(s => s.id === ilkBosCevap);
+        if (bosCevapIndex !== -1) {
+          setFocusedQuestion(bosCevapIndex);
+          setTimeout(() => {
+            inputRefs.current[bosCevapIndex]?.focus();
+          }, 50);
+        }
+      }
+      return;
+    }
+
+    // Boş cevap için B veya Space
+    if (e.key === 'B' || e.key === 'b' || e.key === ' ') {
+      setBosCevaplar(prev => new Set([...prev, soruId]));
+      setCevaplar(prev => {
+        const newState = { ...prev };
+        delete newState[soruId];
+        return newState;
+      });
+      // Otomatik olarak sonraki soruya geç
+      if (focusedQuestion < toplamSoru - 1) {
+        setFocusedQuestion(focusedQuestion + 1);
+        setTimeout(() => {
+          inputRefs.current[focusedQuestion + 1]?.focus();
+          inputRefs.current[focusedQuestion + 1]?.select();
+        }, 50);
+      }
+      e.preventDefault();
+      return;
+    }
+
+    // Dinamik cevap seçenekleri
+    const { responsePattern } = testInputSettings;
+    const answerValue = convertKeyboardInputToAnswer(e.key, responsePattern);
+    
+    if (answerValue !== null) {
+      setBosCevaplar(prev => {
+        const newSet = new Set([...prev]);
+        newSet.delete(soruId);
+        return newSet;
+      });
+      setCevaplar(prev => ({ ...prev, [soruId]: answerValue }));
+      
+      // Otomatik olarak sonraki soruya geç
+      if (focusedQuestion < toplamSoru - 1) {
+        setFocusedQuestion(focusedQuestion + 1);
+        setTimeout(() => {
+          inputRefs.current[focusedQuestion + 1]?.focus();
+          inputRefs.current[focusedQuestion + 1]?.select();
+        }, 50);
+      }
       e.preventDefault();
     }
-  }, [focusedQuestion, testSorulari, toplamSoru]);
+  }, [focusedQuestion, testSorulari, toplamSoru, testInputSettings, bosCevaplar]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -159,9 +268,68 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
   }, [testSorulari]);
 
   const handleInputChange = (soruId: string, value: string) => {
-    const numValue = parseInt(value);
+    if (!testInputSettings) return;
     
-    if (value === '' || isNaN(numValue)) {
+    const { responsePattern } = testInputSettings;
+    
+    if (value === '' || value.toUpperCase() === 'B') {
+      if (value.toUpperCase() === 'B') {
+        // Boş işaretle
+        setBosCevaplar(prev => new Set([...prev, soruId]));
+        setCevaplar(prev => {
+          const newState = { ...prev };
+          delete newState[soruId];
+          return newState;
+        });
+        
+        // Otomatik olarak sonraki soruya geç
+        const currentIndex = testSorulari.findIndex(s => s.id === soruId);
+        if (currentIndex !== -1 && currentIndex < testSorulari.length - 1) {
+          const nextIndex = currentIndex + 1;
+          setFocusedQuestion(nextIndex);
+          setTimeout(() => {
+            inputRefs.current[nextIndex]?.focus();
+            inputRefs.current[nextIndex]?.select();
+          }, 50);
+        }
+      } else {
+        // Boş string - cevabı temizle
+        setCevaplar(prev => {
+          const newState = { ...prev };
+          delete newState[soruId];
+          return newState;
+        });
+        setBosCevaplar(prev => {
+          const newSet = new Set([...prev]);
+          newSet.delete(soruId);
+          return newSet;
+        });
+      }
+      return;
+    }
+    
+    const answerValue = convertKeyboardInputToAnswer(value, responsePattern);
+    
+    if (answerValue !== null) {
+      setBosCevaplar(prev => {
+        const newSet = new Set([...prev]);
+        newSet.delete(soruId);
+        return newSet;
+      });
+      setCevaplar(prev => ({ ...prev, [soruId]: answerValue }));
+      
+      // Otomatik olarak sonraki soruya geç
+      const currentIndex = testSorulari.findIndex(s => s.id === soruId);
+      if (currentIndex !== -1 && currentIndex < testSorulari.length - 1) {
+        const nextIndex = currentIndex + 1;
+        setFocusedQuestion(nextIndex);
+        setTimeout(() => {
+          inputRefs.current[nextIndex]?.focus();
+          inputRefs.current[nextIndex]?.select(); // Mevcutu seç
+        }, 50);
+      }
+    } else {
+      // Geçersiz giriş - cevabı temizle
       setCevaplar(prev => {
         const newState = { ...prev };
         delete newState[soruId];
@@ -172,20 +340,6 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
         newSet.delete(soruId);
         return newSet;
       });
-    } else if (numValue === 0) {
-      setBosCevaplar(prev => new Set([...prev, soruId]));
-      setCevaplar(prev => {
-        const newState = { ...prev };
-        delete newState[soruId];
-        return newState;
-      });
-    } else if (numValue >= 1 && numValue <= 4) {
-      setBosCevaplar(prev => {
-        const newSet = new Set([...prev]);
-        newSet.delete(soruId);
-        return newSet;
-      });
-      setCevaplar(prev => ({ ...prev, [soruId]: numValue }));
     }
   };
 
@@ -327,8 +481,49 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
             const updatedDanisan = await danisanService.getir(danisanId);
             if (updatedDanisan) {
               setDanisan(updatedDanisan);
+              
+              // Eğitim durumu kontrolü yap
+              if (isEgitimDurumuGerekli(test, updatedDanisan)) {
+                setShowEducationSelection(true);
+                return;
+              }
+              
               const sorular = getTestSorulari(test, updatedDanisan);
               setTestSorulari(sorular);
+              
+              // Test input ayarlarını yükle
+              const inputSettings = getTestInputSettings(test);
+              setTestInputSettings(inputSettings);
+              
+              setLoading(false);
+            }
+          };
+          loadTestData();
+        }}
+      />
+    );
+  }
+
+  if (showEducationSelection && danisan) {
+    return (
+      <EducationSelectionModal
+        test={test}
+        danisan={danisan}
+        onComplete={() => {
+          setShowEducationSelection(false);
+          // Test verilerini yeniden yükle
+          const loadTestData = async () => {
+            const updatedDanisan = await danisanService.getir(danisanId);
+            if (updatedDanisan) {
+              setDanisan(updatedDanisan);
+              const sorular = getTestSorulari(test, updatedDanisan);
+              setTestSorulari(sorular);
+              
+              // Test input ayarlarını yükle
+              const inputSettings = getTestInputSettings(test);
+              setTestInputSettings(inputSettings);
+              
+              setLoading(false);
             }
           };
           loadTestData();
@@ -398,8 +593,8 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
         <Alert className="mb-6">
           <FiInfo className="h-4 w-4" />
           <AlertDescription>
-            <strong>Hızlı Giriş Talimatları:</strong> Klavye numaralarını (0-4) kullanarak hızlıca cevap verebilirsiniz. 
-            0: Boş bırak, 1-4: Seçenekler. Ok tuşları ile sorular arası gezinebilirsiniz.
+            <strong>Hızlı Giriş Talimatları:</strong> {testInputSettings?.instructionText || 'Klavye ile hızlı cevap verebilirsiniz.'} 
+            {' '}Ok tuşları ile sorular arası gezinebilir, Enter ile sonraki soruya geçebilir, B tuşu ile boş bırakabilirsiniz.
           </AlertDescription>
         </Alert>
 
@@ -433,18 +628,19 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
                       <div className="flex items-center gap-4">
                         <Input
                           ref={el => inputRefs.current[index] = el}
-                          type="number"
-                          min="0"
-                          max="4"
-                          value={bosIsaretli ? '0' : cevap}
+                          type="text"
+                          value={bosIsaretli ? 'B' : (cevap ? (testInputSettings?.responsePattern.optionTexts[testInputSettings.responsePattern.optionValues.indexOf(cevap)] || cevap) : '')}
                           onChange={(e) => handleInputChange(soruId, e.target.value)}
-                          onFocus={() => setFocusedQuestion(index)}
+                          onFocus={(e) => {
+                            setFocusedQuestion(index);
+                            e.target.select(); // Mevcut değeri seç
+                          }}
                           className="w-20 text-center"
-                          placeholder="0-4"
+                          placeholder={testInputSettings?.responsePattern.keyboardShortcuts.join('/') || '1-4'}
                         />
                         
                         <div className="text-xs text-gray-500 dark:text-gray-400">
-                          0: Hiç Yok | 1: Hafif | 2: Orta | 3: İleri | 4: Çok İleri
+                          {testInputSettings?.instructionText || 'Klavye ile cevap verebilirsiniz'}
                         </div>
                         
                         {(cevap || bosIsaretli) && (

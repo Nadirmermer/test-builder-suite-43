@@ -15,7 +15,9 @@ import { toast } from '@/hooks/use-toast';
 import { useAppSelector } from '@/hooks/useRedux';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { createDanisanUrl } from '@/utils/urlUtils';
+import { isEgitimDurumuGerekli } from '@/utils/testUtils';
 import GenderSelectionModal from './GenderSelectionModal';
+import EducationSelectionModal from './EducationSelectionModal';
 import { danisanService } from '@/lib/db';
 interface MMPITestInterfaceProps {
   test: TestTanimi;
@@ -36,6 +38,16 @@ export default function MMPITestInterface({
   } = useAppSelector(state => state.danisanlar);
   const danisan = selectedDanisan;
   const [showGenderSelection, setShowGenderSelection] = useState(!danisan?.cinsiyet);
+  const [showEducationSelection, setShowEducationSelection] = useState(false);
+
+  // Eğitim durumu kontrolü için useEffect
+  useEffect(() => {
+    if (danisan && !showGenderSelection) {
+      if (isEgitimDurumuGerekli(test, danisan)) {
+        setShowEducationSelection(true);
+      }
+    }
+  }, [danisan, showGenderSelection, test]);
 
   // State'ler - hooks kuralına uygun şekilde hep aynı sırada
   const [aktifSoruIndex, setAktifSoruIndex] = useState(0);
@@ -241,6 +253,14 @@ export default function MMPITestInterface({
   };
   const handleGenderSelectionComplete = () => {
     setShowGenderSelection(false);
+    // Cinsiyet seçildikten sonra eğitim durumu kontrolü yap
+    if (danisan && isEgitimDurumuGerekli(test, danisan)) {
+      setShowEducationSelection(true);
+    }
+  };
+
+  const handleEducationSelectionComplete = () => {
+    setShowEducationSelection(false);
   };
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -251,6 +271,11 @@ export default function MMPITestInterface({
   // Cinsiyet seçimi ekranı
   if (showGenderSelection && danisan) {
     return <GenderSelectionModal test={test} danisan={danisan} onComplete={handleGenderSelectionComplete} />;
+  }
+
+  // Eğitim durumu seçimi ekranı
+  if (showEducationSelection && danisan) {
+    return <EducationSelectionModal test={test} danisan={danisan} onComplete={handleEducationSelectionComplete} />;
   }
 
   // Loading state

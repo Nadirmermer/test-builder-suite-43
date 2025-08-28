@@ -9,7 +9,7 @@ export default function Header() {
     darkMode
   } = useAppSelector(state => state.ui);
   const isMobile = useIsMobile();
-  return <header className="h-16 w-full border-b bg-gradient-subtle border-border flex items-center justify-between px-6 shadow-card backdrop-blur-sm">
+  return <header className="h-16 w-full border-b border-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
           <div className="w-10 h-10 rounded-xl bg-gradient-medical flex items-center justify-center shadow-medical transition-smooth hover:scale-105">

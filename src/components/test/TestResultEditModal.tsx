@@ -1,5 +1,5 @@
 // Test Sonucu Düzenleme Modalı
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,10 +8,12 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { FiSave, FiX } from 'react-icons/fi';
-import { TestSonucu } from '@/types';
+import { TestSonucu, TestTanimi } from '@/types';
+import { getTestInputSettings, convertAnswerToOptionIndex } from '@/utils/testResponseUtils';
 
 interface TestResultEditModalProps {
   testSonucu: TestSonucu;
+  test: TestTanimi; // Test tanımını ekledik
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSave: (updatedResult: TestSonucu) => void;
@@ -19,6 +21,7 @@ interface TestResultEditModalProps {
 
 export default function TestResultEditModal({
   testSonucu,
+  test,
   open,
   onOpenChange,
   onSave
@@ -28,6 +31,14 @@ export default function TestResultEditModal({
       testSonucu.cevaplar.map(c => [c.soruId, c.verilenPuan])
     )
   );
+
+  // Test response pattern'ini al
+  const [testInputSettings, setTestInputSettings] = useState<ReturnType<typeof getTestInputSettings> | null>(null);
+
+  useEffect(() => {
+    const inputSettings = getTestInputSettings(test);
+    setTestInputSettings(inputSettings);
+  }, [test]);
 
   const handleAnswerChange = (soruId: string, puan: number) => {
     setEditedAnswers(prev => ({
@@ -58,24 +69,27 @@ export default function TestResultEditModal({
     return `Soru ${soruId}`;
   };
 
-  const getAnswerOptions = (testId: string) => {
-    if (testId === 'mmpi') {
+  const getAnswerOptions = () => {
+    if (!testInputSettings) {
       return [
-        { value: 1, label: 'DOĞRU' },
-        { value: 0, label: 'YANLIŞ' },
-        { value: -1, label: 'Boş' }
+        { value: 0, label: '0' },
+        { value: 1, label: '1' }
       ];
     }
-    return [
-      { value: 0, label: '0' },
-      { value: 1, label: '1' },
-      { value: 2, label: '2' },
-      { value: 3, label: '3' },
-      { value: 4, label: '4' }
-    ];
+
+    const { responsePattern } = testInputSettings;
+    const options = responsePattern.optionTexts.map((text, index) => ({
+      value: responsePattern.optionValues[index],
+      label: text
+    }));
+
+    // Boş seçeneği ekle
+    options.push({ value: -1, label: 'Boş' });
+    
+    return options;
   };
 
-  const answerOptions = getAnswerOptions(testSonucu.testId);
+  const answerOptions = getAnswerOptions();
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -95,7 +109,8 @@ export default function TestResultEditModal({
                   <CardTitle className="text-sm flex items-center justify-between">
                     <span>Soru {parseInt(cevap.soruId)} ({index + 1})</span>
                     <Badge variant="outline" className="text-xs">
-                      Mevcut: {cevap.verilenPuan === -1 ? 'Boş' : cevap.verilenPuan}
+                      Mevcut: {cevap.verilenPuan === -1 ? 'Boş' : 
+                        answerOptions.find(opt => opt.value === cevap.verilenPuan)?.label || cevap.verilenPuan}
                     </Badge>
                   </CardTitle>
                   <p className="text-sm text-muted-foreground leading-relaxed">

@@ -11,7 +11,19 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import { danisanEkle } from '@/store/slices/danisanSlice';
 import { setActiveModal } from '@/store/slices/uiSlice';
 import { toast } from '@/hooks/use-toast';
-import { FiUser, FiCalendar, FiPhone, FiMapPin, FiFileText } from 'react-icons/fi';
+import { EgitimDurumu } from '@/types';
+import { FiUser, FiCalendar, FiPhone, FiMapPin, FiFileText, FiBook } from 'react-icons/fi';
+
+const egitimSeviyeleri: EgitimDurumu[] = [
+  'Okuma yazma yok',
+  'İlkokul',
+  'Ortaokul', 
+  'Lise',
+  'Önlisans',
+  'Lisans',
+  'Yüksek lisans',
+  'Doktora'
+];
 
 interface YeniDanisanModalProps {
   open: boolean;
@@ -27,6 +39,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
     tcKimlikNo: '',
     dogumTarihi: '',
     cinsiyet: '',
+    egitimDurumu: '',
     telefon: '',
     adres: '',
     notlar: ''
@@ -53,6 +66,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
         tcKimlikNo: formData.tcKimlikNo || undefined,
         dogumTarihi: formData.dogumTarihi || undefined,
         cinsiyet: formData.cinsiyet as 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum' || undefined,
+        egitimDurumu: formData.egitimDurumu as EgitimDurumu || undefined,
         telefon: formData.telefon || undefined,
         adres: formData.adres || undefined,
         notlar: formData.notlar || undefined,
@@ -71,6 +85,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
         tcKimlikNo: '',
         dogumTarihi: '',
         cinsiyet: '',
+        egitimDurumu: '',
         telefon: '',
         adres: '',
         notlar: ''
@@ -164,6 +179,27 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          {/* Eğitim Durumu */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium flex items-center gap-1">
+              <FiBook className="w-4 h-4" />
+              Eğitim Durumu
+            </Label>
+            <Select value={formData.egitimDurumu} onValueChange={(value) => handleChange('egitimDurumu', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seçiniz" />
+              </SelectTrigger>
+              <SelectContent>
+                {egitimSeviyeleri.map((seviye) => (
+                  <SelectItem key={seviye} value={seviye}>
+                    {seviye}
+                  </SelectItem>
+                ))}
+                <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Telefon */}

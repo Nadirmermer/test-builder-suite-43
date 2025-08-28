@@ -216,10 +216,10 @@ export default function MMPIProfileChart({
                 />
                 
                 <ReferenceLine y={50} stroke="hsl(var(--muted-foreground))" strokeDasharray="2 2" strokeWidth={1} />
-                <ReferenceLine y={70} stroke="hsl(var(--destructive))" strokeDasharray="3 3" strokeWidth={2} />
+                <ReferenceLine y={65} stroke="hsl(var(--destructive))" strokeDasharray="3 3" strokeWidth={2} />
                 
                 {/* Dikey ayırıcı çizgi */}
-                <ReferenceLine x="|" stroke="white" strokeWidth={4} ifOverflow="visible" />
+                <ReferenceLine x="|" stroke="hsl(var(--border))" strokeWidth={4} ifOverflow="visible" />
 
                 {/* '?' için tek nokta */}
                 <Line dataKey="questionMarkTScore" stroke="transparent" activeDot={false} dot={(props) => <CustomDot {...props} />} />
@@ -241,26 +241,35 @@ export default function MMPIProfileChart({
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-0.5 bg-destructive" style={{ background: 'repeating-linear-gradient(to right, hsl(var(--destructive)) 0, hsl(var(--destructive)) 3px, transparent 3px, transparent 6px)' }}></div>
-              <span>T=70: Klinik Anlamlılık</span>
+              <span>T=65: Klinik Anlamlılık</span>
             </div>
           </div>
 
-          {yuksekPuanlar.length > 0 && (
-            <div className="space-y-3">
-              <h4 className="font-semibold text-sm">Yükseltilmiş Ölçekler (T ≥ 65):</h4>
-              <div className="flex flex-wrap gap-2">
-                {yuksekPuanlar.map((item, index) => (
-                  <Badge 
-                    key={`${item.name}-${index}`}
-                    variant={(item.clinicalTScore || item.validityTScore || item.questionMarkTScore || 0) >= 70 ? "destructive" : "secondary"} 
-                    className="text-xs"
-                  >
-                    {item.name}: T={(item.clinicalTScore || item.validityTScore || item.questionMarkTScore)}
-                  </Badge>
-                ))}
-              </div>
+          {/* Tüm Alt Test Puanları */}
+          <div className="space-y-3 mb-4">
+            <h4 className="font-semibold text-sm">Tüm Ölçek Puanları:</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-xs">
+              {chartData
+                .filter(item => item.kategori !== 'bos' && item.kategori !== 'separator')
+                .map((item, index) => {
+                  const score = item.clinicalTScore || item.validityTScore || item.questionMarkTScore;
+                  const variant = score && score >= 70 ? "destructive" : 
+                                 score && score >= 65 ? "secondary" : "outline";
+                  
+                  return (
+                    <div key={`${item.name}-${index}`} className="flex justify-between items-center p-2 rounded border border-border">
+                      <span className="font-medium">{item.name}:</span>
+                      <Badge variant={variant} className="text-xs">
+                        T={score}
+                      </Badge>
+                    </div>
+                  );
+                })
+              }
             </div>
-          )}
+          </div>
+
+          
         </CardContent>
       </Card>
     </div>

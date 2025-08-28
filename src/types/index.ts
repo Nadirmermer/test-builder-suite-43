@@ -1,11 +1,23 @@
 // Temel veri modelleri - Core data models for PsikoTest
 
+export type EgitimDurumu = 
+  | 'Okuma yazma yok'
+  | 'İlkokul'
+  | 'Ortaokul'
+  | 'Lise'
+  | 'Önlisans'
+  | 'Lisans'
+  | 'Yüksek lisans'
+  | 'Doktora'
+  | 'Belirtmek istemiyorum';
+
 export interface Danisan {
   id?: number; // Auto-incremented by Dexie
   adSoyad: string;
   tcKimlikNo?: string;
   dogumTarihi?: string;
   cinsiyet?: 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum';
+  egitimDurumu?: EgitimDurumu;
   telefon?: string;
   adres?: string;
   notlar?: string;

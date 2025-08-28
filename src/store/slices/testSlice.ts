@@ -47,6 +47,7 @@ export const testleriYukle = createAsyncThunk(
         talimatlar: 'Her ifadeyi dikkatlice okuyun ve kendiniz için "DOĞRU" mu yoksa "YANLIŞ" mı olduğuna karar verin.',
         kategori: 'Kişilik',
         sureDakika: 90,
+        formTuru: 'cinsiyete-ozel',
         sorular: mmpiQuestions.map(q => ({
           id: q.id,
           metin: q.metin,

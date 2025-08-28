@@ -204,7 +204,7 @@ export default function RaporDetayPage() {
     <div className="space-y-6 pb-8">
       {/* Header */}
       <div className="bg-background border-b">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 py-4">
           <div className="flex items-center gap-4">
             <Button
               variant="ghost"
@@ -216,13 +216,13 @@ export default function RaporDetayPage() {
             </Button>
             
             <div>
-              <h1 className="text-2xl font-bold text-foreground">Test Raporu</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-foreground">Test Raporu</h1>
               <p className="text-muted-foreground text-sm">{testSonucu.testAdi}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm" onClick={downloadPDF}>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
+            <Button variant="outline" size="sm" onClick={downloadPDF} className="w-full sm:w-auto">
               <Download className="h-4 w-4 mr-2" />
               PDF İndir
             </Button>
@@ -234,7 +234,7 @@ export default function RaporDetayPage() {
               onSave={handleSaveEditedResult}
             />
             
-            <Button variant="secondary" size="sm" onClick={() => setShowEditModal(true)}>
+            <Button variant="secondary" size="sm" onClick={() => setShowEditModal(true)} className="w-full sm:w-auto">
               <Edit className="h-4 w-4 mr-2" />
               Düzenle
             </Button>
@@ -243,7 +243,7 @@ export default function RaporDetayPage() {
       </div>
 
       {/* Dashboard - Özet Bilgiler */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Danışan Bilgisi */}
         <Card>
           <CardContent className="p-4">
@@ -305,18 +305,20 @@ export default function RaporDetayPage() {
 
       {/* Ana İçerik - Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="overview">Genel Bakış</TabsTrigger>
-          {testSonucu.mmpiSonuclari ? (
-            <>
-              <TabsTrigger value="validity">Geçerlik</TabsTrigger>
-              <TabsTrigger value="clinical">Klinik Ölçekler</TabsTrigger>
-            </>
-          ) : (
-            <TabsTrigger value="results">Sonuçlar</TabsTrigger>
-          )}
-          <TabsTrigger value="details">Detaylar</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full min-w-[300px] grid-cols-4 mb-4">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">Genel Bakış</TabsTrigger>
+            {testSonucu.mmpiSonuclari ? (
+              <>
+                <TabsTrigger value="validity" className="text-xs sm:text-sm">Geçerlik</TabsTrigger>
+                <TabsTrigger value="clinical" className="text-xs sm:text-sm">Klinik</TabsTrigger>
+              </>
+            ) : (
+              <TabsTrigger value="results" className="text-xs sm:text-sm">Sonuçlar</TabsTrigger>
+            )}
+            <TabsTrigger value="details" className="text-xs sm:text-sm">Detaylar</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Genel Bakış */}
         <TabsContent value="overview" className="space-y-6">

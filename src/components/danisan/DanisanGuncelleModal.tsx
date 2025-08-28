@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FiSave, FiX } from 'react-icons/fi';
+import { FiSave, FiX, FiBook } from 'react-icons/fi';
 import {
   CustomDialog,
   CustomDialogContent,
   CustomDialogHeader,
   CustomDialogTitle,
+  CustomDialogDescription,
 } from '@/components/ui/custom-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -22,14 +23,26 @@ import {
 } from '@/components/ui/select';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { danisanGuncelle } from '@/store/slices/danisanSlice';
-import { Danisan } from '@/types';
+import { Danisan, EgitimDurumu } from '@/types';
 import { useToast } from '@/hooks/use-toast';
+
+const egitimSeviyeleri: EgitimDurumu[] = [
+  'Okuma yazma yok',
+  'İlkokul',
+  'Ortaokul', 
+  'Lise',
+  'Önlisans',
+  'Lisans',
+  'Yüksek lisans',
+  'Doktora'
+];
 
 const danisanSchema = z.object({
   adSoyad: z.string().min(1, 'Ad Soyad gereklidir'),
   tcKimlikNo: z.string().optional(),
   dogumTarihi: z.string().optional(),
   cinsiyet: z.enum(['Erkek', 'Kadın', 'Belirtmek istemiyorum']).optional(),
+  egitimDurumu: z.enum(['Okuma yazma yok', 'İlkokul', 'Ortaokul', 'Lise', 'Önlisans', 'Lisans', 'Yüksek lisans', 'Doktora', 'Belirtmek istemiyorum']).optional(),
   telefon: z.string().optional(),
   adres: z.string().optional(),
   notlar: z.string().optional(),
@@ -66,6 +79,7 @@ export default function DanisanGuncelleModal({
       tcKimlikNo: danisan.tcKimlikNo || '',
       dogumTarihi: danisan.dogumTarihi || '',
       cinsiyet: danisan.cinsiyet,
+      egitimDurumu: danisan.egitimDurumu,
       telefon: danisan.telefon || '',
       adres: danisan.adres || '',
       notlar: danisan.notlar || '',
@@ -73,6 +87,7 @@ export default function DanisanGuncelleModal({
   });
 
   const cinsiyetValue = watch('cinsiyet');
+  const egitimDurumuValue = watch('egitimDurumu');
 
   useEffect(() => {
     if (open && danisan) {
@@ -81,6 +96,7 @@ export default function DanisanGuncelleModal({
         tcKimlikNo: danisan.tcKimlikNo || '',
         dogumTarihi: danisan.dogumTarihi || '',
         cinsiyet: danisan.cinsiyet,
+        egitimDurumu: danisan.egitimDurumu,
         telefon: danisan.telefon || '',
         adres: danisan.adres || '',
         notlar: danisan.notlar || '',
@@ -126,6 +142,9 @@ export default function DanisanGuncelleModal({
       <CustomDialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <CustomDialogHeader>
           <CustomDialogTitle>Danışan Bilgilerini Güncelle</CustomDialogTitle>
+          <CustomDialogDescription>
+            Danışan bilgilerini güncelleyin. Gerekli alanları doldurunuz.
+          </CustomDialogDescription>
         </CustomDialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -179,6 +198,32 @@ export default function DanisanGuncelleModal({
                 <SelectContent>
                   <SelectItem value="Erkek">Erkek</SelectItem>
                   <SelectItem value="Kadın">Kadın</SelectItem>
+                  <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Eğitim Durumu */}
+            <div>
+              <Label htmlFor="egitimDurumu">
+                <div className="flex items-center gap-2">
+                  <FiBook size={16} />
+                  Eğitim Durumu
+                </div>
+              </Label>
+              <Select
+                value={egitimDurumuValue || ''}
+                onValueChange={(value) => setValue('egitimDurumu', value as any)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Eğitim durumu seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {egitimSeviyeleri.map((seviye) => (
+                    <SelectItem key={seviye} value={seviye}>
+                      {seviye}
+                    </SelectItem>
+                  ))}
                   <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
                 </SelectContent>
               </Select>

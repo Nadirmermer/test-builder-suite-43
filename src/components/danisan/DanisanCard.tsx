@@ -4,7 +4,7 @@ import { Danisan } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { FiUser, FiCalendar, FiPhone, FiTrash2 } from 'react-icons/fi';
+import { FiUser, FiCalendar, FiPhone, FiTrash2, FiBook } from 'react-icons/fi';
 import { cn } from '@/lib/utils';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { danisanSil } from '@/store/slices/danisanSlice';
@@ -103,6 +103,17 @@ export default function DanisanCard({ danisan, onClick, className, onDelete }: D
                     className="text-xs"
                   >
                     {danisan.cinsiyet}
+                  </Badge>
+                )}
+
+                {/* Eğitim Durumu Badge */}
+                {danisan.egitimDurumu && (
+                  <Badge 
+                    variant="outline" 
+                    className="text-xs flex items-center gap-1"
+                  >
+                    <FiBook className="w-3 h-3" />
+                    {danisan.egitimDurumu}
                   </Badge>
                 )}
                 

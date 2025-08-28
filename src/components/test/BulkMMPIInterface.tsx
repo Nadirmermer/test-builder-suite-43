@@ -17,7 +17,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector } from '@/hooks/useRedux';
 import { createDanisanUrl } from '@/utils/urlUtils';
+import { isEgitimDurumuGerekli } from '@/utils/testUtils';
 import GenderSelectionModal from './GenderSelectionModal';
+import EducationSelectionModal from './EducationSelectionModal';
 
 interface BulkMMPIInterfaceProps {
   test: TestTanimi;
@@ -33,6 +35,16 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
   const { selectedDanisan } = useAppSelector((state) => state.danisanlar);
   const danisan = selectedDanisan;
   const [showGenderSelection, setShowGenderSelection] = useState(!danisan?.cinsiyet);
+  const [showEducationSelection, setShowEducationSelection] = useState(false);
+
+  // Eğitim durumu kontrolü için useEffect
+  useEffect(() => {
+    if (danisan && !showGenderSelection) {
+      if (isEgitimDurumuGerekli(test, danisan)) {
+        setShowEducationSelection(true);
+      }
+    }
+  }, [danisan, showGenderSelection, test]);
   
   const [textInput, setTextInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -187,6 +199,14 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
 
   const handleGenderSelectionComplete = () => {
     setShowGenderSelection(false);
+    // Cinsiyet seçildikten sonra eğitim durumu kontrolü yap
+    if (danisan && isEgitimDurumuGerekli(test, danisan)) {
+      setShowEducationSelection(true);
+    }
+  };
+
+  const handleEducationSelectionComplete = () => {
+    setShowEducationSelection(false);
   };
 
   const formatTime = (seconds: number) => {
@@ -202,6 +222,17 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
         test={test}
         danisan={danisan}
         onComplete={handleGenderSelectionComplete}
+      />
+    );
+  }
+
+  // Eğitim durumu seçimi ekranı
+  if (showEducationSelection && danisan) {
+    return (
+      <EducationSelectionModal
+        test={test}
+        danisan={danisan}
+        onComplete={handleEducationSelectionComplete}
       />
     );
   }
