@@ -35,6 +35,7 @@ export default function RaporDetayPage() {
   const navigate = useNavigate();
   const [testSonucu, setTestSonucu] = useState<TestSonucu | null>(null);
   const [danisan, setDanisan] = useState<Danisan | null>(null);
+  const [testTanimi, setTestTanimi] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
 
@@ -51,6 +52,17 @@ export default function RaporDetayPage() {
           // Danışan bilgilerini yükle
           const danisanBilgisi = await danisanService.getir(sonuc.danisanId);
           setDanisan(danisanBilgisi || null);
+          
+          // Test tanımını yükle
+          try {
+            const testResponse = await fetch(`/tests/${sonuc.testId}.json`);
+            if (testResponse.ok) {
+              const testData = await testResponse.json();
+              setTestTanimi(testData);
+            }
+          } catch (error) {
+            console.error('Test tanımı yüklenemedi:', error);
+          }
         }
       } catch (error) {
         console.error('Veri yükleme hatası:', error);
@@ -229,12 +241,19 @@ export default function RaporDetayPage() {
             
             <TestResultEditModal
               testSonucu={testSonucu}
+              test={testTanimi}
               open={showEditModal}
               onOpenChange={setShowEditModal}
               onSave={handleSaveEditedResult}
             />
             
-            <Button variant="secondary" size="sm" onClick={() => setShowEditModal(true)} className="w-full sm:w-auto">
+            <Button 
+              variant="secondary" 
+              size="sm" 
+              onClick={() => setShowEditModal(true)} 
+              className="w-full sm:w-auto"
+              disabled={!testTanimi}
+            >
               <Edit className="h-4 w-4 mr-2" />
               Düzenle
             </Button>

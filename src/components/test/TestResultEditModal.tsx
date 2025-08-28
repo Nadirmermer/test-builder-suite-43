@@ -26,6 +26,10 @@ export default function TestResultEditModal({
   onOpenChange,
   onSave
 }: TestResultEditModalProps) {
+  // Test tanımı yüklenene kadar modal açılmasın
+  if (!test) {
+    return null;
+  }
   const [editedAnswers, setEditedAnswers] = useState<Record<string, number>>(
     Object.fromEntries(
       testSonucu.cevaplar.map(c => [c.soruId, c.verilenPuan])
