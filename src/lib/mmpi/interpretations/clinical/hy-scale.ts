@@ -35,16 +35,10 @@ export class HyScale {
       return baseInterpretation;
     }
 
-    // Kişiselleştirilmiş notları oluştur
-    const personalizedNotes: string[] = [];
-
-    // Bu alt testte kitapta açık belirtilen yaş, eğitim, medeni hal veya cinsiyet faktörleri bulunmamaktadır
-    // Sadece T puanı aralıklarına göre yorumlama yapılmaktadır
-
-    return {
-      ...baseInterpretation,
-      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
-    };
+    // Kitapta Hy-Scale için açık kişisel faktör belirtilmemiş
+    // Bu nedenle kişiselleştirilmiş notlar eklenmeyecek
+    
+    return baseInterpretation;
   }
 
   getInterpretation(tScore: number): HyScaleInterpretation {
@@ -52,14 +46,13 @@ export class HyScale {
       return {
         tScore,
         level: '85 T Puanı Ve Üstü',
-        description: 'Aşırı immatür, benmerkezcil ve bağımlı kişilerdir.',
+        description: 'Aşırı immatür, benmerkezcil ve bağımlı kişilerdir. Bastırma, savunma mekanizmasını kullanmaları şaşırtıcıdır.',
         characteristics: [
-          'Bastırma, savunma mekanizmasını kullanmaları şaşırtıcıdır',
           'Bu iç görü eksikliğinin olduğunun göstergesidir',
           'Semptomlar gerçek organik patolojiye uymamaktadır',
           'Genellikle kroniktir'
         ],
-        clinicalSignificance: 'Aşırı immatürite ve benmerkezcilik - Kritik düzey'
+        clinicalSignificance: 'Kronik konversiyon bozukluğu - Kritik düzey'
       };
     } else if (tScore >= 76) {
       return {
@@ -68,7 +61,9 @@ export class HyScale {
         description: '70-75 T puanında bildirilen özelliklere ek olarak bu bireyler uzun süredir devam eden gerginliğe bağlı konversif semptomlar geliştirmişlerdir.',
         characteristics: [
           'Semptomlar baş ağrısı, sırt ağrısı, göğüs ağrısı, zayıflık, baş dönmesi ve baygınlıktır',
-          'Uzun süredir devam eden güven duymama, immatürite ve organize olmuş bedensel yakınmaları vardır'
+          'Uzun süredir devam eden güven duymama',
+          'İmmatürite',
+          'Organize olmuş bedensel yakınmaları vardır'
         ]
       };
     } else if (tScore >= 70) {
@@ -77,8 +72,7 @@ export class HyScale {
         level: '70-75 T Puanı',
         description: 'Birey bastırma ve inkarı çok fazla kullanan, çok fazla itaat eden(uyan), saf ve çocuksu biçimde benmerkezcil, anksiyete ile bağlantılı somatik yakınmaları olan ya da bunların hepsine sahip bir kişidir.',
         characteristics: [
-          'Histeroid mekanizmaları kullanır ve destek isteyebilirler',
-          'Çok aktif iç görüleri oldukça azdır',
+          'Histeroid mekanizmaları kullanır ve destek isteyebilirler ve çok aktif iç görüleri oldukça azdır',
           'Bu bireylerin bazıları, açık bir biçimde teşhirci ve seksüel ya da saldırganlık düzeyinde dışavuran davranışları olabilir',
           'Bu sırada inkar ve bastırmayı aşırı bir biçimde kullanırlar',
           'Sevilmeye olan güçlü gereksinime bağlı olarak bağlanma gerektiren durumlarda verdikleri ilk tepki genellikle coşkulu olacaktır',
@@ -91,10 +85,9 @@ export class HyScale {
       return {
         tScore,
         level: '60-69 T Puanı',
-        description: 'Burada iki farklı örüntü vardır:',
+        description: 'Bu aralıkta iki farklı örüntü vardır.',
         characteristics: [
-          'Eğer Hs\'nin yükselmesi Hy ile aynı düzeyde ise ve D alt testi, 1 ve 3 alt testinden 10 T puanı düşük ise histerik kişiye işaret etmektedir',
-          'Stres sırasında somatizasyona sığınma görülebilir',
+          'Eğer Hs\'nin yükselmesi Hy ile aynı düzeyde ise ve D alt testi, 1 ve 3 alt testinden 10 T puanı düşük ise histerik kişiye işaret etmektedir. Stres sırasında somatizasyona sığınma görülebilir.',
           'Eğer Hy alt testi Hs alt testinde 10 T puanın yüksekse histerik özellikler belirgindir',
           'Bu bireyler kendine odaklaşmıştır, kendilerini olduğundan farklı ve mükemmel kişiler olarak görmek isterler',
           'Kişilerarası ilişkilerde iç görü azlığı vardır'
@@ -106,16 +99,16 @@ export class HyScale {
         level: '45-59 T Puanı',
         description: 'Bu alana özgü bir tanımlama yoktur.',
         characteristics: [
-          'Bu T puanı aralığında özel bir tanımlama bulunmamaktadır'
+          'Normal aralık içinde değerler',
+          'Belirgin histerik özellikler göstermez'
         ]
       };
     } else {
       return {
         tScore,
         level: '24-44 T Puanı',
-        description: 'Kendilerini sürekli eleştirirler.',
+        description: 'Kendilerini sürekli eleştirirler. Olumlu kişilerarası ilişkileri inkar etme eğilimi vardır.',
         characteristics: [
-          'Olumlu kişilerarası ilişkileri inkar etme eğilimi vardır',
           'Si alt testinde yükselme, bireyin diğer insanlardan kaçma eğiliminde olduğunu göstermektedir'
         ]
       };
@@ -124,7 +117,7 @@ export class HyScale {
 }
 
 /**
- * Hy Alt Testinde Yüksek Puan Alan Birey
+ * Yüksek Hy Puanı Alan Bireyin Özellikleri
  */
 export function getHyHighScoreCharacteristics(): string[] {
   return [
@@ -160,14 +153,14 @@ export function getHyHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Hy Alt Testinde Düşük Puan Alan Birey
+ * Düşük Hy Puanı Alan Bireyin Özellikleri
  */
 export function getHyLowScoreCharacteristics(): string[] {
   return [
     'Temkinli, geleneksel ve uysaldır',
     'Maceracı ve çalışkan değildir',
     'İlgi alanları daralmıştır',
-    'Sosyal kalıtımı sınırlıdır',
+    'Sosyal katılımı sınırlıdır',
     'Lider olma rolünden kaçar',
     'Arkadaş canlısı değildir, anlaşılması zor biridir',
     'Kuşkucudur, diğer insanlara güvenmez',
@@ -183,15 +176,20 @@ export function getHySpikeInterpretation(): string {
 }
 
 /**
- * Hy Alt Testi Genel Özellikleri
+ * Genel Açıklama ve Madde Bilgisi
  */
-export function getHyGeneralCharacteristics(): string[] {
-  return [
-    'Fizik bir neden olmadan bir organının işlevinin kaybedilmesi biçiminde bir hastalıktır',
-    'Genel bir çocuksuluk, çabuk sinirlenme, neşelenme, psikolojik semptomları ret, sorumluluktan kaçma gibi özellikleri vardır',
-    'Bu grup hastalarda ikincil kazançlar çok fazladır',
-    'MMPI\'da çok değişik tipte soruların toplandığı bir alt testtir'
-  ];
+export function getHyScaleDescription(): string {
+  return 'Madde sayısı 60. Fizik bir neden olmadan bir organının işlevinin kaybedilmesi biçiminde bir hastalıktır. Bu alt test nevrotik bozuklardan konversiyon histerisine tanı koymada yardımcı olmak amacıyla geliştirilmiştir. Genel bir çocuksuluk, çabuk sinirlenme, neşelenme, psikolojik semptomları ret, sorumluluktan kaçma gibi özellikleri vardır. Bu grup hastalarda ikincil kazançlar çok fazladır. MMPI\'da çok değişik tipte soruların toplandığı bir alt testtir.';
+}
+
+/**
+ * Ortalama Puanlar (Savaşır verileri)
+ */
+export function getHyScoreAverages(): { male: number; female: number } {
+  return {
+    male: 19.31,
+    female: 22.33
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -201,9 +199,9 @@ export const hyScaleInterpretation = {
   getHighScoreCharacteristics: getHyHighScoreCharacteristics,
   getLowScoreCharacteristics: getHyLowScoreCharacteristics,
   getSpikeInterpretation: getHySpikeInterpretation,
-  getGeneralCharacteristics: getHyGeneralCharacteristics,
+  getDescription: getHyScaleDescription,
+  getScoreAverages: getHyScoreAverages,
   name: 'Histeri (Hy)',
   number: 3,
-  description: 'Fizik bir neden olmadan bir organının işlevinin kaybedilmesi biçiminde bir hastalıktır. Bu alt test nevrotik bozuklardan konversiyon histerisine tanı koymada yardımcı olmak amacıyla geliştirilmiştir. Genel bir çocuksuluk, çabuk sinirlenme, neşelenme, psikolojik semptomları ret, sorumluluktan kaçma gibi özellikleri vardır. Bu grup hastalarda ikincil kazançlar çok fazladır. MMPI\'da çok değişik tipte soruların toplandığı bir alt testtir.',
-  itemCount: 60
+  description: getHyScaleDescription()
 };

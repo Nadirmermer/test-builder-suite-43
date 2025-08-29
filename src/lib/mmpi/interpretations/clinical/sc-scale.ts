@@ -1,5 +1,5 @@
 // Şizofreni (Sc) Alt Testi - Ölçek 8
-// MMPI Klinik Ölçek - Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır
+// MMPI Klinik Ölçek - Şizofreni ve şizoid eğilimleri değerlendirmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
@@ -31,20 +31,10 @@ export class ScScale {
     // Temel yorumu al
     const baseInterpretation = this.getInterpretation(tScore);
     
-    if (!personalInfo) {
-      return baseInterpretation;
-    }
-
-    // Kişiselleştirilmiş notları oluştur
-    const personalizedNotes: string[] = [];
-
-    // Bu alt testte kitapta açık belirtilen yaş, eğitim, medeni hal veya cinsiyet faktörleri bulunmamaktadır
-    // Sadece T puanı aralıklarına göre yorumlama yapılmaktadır
-
-    return {
-      ...baseInterpretation,
-      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
-    };
+    // Kitapta Sc-Scale için açık kişisel faktör belirtilmemiş
+    // Bu nedenle kişiselleştirilmiş notlar eklenmeyecek
+    
+    return baseInterpretation;
   }
 
   getInterpretation(tScore: number): ScScaleInterpretation {
@@ -59,7 +49,7 @@ export class ScScale {
           'Ayrıca kimlik krizindeki engellerle de bu ranja rastlanır',
           'T>95\'in üzerinde olan değerler akut durumsal stres ve ciddi özdeşim krizleri gösterir'
         ],
-        clinicalSignificance: 'Akut psikotik reaksiyon - Kimlik krizi'
+        clinicalSignificance: 'Akut psikotik reaksiyon - Kritik düzey'
       };
     } else if (tScore >= 75) {
       return {
@@ -67,14 +57,10 @@ export class ScScale {
         level: '75 T Puanı Ve Üstü',
         description: 'Yabancılaşma yaşayan ve doğru düşünemeyen bireyler tarafından verilir.',
         characteristics: [
-          'Düşünce ve hareketlerde sıradan değildirler',
-          'Olasılıkla sosyal açıdan çekiniktirler ve derin kişilerarası ilişki kuramazlar',
-          'Kendilerinin kim olduğu konusunda oldukça bozuk düşünceleri vardır',
-          'Genellikle bu dünyaya ait olmadıklarını düşünürler',
-          'İletişim kurmada sorunlar temeldir, dezorganize düşünceleri vardır',
-          'Bunların açık ve mantıklı düşünmesini engeller',
+          'Düşünce ve hareketlerde sıradan değildirler, olasılıkla sosyal açıdan çekiniktirler ve derin kişilerarası ilişki kuramazlar',
+          'Kendilerinin kim olduğu konusunda oldukça bozuk düşünceleri vardır ve genellikle bu dünyaya ait olmadıklarını düşünürler',
+          'İletişim kurmada sorunlar temeldir, dezorganize düşünceleri vardır ve bunların açık ve mantıklı düşünmesini engeller',
           'Bu bireylerin gerçek ile bağlantıları var gibi görünse de bu oldukça yüzeyseldir',
-          'Alt test 8\'deki yüksek puanlar, gerçek psikotik düşünce bozukluğunu yansıtabilecek soğuk, apatik, yabancılaşma, düşünme, iletişim ve anlamada bozulma olması gibi özellikleri gösterebilir',
           'Kişilerarası ilişkiler yerine hayalleri ve fantezileri yeğlerler',
           'Aşağılık duyguları, kendinden hoşnutsuzluk ve yalnızlık duyguları içindedirler',
           'T puanı 80\'e yaklaştığında, mantıkla ve düşünmede tuhaflık belirginleşirler',
@@ -90,17 +76,34 @@ export class ScScale {
         description: 'Bu yükselme değerlendirilirken profilin tümü ele alınmalıdır.',
         characteristics: [
           'Bir yükselmenin alt sınırında ve nevrotik profillerde yükselme varsa bu bireyin soyut konularla ilgilendiğini göstermektedir',
-          'Eğer Si alt testi de yükselmişse diğerleri tarafından uzak ve anlaşılmaz kişiler olarak tanımlanmaktadır',
-          '65-74 T puanı aralığındaki değerlendirmede genel bir yabancılaşma ya da örtük psikoz olup olmadığı ilişkilerinde çekingen, derin duygusal ilişkilerden kaçınan, temkinli, tutucu, rekabet etmek istemeyen kişilerdir'
+          'Eğer Si alt testi de yükselmişse diğerleri tarafından uzak ve anlaşılmaz kişiler olarak tanımlanmaktadır'
+        ]
+      };
+    } else if (tScore >= 45) {
+      return {
+        tScore,
+        level: '45-59 T Puanı',
+        description: 'Normal aralık içinde değerler.',
+        characteristics: [
+          'Belirgin şizoid özellikler göstermez',
+          'Uyumlu kişilik yapısı'
         ]
       };
     } else {
       return {
         tScore,
-        level: '60 Altı T Puanı',
-        description: 'Normal aralık - Şizofreni belirtileri belirgin değil.',
+        level: '44 ve Altı T Puanı',
+        description: 'Düşük puan alan bireyler.',
         characteristics: [
-          'Bu T puanı aralığında özel bir tanımlama bulunmamaktadır'
+          'Arkadaşça, neşeli, duyarlı, güvenilirdir',
+          'Dengeli, uyumludur',
+          'Sorumluluk sahibidir, bağımlıdır',
+          'İlişkilerde tutucudur, derin duygusal ilişkiler kurmaktan kaçınır',
+          'İtaatkardır, uysal, otoriteyi açıkça kabul eder',
+          'Temkinli ve geleneksel tutucudur, sorunlara yaklaşımında hayal gücünden yoksundur',
+          'Pratiktir, somut düşünür',
+          'Başarı, statü ve güçle ilgilidir',
+          'Rekabet gerektiren durumlara girmekten gönülsüzdür'
         ]
       };
     }
@@ -108,7 +111,7 @@ export class ScScale {
 }
 
 /**
- * Sc Alt Testinde Yüksek Puan Alan Birey (T: 80-100) (Graham 1987)
+ * Yüksek Sc Puanı Alan Bireyin Özellikleri (T: 80-100) (Graham 1987)
  */
 export function getScHighScoreCharacteristics(): string[] {
   return [
@@ -144,17 +147,12 @@ export function getScHighScoreCharacteristics(): string[] {
     'İlgi alanının genişliğine bağlı olarak dikkat toplaması güçtür',
     'Yaratıcıdır ve hayal gücü zengindir',
     'Soyut, belirsiz amaçları vardır',
-    'Sorun çözümüne ilişkin temel bilgilerin farkında değildir',
-    'Psikoterapide prognozu kötüdür',
-    'Terapistle anlamlı bir ilişki kurmak konusunda gönülsüzdür',
-    'Pek çok hastadan daha uzun süre psikoterapide kalır',
-    'Terapiste güven duyması zor olabilir',
-    'Tıbbi yardım ve ilaç tedavisinde yararlanabilir'
+    'Sorun çözümüne ilişkin temel bilgilerin farkında değildir'
   ];
 }
 
 /**
- * Sc Alt Testinde Düşük Puan Alan Birey
+ * Düşük Sc Puanı Alan Bireyin Özellikleri
  */
 export function getScLowScoreCharacteristics(): string[] {
   return [
@@ -171,12 +169,33 @@ export function getScLowScoreCharacteristics(): string[] {
 }
 
 /**
- * Sc Alt Testi Genel Özellikleri
+ * Terapötik Özellikler (Yüksek Sc Puanı)
  */
-export function getScGeneralCharacteristics(): string[] {
+export function getScTherapeuticCharacteristics(): string[] {
   return [
-    'Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır'
+    'Psikoterapide prognozu kötüdür',
+    'Terapistle anlamlı bir ilişki kurmak konusunda gönülsüzdür',
+    'Pek çok hastadan daha uzun süre psikoterapide kalır',
+    'Terapiste güven duyması zor olabilir',
+    'Tıbbi yardım ve ilaç tedavisinde yararlanabilir'
   ];
+}
+
+/**
+ * Genel Açıklama ve Madde Bilgisi
+ */
+export function getScScaleDescription(): string {
+  return 'Madde sayısı 78. Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır.';
+}
+
+/**
+ * Ortalama Puanlar (K eklemeli - Savaşır verileri)
+ */
+export function getScScoreAverages(): { male: number; female: number } {
+  return {
+    male: 29.82,
+    female: 31.06
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -185,9 +204,10 @@ export const scScaleInterpretation = {
   getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new ScScale().getPersonalizedInterpretation(tScore, personalInfo),
   getHighScoreCharacteristics: getScHighScoreCharacteristics,
   getLowScoreCharacteristics: getScLowScoreCharacteristics,
-  getGeneralCharacteristics: getScGeneralCharacteristics,
+  getTherapeuticCharacteristics: getScTherapeuticCharacteristics,
+  getDescription: getScScaleDescription,
+  getScoreAverages: getScScoreAverages,
   name: 'Şizofreni (Sc)',
   number: 8,
-  description: 'Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır.',
-  itemCount: 78
+  description: getScScaleDescription()
 };

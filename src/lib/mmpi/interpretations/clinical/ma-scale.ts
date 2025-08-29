@@ -1,5 +1,5 @@
 // Hipomani (Ma) Alt Testi - Ölçek 9
-// MMPI Klinik Ölçek - Hipomani olağandışı ve sürekli, taşkın ya da huzursuz bir duygudurum döneminin en az bir haftadır olmasıdır
+// MMPI Klinik Ölçek - Hipomani dönemlerini değerlendirmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
@@ -38,27 +38,45 @@ export class MaScale {
     // Kişiselleştirilmiş notları oluştur
     const personalizedNotes: string[] = [];
 
-    // Yaş faktörü (kitapta açık belirtilen)
-    if (personalInfo.dogumTarihi && tScore >= 70) {
+    if (personalInfo.dogumTarihi) {
       const yas = hesaplaYas(personalInfo.dogumTarihi);
       
-      if (yas !== null && yas < 18) {
-        personalizedNotes.push("Ergenlerde bu yükselme, artmış hareketliliği gösterir.");
-        personalizedNotes.push("İmpulsif ve kontrolsüzdürler.");
-        personalizedNotes.push("Grandiözite ve çağrışımlarında artmalar vardır.");
-        personalizedNotes.push("İletişim güçlükleri ve suça eğilim görülebilir.");
+      if (yas !== null) {
+        // Gençlerde Ma yüksekliği normal
+        if (yas <= 25 && tScore >= 60) {
+          personalizedNotes.push("Gençlerde daha yüksek olabilir. Bu düzeydeki puanlar lise ya da lise mezunu öğrencilerde çok sıktır, çünkü bu bireylerde enerji düzeyinin yüksek olması beklenen bir durumdur.");
+        }
+
+        // Ergenler için özel durum
+        if (yas >= 13 && yas <= 17 && tScore >= 70) {
+          personalizedNotes.push("Ergenlerde bu yükselme, artmış hareketliliği gösterir. İmpulsif ve kontrolsüzdürler. Grandiözite ve çağrışımlarında artmalar vardır. İletişim güçlükleri ve suça eğilim görülebilir.");
+        }
+
+        // Orta yaş ve üstünde yüksek Ma
+        if (yas >= 45 && tScore >= 70) {
+          personalizedNotes.push("Orta yaş ve üstünde yüksek Ma puanları daha dikkat çekicidir ve değerlendirilmesi gerekir.");
+        }
+
+        // Yaşlılarda düşük Ma normal
+        if (yas >= 65 && tScore <= 44) {
+          personalizedNotes.push("Yaşlı insanlarda 9'un düşüklüğü beklenen bir durumdur, normal yaşlanma sürecini gösterir.");
+        }
+
+        // 45 yaş altında düşük Ma anormal
+        if (yas < 45 && tScore <= 44) {
+          personalizedNotes.push("45 yaş altında düşük olması beklenen bir durum değildir ve dikkat edilmesi gerekir.");
+        }
       }
     }
 
-    // Yaş faktörü (kitapta açık belirtilen)
-    if (personalInfo.dogumTarihi && tScore < 45) {
-      const yas = hesaplaYas(personalInfo.dogumTarihi);
-      
-      if (yas !== null && yas > 45) {
-        personalizedNotes.push("Yaşlı insanlarda 9'un düşüklüğü beklenen bir durumdur, normal yaşlanma sürecini gösterir.");
-      } else if (yas !== null && yas <= 45) {
-        personalizedNotes.push("45 yaş altında düşük olması beklenen bir durum değildir ve dikkat edilmesi gerekir.");
-      }
+    // Eğitim durumu faktörü
+    if (personalInfo.egitimDurumu && ['Lise'].includes(personalInfo.egitimDurumu) && tScore >= 60) {
+      personalizedNotes.push("Eğitim düzeyi etkili olabilir. Lise düzeyinde eğitim görmüşlerde yüksek enerji düzeyi daha normal kabul edilir.");
+    }
+
+    // Cinsiyet farkları genel olarak belirtilmiş
+    if (personalInfo.cinsiyet && tScore >= 60) {
+      personalizedNotes.push("Cinsiyete göre farklılık gösterebilir. Erkeklerde ortalama 19.96, kadınlarda ortalama 19.72 olarak bulunmuştur.");
     }
 
     return {
@@ -72,38 +90,49 @@ export class MaScale {
       return {
         tScore,
         level: '85 T Puanı Ve Üstü',
-        description: 'Ajitasyon ya da manik dönem olabilir.',
+        description: 'Ajitasyon ya da manik dönem olabilir. Birey hiperaktiftir, davranışları yordanamaz, fikir uçuşmaları vardır.',
         characteristics: [
-          'Birey hiperaktiftir, davranışları yordanamaz',
-          'Fikir uçuşmaları vardır',
-          'Kendilik değerlerini abartır'
+          'Kendilik değerlerini abartır',
+          'Hiperaktivite',
+          'Fikir uçuşmaları',
+          'Yordanamaz davranışlar'
         ],
-        clinicalSignificance: 'Manik dönem - Hiperaktivite ve yordanamaz davranışlar'
+        clinicalSignificance: 'Manik episod - Kritik düzey'
       };
     } else if (tScore >= 70) {
       return {
         tScore,
         level: '70-84 T Puanı',
-        description: 'Enerjik, konuşkan, eylemi düşünceye tercih eden kişilerdir.',
+        description: 'Enerjik, konuşkan, eylemi düşünceye tercih eden kişilerdir. İlgileri çok geniş bir alana yayılmıştır ve hemen gerçekleştirmek istedikleri çok sayıda projeleri vardır.',
         characteristics: [
-          'İlgileri çok geniş bir alana yayılmıştır',
-          'Hemen gerçekleştirmek istedikleri çok sayıda projeleri vardır',
-          'Bu kişilerin çoğunda aktivite ve güç, abartılı düzeyde yüksektir',
-          'Ancak projelerini tamamlayamazlar',
+          'Bu kişilerin çoğunda aktivite ve güç, abartılı düzeyde yüksektir, ancak projelerini tamamlayamazlar',
           'Tipik olarak davranışlarını, düşmanlık duygularını ve öfkelerini kontrol edemezler',
-          'Gerçek manik özellik gösterebilirler',
-          'Fikir uçuşması, duygu durumda kaymalar ve değişmeler, büyüklük sanrıları ve hiperaktivite gibi'
+          'Gerçek manik özellik gösterebilirler fikir uçuşması, duygu durumda kaymalar ve değişmeler, büyüklük sanrıları ve hiperaktivite gibi'
         ]
       };
     } else if (tScore >= 60) {
+      if (tScore >= 70) {
+        return this.getInterpretation(tScore); // Bu durumda yukarıdaki case'e girer
+      } else if (tScore >= 60) {
+        return {
+          tScore,
+          level: '60-69 T Puanı',
+          description: 'Hoş, enerjik, meraklı, sosyal, kolay ilişki kuran, ilgi alanları geniş kişilerdir.',
+          characteristics: [
+            'Bu hallerinden kendileri de memnundur',
+            'İyimserlik, bağımsızlık ve kendine güven vardır'
+          ]
+        };
+      }
+    }
+    
+    if (tScore >= 60 && tScore <= 75) {
       return {
         tScore,
         level: '60-75 T Puanı',
-        description: 'Enerjik, dışadönük ve aktif bireyleri gösterir.',
+        description: 'Enerjik, dışadönük ve aktif bireyleri gösterir. Bunlar diğerleri tarafından hoş ve yeterli olarak görülürler.',
         characteristics: [
-          'Bunlar diğerleri tarafından hoş ve yeterli olarak görülürler',
-          'Bu düzeydeki puanlar lise ya da lise mezunu öğrencilerde çok sıktır',
-          'Çünkü bu bireylerde enerji düzeyinin yüksek olması beklenen bir durumdur',
+          'Bu düzeydeki puanlar lise ya da lise mezunu öğrencilerde çok sıktır, çünkü bu bireylerde enerji düzeyinin yüksek olması beklenen bir durumdur',
           'Bu düzeyde puan alan kişiler onay ve statü kazanmak için çaba harcarlar',
           'Düşünce ve davranışlarında özgür olma eğilimleri vardır'
         ]
@@ -112,9 +141,8 @@ export class MaScale {
       return {
         tScore,
         level: '45-59 T Puanı',
-        description: 'Normal aralığıdır.',
+        description: 'Normal aralığıdır. Puan normal aralıktan yükseldikçe mani düzeyinin arttığı düşünülür.',
         characteristics: [
-          'Puan normal aralıktan yükseldikçe mani düzeyinin arttığı düşünülür',
           'Bu şekilde, puanlardaki artış maniye, giderek hipermaniye işaret eder',
           'Manik hastalar davranışlarından kolaylıkla tanınabildiği için, alt test daha çok ortalarda puan alan hastaların teşhisinde yardımcı olabilir'
         ]
@@ -123,13 +151,16 @@ export class MaScale {
       return {
         tScore,
         level: '21-44 T Puanı',
-        description: 'Düşük enerji düzeyi, güdü azlığı ve hatta apatiyi gösterir.',
+        description: 'Düşük enerji düzeyi, güdü azlığı ve hatta apatiyi gösterir. Bu geçici yorgunluk ya da hastalığa işaret etmektedir.',
         characteristics: [
-          'Bu geçici yorgunluk ya da hastalığa işaret etmektedir',
           'Düşük puanların çoğunluğu, kronik açıdan düşük enerji düzeyinin belirtisidir',
           'Bireylerin kendilerine güvenleri azdır ve amaçları genellikle yoktur',
           'Sabahları kalkmak istemezler ve herhangi bir proje başlamakta kendilerini aşırı çaba göstermek zorunda hissederler',
           'Özellikle 2 alt testinin yükselmediği durumlarda depresyon düşünülmelidir'
+        ],
+        additionalNotes: [
+          'Yaşlı insanlarda 9\'un düşüklüğü beklenen bir durumdur, normal yaşlanma sürecini gösterir',
+          '45 yaş altında düşük olması beklenen bir durum değildir ve dikkat edilmesi gerekir'
         ]
       };
     }
@@ -137,7 +168,7 @@ export class MaScale {
 }
 
 /**
- * Ma Alt Testinde Yüksek Puan Alan Bir Birey
+ * Yüksek Ma Puanı Alan Bireyin Özellikleri
  */
 export function getMaHighScoreCharacteristics(): string[] {
   return [
@@ -177,7 +208,7 @@ export function getMaHighScoreCharacteristics(): string[] {
     'Kadınsa, geleneksel kadınlık rolünü reddedici olabilir',
     'Erkekse, homoseksüel dürtülerden endişe duyar',
     'Terapide prognozu kötüdür',
-    'Psikoterapide oruma direnç gösterir',
+    'Psikoterapide çalışma direnç gösterir',
     'Psikoterapiye düzensiz aralıklarla gelir',
     'Psikoterapiyi erken sonlandırır',
     'Sorunları stereotipik bir biçimde tekrarlar',
@@ -187,11 +218,11 @@ export function getMaHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Ma Alt Testinde Düşük Alan Bir Birey
+ * Düşük Ma Puanı Alan Bireyin Özellikleri
  */
 export function getMaLowScoreCharacteristics(): string[] {
   return [
-    'Düşüş enerji ve aktivite seviyesi vardır',
+    'Düşük enerji ve aktivite seviyesi vardır',
     'Uyuşuk, apatik, kayıtsızdır',
     'Motive etmesi güçtür',
     'Kronik yorgunluk, fiziksel tükenmişlik hisseder',
@@ -216,12 +247,20 @@ export function getMaSpikeInterpretation(): string {
 }
 
 /**
- * Ma Alt Testi Genel Özellikleri
+ * Genel Açıklama ve Madde Bilgisi
  */
-export function getMaGeneralCharacteristics(): string[] {
-  return [
-    'Hipomani olağandışı ve sürekli, taşkın ya da huzursuz bir duygudurum döneminin en az bir haftadır olmasıdır'
-  ];
+export function getMaScaleDescription(): string {
+  return 'Madde sayısı 48. Hipomani olağandışı ve sürekli, taşkın ya da huzursuz bir duygudurum döneminin en az bir haftadır olmasıdır.';
+}
+
+/**
+ * Ortalama Puanlar (K Eklemeli - Savaşır verileri)
+ */
+export function getMaScoreAverages(): { male: number; female: number } {
+  return {
+    male: 19.96,
+    female: 19.72
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -231,9 +270,9 @@ export const maScaleInterpretation = {
   getHighScoreCharacteristics: getMaHighScoreCharacteristics,
   getLowScoreCharacteristics: getMaLowScoreCharacteristics,
   getSpikeInterpretation: getMaSpikeInterpretation,
-  getGeneralCharacteristics: getMaGeneralCharacteristics,
+  getDescription: getMaScaleDescription,
+  getScoreAverages: getMaScoreAverages,
   name: 'Hipomani (Ma)',
   number: 9,
-  description: 'Hipomani olağandışı ve sürekli, taşkın ya da huzursuz bir duygudurum döneminin en az bir haftadır olmasıdır.',
-  itemCount: 48
+  description: getMaScaleDescription()
 };

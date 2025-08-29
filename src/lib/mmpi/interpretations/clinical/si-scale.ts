@@ -1,5 +1,5 @@
-// Sosyal İçe Dönüklük (Si) Alt Testi - Ölçek 0
-// MMPI Klinik Ölçek - Standart MMPI profiline eklenmiş bir alt testtir. İçedönüklük (Introversion) ve dışadönüklük (Entraversion) üzerinde çok çalışılmış bir kişilik boyutudur. Bu alt test içedönüklüğün yalnızca bir boyutunu, sosyal ilişkilerdeki içe dönüklüğü ölçmeyi amaçlamaktadır. Diğer alt testlerden daha farklı olarak geliştirilmiştir
+// Sosyal İçedönüklük (Si) Alt Testi - Ölçek 0
+// MMPI Klinik Ölçek - Sosyal içedönüklük ve ekstraversionu değerlendirmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
@@ -17,7 +17,7 @@ export interface SiScaleInterpretation {
 
 export class SiScale {
   /**
-   * Kişisel bilgileri dahil eden gelişmiş sosyal içe dönüklük ölçeği yorumlaması
+   * Kişisel bilgileri dahil eden gelişmiş sosyal içedönüklük ölçeği yorumlaması
    */
   getPersonalizedInterpretation(
     tScore: number,
@@ -38,21 +38,20 @@ export class SiScale {
     // Kişiselleştirilmiş notları oluştur
     const personalizedNotes: string[] = [];
 
-    // Yaş faktörü (kitapta açık belirtilen)
     if (personalInfo.dogumTarihi) {
       const yas = hesaplaYas(personalInfo.dogumTarihi);
       
       if (yas !== null) {
-        if (yas < 18) {
-          personalizedNotes.push("Ergenler ve yüksekokul öğrencileri, genellikle 40 ile 50 T puanı arasında yer alırlar.");
+        // Ergenler ve yüksekokul öğrencileri için özel durum
+        if (yas >= 13 && yas <= 25 && tScore >= 40 && tScore <= 50) {
+          personalizedNotes.push("Alt test Si'deki puanlar yaşla birlikte artar. Ergenler ve yüksekokul öğrencileri, genellikle 40 ile 50 T puanı arasında yer alırlar.");
         }
       }
     }
 
-    // Medeni hal faktörü (kitapta açık belirtilen)
-    if (personalInfo.medeniDurum && personalInfo.medeniDurum === 'Evli') {
-      personalizedNotes.push("Alt test Si, evlilik ilişkileri üzerinde tahminler yapmaya yararlıdır.");
-      personalizedNotes.push("Alt test Si'de 20 puanlık bir farklılık olan çiftlerin, sosyal ilişkiler açısından evlilik çatışmalarına düşmeleri olasıdır.");
+    // Evlilik uyumu için değerlendirme
+    if (personalInfo.medeniDurum === 'Evli') {
+      personalizedNotes.push("Alt test Si, evlilik ilişkileri üzerinde tahminler yapmaya yararlıdır. Alt test Si'de 20 puanlık bir farklılık olan çiftlerin, sosyal ilişkiler açısından evlilik çatışmalarına düşmeleri olasıdır.");
     }
 
     return {
@@ -66,13 +65,15 @@ export class SiScale {
       return {
         tScore,
         level: '70 T Puanı Ve Üstü',
-        description: 'Sosyal açıdan beceriksiz olan kişilerdir.',
+        description: 'Sosyal açıdan beceriksiz olan kişilerdir. Sosyal ilişkilerde anksiyete yaşar ve ilişki kurmaktan kaçınırlar.',
         characteristics: [
-          'Sosyal ilişkilerde anksiyete yaşar ve ilişki kurmaktan kaçınırlar',
           'Nevrotik üçlüde yükselme görülebilir',
           'Ayrıca bakınız, 2, 7 ve 8 alt testlerinin yükselmesi'
         ],
-        clinicalSignificance: 'Sosyal anksiyete - İlişki kurmaktan kaçınma'
+        additionalNotes: [
+          'Alt test Si\'deki yükselmeye, alt test 4 ve 9\'daki yükselmeler de eşlik ediyorsa, eyleme vurukluğun bastırıldığı düşünülmelidir',
+          'Alt test 2 ya da 7 özellikle alt test 8\'in eşlik ettiği durumlarda, ruminatik davranışların kuvvetlendiği görülür'
+        ]
       };
     } else if (tScore >= 60) {
       return {
@@ -89,8 +90,8 @@ export class SiScale {
         level: '45-59 T Puanı',
         description: 'Sosyal ilişki kurmada başarılı olan bireylere işaret etmektedir.',
         characteristics: [
-          'Normal sosyal beceriler',
-          'Dengeli sosyal etkileşim'
+          'Normal sosyal işlev',
+          'Uyumlu kişilerarası ilişkiler'
         ]
       };
     } else {
@@ -110,7 +111,7 @@ export class SiScale {
 }
 
 /**
- * Si Alt Testinde Yüksek Puan Alan Birey (Graham 1987)
+ * Yüksek Si Puanı Alan Bireyin Özellikleri (Graham 1987)
  */
 export function getSiHighScoreCharacteristics(): string[] {
   return [
@@ -138,7 +139,7 @@ export function getSiHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Si Alt Testinde Düşük Puan Alan Bir Birey
+ * Düşük Si Puanı Alan Bireyin Özellikleri
  */
 export function getSiLowScoreCharacteristics(): string[] {
   return [
@@ -160,18 +161,46 @@ export function getSiLowScoreCharacteristics(): string[] {
 }
 
 /**
- * Si Alt Testi Genel Özellikleri ve Notlar
+ * Si Alt Testinin Özel Özellikleri
  */
-export function getSiGeneralCharacteristics(): string[] {
+export function getSiSpecialCharacteristics(): string[] {
   return [
     'Psikolojik ve normal popülasyon için alt test Si\'de alınan yüksek puanlar benzer şekilde tanımlanır',
     'Sosyal olarak içedönük utangaç ve geri çekilmiş kişiler olarak değerlendirilir',
     'Alt test Si\'deki puanlar yaşla birlikte artar',
+    'Ergenler ve yüksekokul öğrencileri, genellikle 40 ile 50 T puanı arasında yer alırlar',
     'Alt test Si, evlilik ilişkileri üzerinde tahminler yapmaya yararlıdır',
-    'Alt test Si\'de 20 puanlık bir farklılık olan çiftlerin, sosyal ilişkiler açısından evlilik çatışmalarına düşmeleri olasıdır',
-    'Alt test Si\'deki yükselmeye, alt test 4 ve 9\'daki yükselmeler de eşlik ediyorsa, eyleme vurukluğun bastırıldığı düşünülmelidir',
-    'Alt test 2 ya da 7 özellikle alt test 8\'in eşlik ettiği durumlarda, ruminatik davranışların kuvvetlendiği görülür'
+    'Alt test Si\'de 20 puanlık bir farklılık olan çiftlerin, sosyal ilişkiler açısından evlilik çatışmalarına düşmeleri olasıdır'
   ];
+}
+
+/**
+ * Si Alt Testinin Diğer Testlerle İlişkileri
+ */
+export function getSiTestRelationships(): string[] {
+  return [
+    'Alt test Si\'deki yükselmeye, alt test 4 ve 9\'daki yükselmeler de eşlik ediyorsa, eyleme vurukluğun bastırıldığı düşünülmelidir',
+    'Alt test 2 ya da 7 özellikle alt test 8\'in eşlik ettiği durumlarda, ruminatik davranışların kuvvetlendiği görülür',
+    '049 Kodu: Psikiyatrik olgularda eyleme vurukluğun bastırılması',
+    '027 (8) Kodu: Ruminatik davranışların kuvvetlenmesi'
+  ];
+}
+
+/**
+ * Genel Açıklama
+ */
+export function getSiScaleDescription(): string {
+  return 'Sosyal İçedönüklük (Si) alt testi, kişinin sosyal etkileşime olan eğilimini ve sosyal durumlardan kaçınma ya da bunlara yaklaşma derecesini değerlendirmek amacıyla geliştirilmiştir. Bu ölçek introversion-extraversion boyutunu ölçer.';
+}
+
+/**
+ * Ortalama Puanlar (Savaşır verileri)
+ */
+export function getSiScoreAverages(): { male: number; female: number } {
+  return {
+    male: 26.86,
+    female: 29.88
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -180,9 +209,11 @@ export const siScaleInterpretation = {
   getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new SiScale().getPersonalizedInterpretation(tScore, personalInfo),
   getHighScoreCharacteristics: getSiHighScoreCharacteristics,
   getLowScoreCharacteristics: getSiLowScoreCharacteristics,
-  getGeneralCharacteristics: getSiGeneralCharacteristics,
-  name: 'Sosyal İçe Dönüklük (Si)',
+  getSpecialCharacteristics: getSiSpecialCharacteristics,
+  getTestRelationships: getSiTestRelationships,
+  getDescription: getSiScaleDescription,
+  getScoreAverages: getSiScoreAverages,
+  name: 'Sosyal İçedönüklük (Si)',
   number: 0,
-  description: 'Standart MMPI profiline eklenmiş bir alt testtir. İçedönüklük (Introversion) ve dışadönüklük (Entraversion) üzerinde çok çalışılmış bir kişilik boyutudur. Bu alt test içedönüklüğün yalnızca bir boyutunu, sosyal ilişkilerdeki içe dönüklüğü ölçmeyi amaçlamaktadır. Diğer alt testlerden daha farklı olarak geliştirilmiştir.',
-  itemCount: 70
+  description: getSiScaleDescription()
 };

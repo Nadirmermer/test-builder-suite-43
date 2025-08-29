@@ -38,15 +38,36 @@ export class DScale {
     // Kişiselleştirilmiş notları oluştur
     const personalizedNotes: string[] = [];
 
-    // Eğitim durumu faktörü (kitapta açık belirtilen)
-    if (personalInfo.egitimDurumu) {
-      if (tScore >= 70) {
-        if (personalInfo.egitimDurumu === 'Lise') {
-          personalizedNotes.push("Lise öğrencilerinde 2'nin tek başına 70 T puanının üstünde olması genellikle klinik olarak daha az anlamlıdır.");
-          personalizedNotes.push("Sıklıkla durumsal sorunlar ve genellikle karşı cinsle ilişkiler, ders çalışmada ya da mesleki seçenekler üzerindeki kaygıyı yansıtır.");
-        } else if (personalInfo.egitimDurumu === 'Önlisans' || personalInfo.egitimDurumu === 'Lisans' || personalInfo.egitimDurumu === 'Yüksek lisans' || personalInfo.egitimDurumu === 'Doktora') {
-          personalizedNotes.push("Depresyonun tek başına yüksek olduğu yüksekokul öğrencileri tipik olarak sorunlarının kökenine inme çabalarını reddederler.");
-          personalizedNotes.push("Bunun yerine ebeveyn yerine geçen birinden öğüt almaya çalışırlar.");
+    if (personalInfo.dogumTarihi) {
+      const yas = hesaplaYas(personalInfo.dogumTarihi);
+      
+      if (yas !== null) {
+        // Lise öğrencileri için özel durum (14-18 yaş, Lise eğitimi)
+        if (yas >= 14 && yas <= 18 && personalInfo.egitimDurumu === 'Lise' && tScore >= 70) {
+          personalizedNotes.push("Lise öğrencilerinde 2'nin tek başına 70 T puanının üstünde olması genellikle klinik olarak daha az anlamlıdır ve sıklıkla durumsal sorunlar ve genellikle karşı cinsle ilişkiler, ders çalışmada ya da mesleki seçenekler üzerindeki kaygıyı yansıtır.");
+        }
+        
+        // Yüksekokul/Üniversite öğrencileri için özel durum (18-25 yaş, üniversite eğitimi)
+        if (yas >= 18 && yas <= 25 && 
+            ['Önlisans', 'Lisans', 'Yüksek lisans', 'Doktora'].includes(personalInfo.egitimDurumu as string) && 
+            tScore >= 70) {
+          personalizedNotes.push("Depresyonun tek başına yüksek olduğu yüksekokul öğrencileri tipik olarak sorunlarının kökenine inme çabalarını reddederler ve bunun yerine ebeveyn yerine geçen birinden öğüt almaya çalışırlar.");
+        }
+
+        // 25 yaş üzeri için genel yorum
+        if (yas > 25) {
+          personalizedNotes.push("25 yaşın üzerindekilerde depresyon kodu daha sık görülmektedir.");
+          
+          // Yaş artışı ile cinsiyet farkı
+          if (personalInfo.cinsiyet === 'Erkek') {
+            personalizedNotes.push("Yaş arttıkça depresyon kodu erkeklerde kadınlardan daha fazla görülür.");
+          }
+        }
+
+        // Ergenler için genel yorum
+        if (yas >= 13 && yas <= 17) {
+          personalizedNotes.push("Ergenlerde bu kod genellikle kötü arkadaş ilişkileri ile bağlantılıdır. Bu ergenler tipik olarak okul ortamında ve okul dışında çok az arkadaşı olan ve yalnız bireylerdir.");
+          personalizedNotes.push("Genellikle pasif, uysal ve yumuşak başlıdırlar. Aile örüntülerinde, sıklıkla ilgisi sınırlı bir baba ve çok ilgili bir anne vardır.");
         }
       }
     }
@@ -64,11 +85,12 @@ export class DScale {
         level: '85 Ve Üstü T Puanı',
         description: 'Bir şeye odaklaşamayacak ya da açık bir biçimde düşünemeyecek kadar kederli olan bireyleri gösterir.',
         characteristics: [
-          'Odaklanma ve düşünme yeteneği ciddi şekilde bozulmuştur',
-          'Aşırı keder ve üzüntü hali vardır',
-          'Bilişsel işlevlerde belirgin bozulma görülür'
+          'Bir şeye odaklaşamama',
+          'Açık bir biçimde düşünememe',
+          'Aşırı kederli durum',
+          'Ciddi depresif belirtiler'
         ],
-        clinicalSignificance: 'Kritik depresyon düzeyi - Acil müdahale gerekli'
+        clinicalSignificance: 'Ciddi depresif episod - Kritik düzey'
       };
     } else if (tScore >= 79) {
       return {
@@ -76,39 +98,42 @@ export class DScale {
         level: '79 Ve Üstü T Puanı',
         description: 'Birey depresif ve kaygılıdır, benlik saygısı düşüktür. Genel olarak yaşama bakışı karamsardır.',
         characteristics: [
-          'Tipik olarak ilgi alanları daralmış, morali bozuktur',
-          'Kendisini işe yaramaz olarak görür',
-          'Duyarlılıkları kendi depresyonlarına ve fonksiyon düzeylerine yönelmiştir',
-          'Kendilerini soyutlama ile içe çekilme görülür',
-          'Yüksek puanlar sıklıkla somatik belirtiler ve yakınmalarla bir arada bulunur',
-          'Alt test 2\'de yükselme, kişinin o sıradaki işlev düzeyiyle ilgili rahatsızlığı ya da hoşnutsuzluğu hakkında bilgi verebilir',
-          'Bu subjektif gerginlik anksiyete belirtisi olabileceği gibi gerçek bir depresif durumda olabilir'
+          'Tipik olarak ilgi alanları daralmış, morali bozuktur ve kendisini işe yaramaz olarak görür',
+          'Bu kişilerin duyarlılıkları kendi depresyonlarına ve fonksiyon düzeylerine yönelmiştir',
+          'Aynı zamanda kendilerini soyutlama ile içe çekilme görülür',
+          'Bu da değişme isteği ile birlikte iyi bir prognoz sağlar',
+          'Yüksek puanlar sıklıkla somatik belirtiler ve yakınmalarla bir arada bulunur'
         ],
         additionalNotes: [
-          'Yüksek puanlar her zaman depresyon olarak tanımlanamaz, kişinin o an çevresinden gelen rahatsızlıklarını da yansıtabilir',
-          'Değişme isteği ile birlikte iyi bir prognoz sağlar'
+          'Alt test 2\'de yükselme, kişinin o sıradaki işlev düzeyiyle ilgili rahatsızlığı ya da hoşnutsuzluğu hakkında bilgi verebilir',
+          'Bu subjektif gerginlik anksiyete belirtisi olabileceği gibi gerçek bir depresif durumda olabilir',
+          'Yüksek puanlar her zaman depresyon olarak tanımlanamaz, kişinin o an çevresinden gelen rahatsızlıklarını da yansıtabilir'
         ]
       };
     } else if (tScore >= 70) {
       return {
         tScore,
         level: '70-79 T Puanı',
-        description: 'Ciddi ve kendine güveni olmayan bireyleri gösterir. Klinik olarak belirgin depresyonu olan bireyi gösterir.',
+        description: 'Ciddi ve kendine güveni olmayan bireyleri gösterir. Eğer o an durumsal baskılar yoksa ve özellikle L de yükselmiş ise bu bireyler, tipik olarak iyi ve kötü ya da doğru ve yanlış biçiminde düşünürler.',
         characteristics: [
-          'Eğer o an durumsal baskılar yoksa ve özellikle L de yükselmiş ise bu bireyler, tipik olarak iyi ve kötü ya da doğru ve yanlış biçiminde düşünürler',
+          'Klinik olarak belirgin depresyonu olan bireyi gösterir',
           'Bu bireyler en küçük bir şey karşısında bile endişe duyma eğilimi içindedirler',
           'Psikiyatrik hastalar bu ranjda yer alırlar',
           'Bu alanda bireyin yaşadığı huzursuzluk onun iyileşme için motive olduğunun göstergesidir'
         ],
-        clinicalSignificance: 'Hastada depresyonun göstergeleri yoksa ve diğer alt testler yükselmemişse hastanın intihar eğilimi açısından değerlendirilmesi gerekmektedir'
+        additionalNotes: [
+          'Hastada depresyonun göstergeleri yoksa ve diğer alt testler yükselmemişse hastanın intihar eğilimi açısından değerlendirilmesi gerekmektedir'
+        ]
       };
     } else if (tScore >= 60) {
       return {
         tScore,
         level: '60-69 T Puanı',
-        description: 'Bu bireylerde orta düzeyde depresyon, endişe ve karamsarlık göstergesi vardır.',
+        description: 'Bu bireylerde orta düzeyde depresyon, endişe ve karamsarlık göstergesi vardır. Bu duygudurum hali, durumsal bir krize bağlı olabileceği gibi kalıcı ve geri dönüşü olmayan bir durum da olabilir.',
         characteristics: [
-          'Bu duygudurum hali, durumsal bir krize bağlı olabileceği gibi kalıcı ve geri dönüşü olmayan bir durum da olabilir'
+          'Orta düzeyde depresyon belirtileri',
+          'Endişe ve karamsarlık',
+          'Durumsal kriz veya kalıcı duygusal sorun olabilir'
         ]
       };
     } else if (tScore >= 45) {
@@ -117,21 +142,21 @@ export class DScale {
         level: '45-59 T Puanı',
         description: 'Bu bireyin yaşamında iyimserlik ve karamsarlık dengesini kurduğunun göstergesidir.',
         characteristics: [
-          'Dengeli bir duygudurum hali vardır',
-          'Yaşamda iyimserlik ve karamsarlık arasında denge kurmuştur'
+          'İyimserlik ve karamsarlık dengesi',
+          'Normal duygusal denge',
+          'Uyumlu kişilik yapısı'
         ]
       };
     } else {
       return {
         tScore,
         level: '28-44 T Puanı',
-        description: 'Olasılıkla neşeli, meraklı, iyimser, aktif ve dışa dönüktürler.',
+        description: 'Olasılıkla neşeli, meraklı, iyimser, aktif ve dışa dönüktürler (bakınız Si alt testinin düşüklüğü).',
         characteristics: [
+          'Neşeli, meraklı, iyimser',
+          'Aktif ve dışa dönük',
           'Bu durum bazen bu bireylerin kayıtsız gibi algılanmalarına neden olur',
           'Bu da diğerlerinde hostilite ortaya çıkarır'
-        ],
-        additionalNotes: [
-          'Bakınız Si alt testinin düşüklüğü'
         ]
       };
     }
@@ -139,7 +164,7 @@ export class DScale {
 }
 
 /**
- * D Alt Testinde Yüksek Puan Alan Bir Birey (Graham 1987)
+ * Yüksek D Puanı Alan Bireyin Özellikleri (Graham 1987)
  */
 export function getDHighScoreCharacteristics(): string[] {
   return [
@@ -174,7 +199,7 @@ export function getDHighScoreCharacteristics(): string[] {
 }
 
 /**
- * D Alt Testinde Düşük Puan Alan Birey
+ * Düşük D Puanı Alan Bireyin Özellikleri
  */
 export function getDLowScoreCharacteristics(): string[] {
   return [
@@ -207,17 +232,31 @@ export function getDSpikeInterpretation(): string {
 }
 
 /**
- * Alt Test 2 Tek Başına Yükselme Uyarısı
+ * Özel Yorumlama Notları
  */
-export function getDAloneWarning(): string {
-  return 'Alt test 2 tek başına T-70 değeri üzerinde bir yükselme görülüyorsa ve depresyona ilişkin açık davranışsal belirtiler yoksa, intihar riskine karşı dikkatli olmak gerekir.';
+export function getDSpecialNotes(): string[] {
+  return [
+    'Alt test 2\'nin yorumlanması, birlikte yükselen diğer alt testlere göre değişmektedir',
+    'Depresyon çok farklı nedenlerden kaynaklanabilir ve bunlar ancak diğer alt testlerdeki yükselmelere bakılarak yorumlanabilir',
+    'Alt test 2 tek başına T-70 değeri üzerinde bir yükselme görülüyorsa ve depresyona ilişkin açık davranışsal belirtiler yoksa, intihar riskine karşı dikkatli olmak gerekir'
+  ];
 }
 
 /**
- * Alt Test 2 Yorumlama Notu
+ * Genel Açıklama ve Madde Bilgisi
  */
-export function getDInterpretationNote(): string {
-  return 'Alt test 2\'nin yorumlanması, birlikte yükselen diğer alt testlere göre değişmektedir. Depresyon çok farklı nedenlerden kaynaklanabilir ve bunlar ancak diğer alt testlerdeki yükselmelere bakılarak yorumlanabilir.';
+export function getDScaleDescription(): string {
+  return 'Madde sayısı 60. Bu alt test depresyon belirtilerinin derecesini ölçmek amacıyla geliştirilmiştir. Depresyonda olan kişilerin ana belirtileri, karamsarlık, gelecekten ümitsizlik, kendini değersiz, işe yaramaz görme, suçluluk duyguları, hareketlerde ve düşüncede yavaşlama ve çeşitli bedensel yakınmalardır. Sıklıkla ölüm ve intiharlarla ilgili düşüncelerin yoğunluğu da dikkat çeker. Depresyon belirtileri başka birçok psikiyatrik tanı grubuna da eşlik edebilir.';
+}
+
+/**
+ * Ortalama Puanlar (Savaşır verileri)
+ */
+export function getDScoreAverages(): { male: number; female: number } {
+  return {
+    male: 20.63,
+    female: 23.86
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -227,10 +266,10 @@ export const dScaleInterpretation = {
   getHighScoreCharacteristics: getDHighScoreCharacteristics,
   getLowScoreCharacteristics: getDLowScoreCharacteristics,
   getSpikeInterpretation: getDSpikeInterpretation,
-  getAloneWarning: getDAloneWarning,
-  getInterpretationNote: getDInterpretationNote,
+  getSpecialNotes: getDSpecialNotes,
+  getDescription: getDScaleDescription,
+  getScoreAverages: getDScoreAverages,
   name: 'Depresyon (D)',
   number: 2,
-  description: 'Depresyon belirtilerinin derecesini ölçmek amacıyla geliştirilmiştir. Depresyonda olan kişilerin ana belirtileri, karamsarlık, gelecekten ümitsizlik, kendini değersiz, işe yaramaz görme, suçluluk duyguları, hareketlerde ve düşüncede yavaşlama ve çeşitli bedensel yakınmalardır. Sıklıkla ölüm ve intiharlarla ilgili düşüncelerin yoğunluğu da dikkat çeker. Depresyon belirtileri başka birçok psikiyatrik tanı grubuna da eşlik edebilir.',
-  itemCount: 60
+  description: getDScaleDescription()
 };

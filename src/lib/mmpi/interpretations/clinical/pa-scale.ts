@@ -1,5 +1,5 @@
 // Paranoya (Pa) Alt Testi - Ölçek 6
-// MMPI Klinik Ölçek - Paranoya genç erişkinlik döneminde başlayan ve değişik koşullar altında ortaya çıkan başkalarının davranışını kötü niyetli olarak yorumlayan sürekli bir güvensizlik ve kuşkuculuk durumudur
+// MMPI Klinik Ölçek - Paranoid eğilimleri değerlendirmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
@@ -31,20 +31,10 @@ export class PaScale {
     // Temel yorumu al
     const baseInterpretation = this.getInterpretation(tScore);
     
-    if (!personalInfo) {
-      return baseInterpretation;
-    }
-
-    // Kişiselleştirilmiş notları oluştur
-    const personalizedNotes: string[] = [];
-
-    // Bu alt testte kitapta açık belirtilen yaş, eğitim, medeni hal veya cinsiyet faktörleri bulunmamaktadır
-    // Sadece T puanı aralıklarına göre yorumlama yapılmaktadır
-
-    return {
-      ...baseInterpretation,
-      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
-    };
+    // Kitapta Pa-Scale için açık kişisel faktör belirtilmemiş
+    // Bu nedenle kişiselleştirilmiş notlar eklenmeyecek
+    
+    return baseInterpretation;
   }
 
   getInterpretation(tScore: number): PaScaleInterpretation {
@@ -55,19 +45,18 @@ export class PaScale {
         description: 'Kuşkulu, kızgın, küskün ve durumların doğrudan kendilerine yöneldiği biçimde yorum yapan kişilerdir.',
         characteristics: [
           'Bu bireylerin çoğu paranoiddir, referans fikirleri vardır',
-          'Temel savunma mekanizmasını yansıtmadır',
+          'Temel savunma mekanizması yansıtmadır',
           'Gerçeği değerlendirme bozuktur',
           'Delüzyonlar, perseküsyon ve/ya da grandiöz biçimindedir'
         ],
-        clinicalSignificance: 'Açık paranoid bozukluk - Kritik düzey'
+        clinicalSignificance: 'Paranoid bozukluk - Kritik düzey'
       };
     } else if (tScore >= 70) {
       return {
         tScore,
         level: '70-79 T Puanı',
-        description: 'Diğerlerini suçlama ve hostilite temel özelliklerdir.',
+        description: 'Diğerlerini suçlama ve hostilite temel özelliklerdir. Bu bireyler katı, inatçı ve aşırı duyarlıdırlar.',
         characteristics: [
-          'Bu bireyler katı, inatçı ve aşırı duyarlıdırlar',
           'Kişilerarası ilişkilerde aşırı savunucu tutumları nedeniyle yanlış anlaşılabilirler',
           'Açık paranoid özellikler vardır'
         ]
@@ -91,35 +80,20 @@ export class PaScale {
       return {
         tScore,
         level: '45-59 T Puanı',
-        description: 'Bu kişiler diğerlerini değerlendirmede esnektirler.',
+        description: 'Bu kişiler diğerlerini değerlendirmede esnektirler. Onlara karşı duyarlıdırlar ve diğerlerinin kendilerinden beklentilerini doğru anlayarak olumlu yanıt verirler.',
         characteristics: [
-          'Onlara karşı duyarlıdırlar ve diğerlerinin kendilerinden beklentilerini doğru anlayarak olumlu yanıt verirler',
           '55-59 T puanı arasında olan bireyler anlayışlı, duyarlı kişilerdir'
-        ]
-      };
-    } else if (tScore >= 27) {
-      return {
-        tScore,
-        level: '27-44 T Puanı',
-        description: 'İki tip insan bu puanı verebilir: Diğerlerine duyarlılığı olmayan kişiler ve çok fazla şüphesi ve endişesi olan kişiler.',
-        characteristics: [
-          'Bunlar paranoya maddelerini atlarlar',
-          'Diğerleri ise yüksek puan alan kişilerle aynıdır',
-          'Düşük puan alan bireyler geleneksel, güvenilir, kişilerarası ilişkilerde duyarsız ve ilkeldirler',
-          'Zekaları sınırlıdır ve ilgi alanları daralmıştır'
         ]
       };
     } else {
       return {
         tScore,
-        level: '27 Altı T Puanı',
-        description: 'Aşırı derecede düşük puan alan birey.',
+        level: '27-44 T Puanı',
+        description: 'İki tip insan bu puanı verebilir: Diğerlerine duyarlılığı olmayan kişiler ve çok fazla şüphesi ve endişesi olan kişiler.',
         characteristics: [
-          'Açık paranoid bozukluğu olabilir',
-          'Delüzyonları olabilir, şüpheler, etkilenme düşünceleri gösterebilir',
-          'Semptomları Pa alt testinde yüksek puan alan bireylerden daha belirsizdir',
-          'Baştan savıcı ve savunucudur',
-          'Utangaçtır, sırlarla doludur ve içe çekilmiştir'
+          'Bunlar paranoya maddelerini atlarlar. Diğerleri ise yüksek puan alan kişilerle aynıdır',
+          'Düşük puan alan bireyler geleneksel, güvenilir, kişilerarası ilişkilerde duyarsız ve ilkeldirler',
+          'Zekaları sınırlarıdır ve ilgi alanları daralmıştır'
         ]
       };
     }
@@ -127,7 +101,7 @@ export class PaScale {
 }
 
 /**
- * Pa Alt Testinde Yüksek Puan Alan Bir Birey
+ * Yüksek Pa Puanı Alan Bireyin Özellikleri
  */
 export function getPaHighScoreCharacteristics(): string[] {
   return [
@@ -143,9 +117,9 @@ export function getPaHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Pa Alt Testinde Orta Düzeyde Yüksek Puan Alan Birey (T 65-70)
+ * Orta Düzeyde Yüksek Pa Puanı Alan Bireyin Özellikleri (T 65-70)
  */
-export function getPaMediumHighScoreCharacteristics(): string[] {
+export function getPaModerateHighCharacteristics(): string[] {
   return [
     'Paranoid uğraşları vardır',
     'Diğerlerinin tepkilerine aşırı duyarlıdır',
@@ -163,61 +137,84 @@ export function getPaMediumHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Pa Alt Testinde Hafif Düzeyde Yüksek Puan Alan Bir Birey (T:55-64)
+ * Hafif Düzeyde Yüksek Pa Puanı Alan Bireyin Özellikleri (T 55-64)
  */
-export function getPaMildHighScoreCharacteristics(): string[] {
-  return [
-    'Eğer psikiyatrik hastaysa ve başka herhangi bir sorunu yoksa:',
-    'Kibar, duygusal ve naziktir',
-    'Huzurlu ve yumuşak kalplidir',
-    'Duyarlıdır',
-    'Güvenilirdir',
-    'İşbirlikçidir',
-    'Samimidir',
-    'İlgi alanları çoktur',
-    'Enerjiktir',
-    'İnisiyatif gösterir, iş ve diğer aktivitelerde ego katılımı vardır',
-    'Zekidir, mantıklıdır, açık düşüncelidir, iç görüsü vardır',
-    'İtaatkardır',
-    'Kendine güveni azalmıştır',
-    'Beklenti düzeyi yüksektir, endişeye eğilimlidir',
-    'Eğer psikiyatrik hastaysa ve başka uyumsuzlukları da varsa:',
-    'Yaşama daha paranoid bir durumu vardır',
-    'Çevresini kendisinden isteyen olarak görür, destekleyen olarak değil',
-    'Diğerlerinin ne düşündüğü aşırı derecede önemlidir',
-    'Diğerlerinin motiflerinden şüphelenir',
-    'Öfkeli ve güceniktir'
-  ];
+export function getPaMildHighCharacteristics(): {
+  nonPsychiatric: string[];
+  psychiatric: string[];
+} {
+  return {
+    nonPsychiatric: [
+      'Kibar, duygusal ve naziktir',
+      'Huzurlu ve yumuşak kalplidir',
+      'Duyarlıdır',
+      'Güvenilirdir',
+      'İşbirlikçidir',
+      'Samimidir',
+      'İlgi alanları çoktur',
+      'Enerjiktir',
+      'İnisiyatif gösterir, iş ve diğer aktivitelerde ego katılımı vardır',
+      'Zekidir, mantıklıdır, açık düşüncelidir, iç görüsü vardır',
+      'İtaatkardır',
+      'Kendine güveni azalmıştır',
+      'Beklenti düzeyi yüksektir, endişeye eğilimlidir'
+    ],
+    psychiatric: [
+      'Yaşama daha paranoid bir durumu vardır',
+      'Çevresini kendisinden isteyen olarak görür, destekleyen olarak değil',
+      'Diğerlerinin ne düşündüğü aşırı derecede önemlidir',
+      'Diğerlerinin motiflerinden şüphelenir',
+      'Öfkeli ve güceniktir'
+    ]
+  };
 }
 
 /**
- * Pa Alt Testinde Düşük Puan Alan Bir Birey (T: 35-45)
+ * Düşük Pa Puanı Alan Bireyin Özellikleri (T 35-45)
  */
-export function getPaLowScoreCharacteristics(): string[] {
+export function getPaLowScoreCharacteristics(): {
+  nonPsychiatric: string[];
+  psychiatric: string[];
+} {
+  return {
+    nonPsychiatric: [
+      'Neşelidir',
+      'Dengelidir',
+      'Düzenlidir',
+      'Ciddi, olgun ve mantıklıdır',
+      'Akıllı ve kararlıdır',
+      'Sosyal açıdan ilgilidir',
+      'Sorunlarla kolay bir biçimde baş eder',
+      'Güvenilir ve sadıktır',
+      'Kendini kontrol eder, temkinlidir'
+    ],
+    psychiatric: [
+      'İnatçı ve savunucudur',
+      'Benmerkezcidir',
+      'Kendisini doğrudan ilgilendirmeyen şeylere çok az ilgi gösterir',
+      'Kendinden hoşnut değildir',
+      'Diğerlerinin tepkilerine aşırı duyarlıdır',
+      'Anlayışsızdır',
+      'Sosyal ilgileri ve yetenekleri sınırlıdır',
+      'Vicdanı gelişmemiştir, kuralları çok dikkate almaz',
+      'Kabadır',
+      'Huysuz ve karşıttır',
+      'Yeteneksizdir',
+      'Psikotik semptomlar pek görülmez, bu nedenle psikoz tanısı konulmaz'
+    ]
+  };
+}
+
+/**
+ * Aşırı Derecede Düşük Pa Puanı Alan Bireyin Özellikleri (T<35)
+ */
+export function getPaVeryLowScoreCharacteristics(): string[] {
   return [
-    'Psikiyatrik hasta değilse ve herhangi bir sorunu yoksa:',
-    'Neşelidir',
-    'Dengelidir',
-    'Düzenlidir',
-    'Ciddi, olgun ve mantıklıdır',
-    'Akıllı ve kararlıdır',
-    'Sosyal açıdan ilgilidir',
-    'Sorunlarla kolay bir biçimde baş eder',
-    'Güvenilir ve sadıktır',
-    'Kendini kontrol eder, temkinlidir',
-    'Eğer psikiyatrik hastaysa ya da uyumsuzluğun diğer gösterileri varsa:',
-    'İnatçı ve savunucudur',
-    'Benmerkezcidir',
-    'Kendisini doğrudan ilgilendirmeyen şeylere çok az ilgi gösterir',
-    'Kendinden hoşnut değildir',
-    'Diğerlerinin tepkilerine aşırı duyarlıdır',
-    'Anlayışsızdır',
-    'Sosyal ilgileri ve yetenekleri sınırlıdır',
-    'Vicdanı gelişmemiştir, kuralları çok dikkate almaz',
-    'Kabadır',
-    'Huysuz ve karşıttır',
-    'Yeteneksizdir',
-    'Psikotik semptomlar pek görülmez, bu nedenle psikoz tanısı konulmaz'
+    'Açık paranoid bozukluğu olabilir',
+    'Delüzyonları olabilir, şüpheler, etkilenme düşünceleri gösterebilir',
+    'Semptomları Pa alt testinde yüksek puan alan bireylerden daha belirsizdir',
+    'Baştan savıcı ve savunucudur',
+    'Utangaçtır, sırlarla doludur ve içe çekilmiştir'
   ];
 }
 
@@ -229,12 +226,20 @@ export function getPaSpikeInterpretation(): string {
 }
 
 /**
- * Pa Alt Testi Genel Özellikleri
+ * Genel Açıklama ve Madde Bilgisi
  */
-export function getPaGeneralCharacteristics(): string[] {
-  return [
-    'Paranoya genç erişkinlik döneminde başlayan ve değişik koşullar altında ortaya çıkan başkalarının davranışını kötü niyetli olarak yorumlayan sürekli bir güvensizlik ve kuşkuculuk durumudur'
-  ];
+export function getPaScaleDescription(): string {
+  return 'Madde sayısı 40. Paranoya genç erişkinlik döneminde başlayan ve değişik koşullar altında ortaya çıkan başkalarının davranışını kötü niyetli olarak yorumlayan sürekli bir güvensizlik ve kuşkuculuk durumudur.';
+}
+
+/**
+ * Ortalama Puanlar (Savaşır verileri)
+ */
+export function getPaScoreAverages(): { male: number; female: number } {
+  return {
+    male: 11.12,
+    female: 11.93
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -242,13 +247,14 @@ export const paScaleInterpretation = {
   getInterpretation: (tScore: number) => new PaScale().getInterpretation(tScore),
   getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new PaScale().getPersonalizedInterpretation(tScore, personalInfo),
   getHighScoreCharacteristics: getPaHighScoreCharacteristics,
-  getMediumHighScoreCharacteristics: getPaMediumHighScoreCharacteristics,
-  getMildHighScoreCharacteristics: getPaMildHighScoreCharacteristics,
+  getModerateHighCharacteristics: getPaModerateHighCharacteristics,
+  getMildHighCharacteristics: getPaMildHighCharacteristics,
   getLowScoreCharacteristics: getPaLowScoreCharacteristics,
+  getVeryLowScoreCharacteristics: getPaVeryLowScoreCharacteristics,
   getSpikeInterpretation: getPaSpikeInterpretation,
-  getGeneralCharacteristics: getPaGeneralCharacteristics,
+  getDescription: getPaScaleDescription,
+  getScoreAverages: getPaScoreAverages,
   name: 'Paranoya (Pa)',
   number: 6,
-  description: 'Paranoya genç erişkinlik döneminde başlayan ve değişik koşullar altında ortaya çıkan başkalarının davranışını kötü niyetli olarak yorumlayan sürekli bir güvensizlik ve kuşkuculuk durumudur.',
-  itemCount: 40
+  description: getPaScaleDescription()
 };

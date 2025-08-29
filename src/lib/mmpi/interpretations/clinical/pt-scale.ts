@@ -31,20 +31,10 @@ export class PtScale {
     // Temel yorumu al
     const baseInterpretation = this.getInterpretation(tScore);
     
-    if (!personalInfo) {
-      return baseInterpretation;
-    }
-
-    // Kişiselleştirilmiş notları oluştur
-    const personalizedNotes: string[] = [];
-
-    // Bu alt testte kitapta açık belirtilen yaş, eğitim, medeni hal veya cinsiyet faktörleri bulunmamaktadır
-    // Sadece T puanı aralıklarına göre yorumlama yapılmaktadır
-
-    return {
-      ...baseInterpretation,
-      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
-    };
+    // Kitapta Pt-Scale için açık kişisel faktör belirtilmemiş
+    // Bu nedenle kişiselleştirilmiş notlar eklenmeyecek
+    
+    return baseInterpretation;
   }
 
   getInterpretation(tScore: number): PtScaleInterpretation {
@@ -52,20 +42,19 @@ export class PtScale {
       return {
         tScore,
         level: '84 T Puanı Ve Üstü',
-        description: 'Bireyin ajite ruminasyonları, korku hali, obsesyonları ve kompulsiyonları ya da fobileri olduğu göstermektedir.',
+        description: 'Bireyin ajite ruminasyonları, korku hali, obsesyonları ve kompulsiyonları ya da fobileri olduğunu göstermektedir.',
         characteristics: [
           'Anksiyete ve gerginlik o kadar fazladır ki günlük yaşamlarını bile devam ettiremezler',
           'Entellektüalizasyon, izolasyon ve rasyonalizasyon sıklıkla kullanılmaktadır'
         ],
-        clinicalSignificance: 'Kritik anksiyete düzeyi - Günlük yaşamı etkileyen obsesif-kompulsif bozukluk'
+        clinicalSignificance: 'Obsesif kompulsif bozukluk - Kritik düzey'
       };
     } else if (tScore >= 75) {
       return {
         tScore,
-        level: '75-84 T Puanı',
-        description: 'Temiz, titiz, düzenli kişilerdir.',
+        level: '75-84 T Puanı Ve Üstü',
+        description: 'Temiz, titiz, düzenli kişilerdir. Önemsiz sorunlar karşısında bile gerginlik ve endişe yaşarlar.',
         characteristics: [
-          'Önemsiz sorunlar karşısında bile gerginlik ve endişe yaşarlar',
           'Kendilerini yetersiz, aşağılık duyguları ve suçluluğu olan kişiler olarak gösterirler',
           'Bu kendilerine güvenmelerine bağlıdır',
           'Herhangi bir konuda fikir üretemezler',
@@ -87,17 +76,16 @@ export class PtScale {
         level: '45-59 T Puanı',
         description: 'Bu bireyler yaşamlarını ve işlerini endişe ve güvensizlik duymadan yürütebilirler.',
         characteristics: [
-          'Normal anksiyete düzeyi',
-          'Günlük yaşamı etkileyen belirgin sorunlar yok'
+          'Normal aralık içinde değerler',
+          'Uyumlu kişilik yapısı'
         ]
       };
     } else {
       return {
         tScore,
         level: '20-44 T Puanı',
-        description: 'Rahat, duygusal, gerginliği olmayan bireylerdir.',
+        description: 'Rahat, duygusal, gerginliği olmayan bireylerdir. Çoğu kendine güvenir ve uyumludur.',
         characteristics: [
-          'Çoğu kendine güvenir ve uyumludur',
           'Üretici ve yeterlidirler',
           'Kaygı düzeyleri çok düşük olduğu için sanki tembel gibi görünürler',
           'Başarıya, statüye, kabul görmeye önem veren kişilerdir'
@@ -108,12 +96,12 @@ export class PtScale {
 }
 
 /**
- * Pt Alt Testinde Yüksek Puan Alan Bir Birey (Graham 1987)
+ * Yüksek Pt Puanı Alan Bireyin Özellikleri (Graham 1987)
  */
 export function getPtHighScoreCharacteristics(): string[] {
   return [
     'Telaş ve huzursuzluk yaşar',
-    'Kargılı, gergindir',
+    'Kaygılı, gergindir',
     'Endişeli ve vesveselidir',
     'Sinirli ve tedirgindir',
     'Dikkatini yoğunlaştırmada güçlüğü vardır',
@@ -143,12 +131,40 @@ export function getPtHighScoreCharacteristics(): string[] {
     'Bağımlıdır',
     'Bireyseldir',
     'Heyecanlıdır',
-    'İmmatürdür',
-    'Bedensel yakınmaları vardır',
+    'İmmatürdür'
+  ];
+}
+
+/**
+ * Düşük Pt Puanı Alan Bireyin Özellikleri
+ */
+export function getPtLowScoreCharacteristics(): string[] {
+  return [
+    'Korkular ve kaygılardan arınmıştır',
+    'Kendine güven duymaktadır',
+    'Geniş ilgi alanları vardır',
+    'Sorumlu, gerçekçi, etkili, uyumludur',
+    'Başarı, mevki ve tanınıp bilinmeye ilişkin değerleri vardır'
+  ];
+}
+
+/**
+ * Bedensel Yakınmalar (Yüksek Pt Puanı)
+ */
+export function getPtSomaticComplaints(): string[] {
+  return [
     'Kalp',
     'Üriner sistem',
     'Gastrointestinal sistem',
-    'Yorgunluk, bitkinlik, uykusuzluk',
+    'Yorgunluk, bitkinlik, uykusuzluk'
+  ];
+}
+
+/**
+ * Terapötik Özellikler (Yüksek Pt Puanı)
+ */
+export function getPtTherapeuticCharacteristics(): string[] {
+  return [
     'Kısa psikoterapiye iyi yanıt vermez',
     'Sorunlarına ilişkin kısmi içgörüsü vardır',
     'Entellektüalize ve rasyonalize eder',
@@ -161,34 +177,27 @@ export function getPtHighScoreCharacteristics(): string[] {
 }
 
 /**
- * Pt Alt Testinde Düşük Puan Alan Birey
- */
-export function getPtLowScoreCharacteristics(): string[] {
-  return [
-    'Korkular ve kaygılardan arınmıştır',
-    'Kendine güven duymaktadır',
-    'Geçiş ilgi alanları vardır',
-    'Sorumlu, gerçekçi, etkili, uyumludur',
-    'Başarı, mevki ve tanınıp bilinmeye ilişkin değerleri vardır'
-  ];
-}
-
-/**
  * Sadece Pt Alt Testinin Yükselmesi (Spike) Yorumu
  */
 export function getPtSpikeInterpretation(): string {
-  return 'Alt test 7\'de yüksek puanlar, psikiyatrik grupta, genellikler kaygılı, gergin, karasız ve dikkatini bir noktada yoğunlaştıramayan bireyleri tanımlamaktadır. Bu kişilerde obsesif düşünceler, ruminasyonlar, kendinden şüphe ve bunlara eşlik eden depresif özellikler vardır. Fobi ve kompulsif davranış, bu alt testte yüksek puan alan kişilerde görülebilmesine karşın, bu yüksek puanın karakteristiği değildir. Gerçekte pek çok rijit kompulsif hasta alt test 7\'yi yükseltmez. Çünkü bu kişilerin entelektüel savunmaları, anksiyetelerini ve güvensiz duygularını kontrol edecek kadar güçlüdür. Daha çok entelektüel savunmaları, rasyonalizasyonları ve izolasyonlarıyla anksiyete ve gerilimlerini uzun süre kontrol edemeyen hastalar yüksek puan alırlar. Ayrıca alt test 7\'deki yüksek puan alanlar bedensel işlevlere karşı aşırı ilgiyi gösterir. Bu kişilerin yakınmaları daha çok kardiyovaslüler sistemde yoğunlaşır. Ayrıca gastrointestinal işlevlerle ilişkili yakınmalara da rastlanır. Bu kişilerin fiziksel yakınmaları genellikler yüksek düzeydeki anksiyeteleri ve bu anksiyetenin fiziksel fonksiyonları üzerindeki etkisini yansıtır. Terapötik yardımlardan önce anksiyelerinin semptomatik tedavisi gerçekleştirilmelidir.';
+  return 'Alt test 7\'de yüksek puanlar, psikiyatrik grupta, genellikle kaygılı, gergin, kararsız ve dikkatini bir noktada yoğunlaştıramayan bireyleri tanımlamaktadır. Bu kişilerde obsesif düşünceler, ruminasyonlar, kendinden şüphe ve bunlara eşlik eden depresif özellikler vardır. Fobi ve kompulsif davranış, bu alt testte yüksek puan alan kişilerde görülebilmesine karşın, bu yüksek puanın karakteristiği değildir. Gerçekte pek çok rijid kompulsif hasta alt test 7\'yi yükseltmez. Çünkü bu kişilerin entelektüel savunmaları, anksiyetelerini ve güvensiz duygularını kontrol edecek kadar güçlüdür. Daha çok entelektüel savunmaları, rasyonalizasyonları ve izolasyonlarıyla anksiyete ve gerilimlerini uzun süre kontrol edemeyen hastalar yüksek puan alırlar. Ayrıca alt test 7\'deki yüksek puan alanlar bedensel işlevlere karşı aşırı ilgiyi gösterir. Bu kişilerin yakınmaları daha çok kardiyovasküler sistemde yoğunlaşır. Ayrıca gastrointestinal işlevlerle ilişkili yakınmalara da rastlanır. Bu kişilerin fiziksel yakınmaları genellikle yüksek düzeydeki anksiyeteleri ve bu anksiyetenin fiziksel fonksiyonları üzerindeki etkisini yansıtır. Terapötik yardımlardan önce anksiyelerinin semptomatik tedavisi gerçekleştirilmelidir.';
 }
 
 /**
- * Pt Alt Testi Genel Özellikleri
+ * Genel Açıklama ve Madde Bilgisi
  */
-export function getPtGeneralCharacteristics(): string[] {
-  return [
-    'Bu hastalarda obsesif ruminasyonlar, kompulsif ritüeller görülmektedir',
-    'Ayrıca anormal korkular, karar vermede ve dikkat toplamada güçlük, suçluluk duyguları ve bunaltı sıklıkla rastlanan özellikleridir',
-    'Kendi kendini eleştiride aşırı ahlaki standartlar bu kişilerde sıklıkla görülür'
-  ];
+export function getPtScaleDescription(): string {
+  return 'Madde sayısı 48. Bu alt test, psikasteni ya da obsesif kompulsif bozukluğu değerlendirmek amacıyla geliştirilmiştir. Bu hastalarda obsesif ruminasyonlar, kompulsif ritüeller görülmektedir. Ayrıca anormal korkular, karar vermede ve dikkat toplamada güçlük, suçluluk duyguları ve bunaltı sıklıkla rastlanan özellikleridir. Kendi kendini eleştiride aşırı ahlaki standartlar bu kişilerde sıklıkla görülür.';
+}
+
+/**
+ * Ortalama Puanlar (K eklemeli - Savaşır verileri)
+ */
+export function getPtScoreAverages(): { male: number; female: number } {
+  return {
+    male: 27.90,
+    female: 29.90
+  };
 }
 
 // Geriye uyumluluk için export objesi
@@ -197,10 +206,12 @@ export const ptScaleInterpretation = {
   getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new PtScale().getPersonalizedInterpretation(tScore, personalInfo),
   getHighScoreCharacteristics: getPtHighScoreCharacteristics,
   getLowScoreCharacteristics: getPtLowScoreCharacteristics,
+  getSomaticComplaints: getPtSomaticComplaints,
+  getTherapeuticCharacteristics: getPtTherapeuticCharacteristics,
   getSpikeInterpretation: getPtSpikeInterpretation,
-  getGeneralCharacteristics: getPtGeneralCharacteristics,
+  getDescription: getPtScaleDescription,
+  getScoreAverages: getPtScoreAverages,
   name: 'Psikasteni (Pt)',
   number: 7,
-  description: 'Bu alt test, psikasteni ya da obsesif kompulsif bozukluğu değerlendirmek amacıyla geliştirilmiştir. Bu hastalarda obsesif ruminasyonlar, kompulsif ritüeller görülmektedir. Ayrıca anormal korkular, karar vermede ve dikkat toplamada güçlük, suçluluk duyguları ve bunaltı sıklıkla rastlanan özellikleridir. Kendi kendini eleştiride aşırı ahlaki standartlar bu kişilerde sıklıkla görülür.',
-  itemCount: 48
+  description: getPtScaleDescription()
 };
