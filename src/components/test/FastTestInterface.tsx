@@ -11,11 +11,12 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
 import GenderSelectionModal from './GenderSelectionModal';
 import EducationSelectionModal from './EducationSelectionModal';
+import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { testleriYukle, testSonucuKaydet } from '@/store/slices/testSlice';
 import { danisanService } from '@/lib/db';
 import { TestTanimi, Danisan, TestSorusu } from '@/types';
-import { getTestSorulari, isCinsiyetGerekli, isEgitimDurumuGerekli } from '@/utils/testUtils';
+import { getTestSorulari, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -109,6 +110,8 @@ export default function FastTestInterface() {
   const [loading, setLoading] = useState(true);
   const [showGenderSelection, setShowGenderSelection] = useState(false);
   const [showEducationSelection, setShowEducationSelection] = useState(false);
+  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
+  const [showAgeSelection, setShowAgeSelection] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
@@ -151,6 +154,20 @@ export default function FastTestInterface() {
         // Eğitim durumu kontrolü
         if (isEgitimDurumuGerekli(test, danisanData)) {
           setShowEducationSelection(true);
+          setLoading(false);
+          return;
+        }
+
+        // Medeni durum kontrolü
+        if (isMedeniDurumGerekli(test, danisanData)) {
+          setShowMaritalStatusSelection(true);
+          setLoading(false);
+          return;
+        }
+
+        // Yaş kontrolü
+        if (isYasGerekli(test, danisanData)) {
+          setShowAgeSelection(true);
           setLoading(false);
           return;
         }
@@ -443,11 +460,26 @@ export default function FastTestInterface() {
         danisan={danisan}
         onComplete={() => {
           setShowGenderSelection(false);
-          // Test verilerini yeniden yükle
+          // Test verilerini yeniden yükle ve sıradaki kontrolleri yap
           const loadData = async () => {
             const updatedDanisan = await danisanService.getir(danisan.id!);
             if (updatedDanisan) {
               setDanisan(updatedDanisan);
+              
+              // Sırasıyla diğer kontrolleri yap
+              if (isEgitimDurumuGerekli(test, updatedDanisan)) {
+                setShowEducationSelection(true);
+                return;
+              }
+              if (isMedeniDurumGerekli(test, updatedDanisan)) {
+                setShowMaritalStatusSelection(true);
+                return;
+              }
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
+                return;
+              }
+              
               const sorular = getTestSorulari(test, updatedDanisan);
               setTestSorulari(sorular);
               const pattern = analyzeTestPattern(test, sorular);
@@ -468,11 +500,22 @@ export default function FastTestInterface() {
         danisan={danisan}
         onComplete={() => {
           setShowEducationSelection(false);
-          // Test verilerini yeniden yükle
+          // Test verilerini yeniden yükle ve sıradaki kontrolleri yap
           const loadData = async () => {
             const updatedDanisan = await danisanService.getir(danisan.id!);
             if (updatedDanisan) {
               setDanisan(updatedDanisan);
+              
+              // Sırasıyla diğer kontrolleri yap
+              if (isMedeniDurumGerekli(test, updatedDanisan)) {
+                setShowMaritalStatusSelection(true);
+                return;
+              }
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
+                return;
+              }
+              
               const sorular = getTestSorulari(test, updatedDanisan);
               setTestSorulari(sorular);
               const pattern = analyzeTestPattern(test, sorular);
@@ -483,6 +526,56 @@ export default function FastTestInterface() {
           loadData();
         }}
       />
+    );
+  }
+
+  if (showMaritalStatusSelection && danisan) {
+    return (
+      <MaritalStatusSelectionModal
+        test={test}
+        danisan={danisan}
+        onComplete={() => {
+          setShowMaritalStatusSelection(false);
+          // Test verilerini yeniden yükle ve yaş kontrolü yap
+          const loadData = async () => {
+            const updatedDanisan = await danisanService.getir(danisan.id!);
+            if (updatedDanisan) {
+              setDanisan(updatedDanisan);
+              
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
+                return;
+              }
+              
+              const sorular = getTestSorulari(test, updatedDanisan);
+              setTestSorulari(sorular);
+              const pattern = analyzeTestPattern(test, sorular);
+              setTestPattern(pattern);
+              setLoading(false);
+            }
+          };
+          loadData();
+        }}
+      />
+    );
+  }
+
+  if (showAgeSelection && danisan) {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <div className="text-center space-y-4">
+            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
+            <p className="text-muted-foreground">
+              Bu test için doğum tarihi bilgisi gereklidir. 
+              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
+            </p>
+            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
+              Danışan Bilgilerini Düzenle
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   }
 

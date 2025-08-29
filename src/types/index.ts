@@ -11,6 +11,14 @@ export type EgitimDurumu =
   | 'Doktora'
   | 'Belirtmek istemiyorum';
 
+export type MedeniDurum = 
+  | 'Evli'
+  | 'Bekar'
+  | 'Boşanmış'
+  | 'Dul'
+  | 'Ayrı yaşıyor'
+  | 'Belirtmek istemiyorum';
+
 export interface Danisan {
   id?: number; // Auto-incremented by Dexie
   adSoyad: string;
@@ -18,10 +26,30 @@ export interface Danisan {
   dogumTarihi?: string;
   cinsiyet?: 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum';
   egitimDurumu?: EgitimDurumu;
+  medeniDurum?: MedeniDurum;
   telefon?: string;
   adres?: string;
   notlar?: string;
   eklenmeTarihi: Date | string; // Date in DB, string in Redux state
+}
+
+// Yaş hesaplama yardımcı fonksiyonu
+export function hesaplaYas(dogumTarihi: string | undefined): number | null {
+  if (!dogumTarihi) return null;
+  
+  const dogum = new Date(dogumTarihi);
+  const bugun = new Date();
+  
+  if (dogum > bugun) return null; // Gelecek tarih kontrolü
+  
+  let yas = bugun.getFullYear() - dogum.getFullYear();
+  const ayFarki = bugun.getMonth() - dogum.getMonth();
+  
+  if (ayFarki < 0 || (ayFarki === 0 && bugun.getDate() < dogum.getDate())) {
+    yas--;
+  }
+  
+  return yas >= 0 ? yas : null;
 }
 
 export interface TestSonucu {

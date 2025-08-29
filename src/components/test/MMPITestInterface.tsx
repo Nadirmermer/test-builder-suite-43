@@ -15,9 +15,10 @@ import { toast } from '@/hooks/use-toast';
 import { useAppSelector } from '@/hooks/useRedux';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { createDanisanUrl } from '@/utils/urlUtils';
-import { isEgitimDurumuGerekli } from '@/utils/testUtils';
+import { isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 import EducationSelectionModal from './EducationSelectionModal';
+import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
 import { danisanService } from '@/lib/db';
 interface MMPITestInterfaceProps {
   test: TestTanimi;
@@ -39,15 +40,31 @@ export default function MMPITestInterface({
   const danisan = selectedDanisan;
   const [showGenderSelection, setShowGenderSelection] = useState(!danisan?.cinsiyet);
   const [showEducationSelection, setShowEducationSelection] = useState(false);
+  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
+  const [showAgeSelection, setShowAgeSelection] = useState(false);
 
-  // Eğitim durumu kontrolü için useEffect
+  // Adım adım bilgi kontrolü için useEffect
   useEffect(() => {
-    if (danisan && !showGenderSelection) {
+    if (danisan && !showGenderSelection && !showEducationSelection && !showMaritalStatusSelection) {
+      // Eğitim durumu kontrolü
       if (isEgitimDurumuGerekli(test, danisan)) {
         setShowEducationSelection(true);
+        return;
+      }
+      
+      // Medeni durum kontrolü
+      if (isMedeniDurumGerekli(test, danisan)) {
+        setShowMaritalStatusSelection(true);
+        return;
+      }
+      
+      // Yaş kontrolü
+      if (isYasGerekli(test, danisan)) {
+        setShowAgeSelection(true);
+        return;
       }
     }
-  }, [danisan, showGenderSelection, test]);
+  }, [danisan, showGenderSelection, showEducationSelection, showMaritalStatusSelection, test]);
 
   // State'ler - hooks kuralına uygun şekilde hep aynı sırada
   const [aktifSoruIndex, setAktifSoruIndex] = useState(0);
@@ -251,16 +268,56 @@ export default function MMPITestInterface({
       navigate('/danisanlar');
     }
   };
-  const handleGenderSelectionComplete = () => {
+  const handleGenderSelectionComplete = async () => {
     setShowGenderSelection(false);
-    // Cinsiyet seçildikten sonra eğitim durumu kontrolü yap
-    if (danisan && isEgitimDurumuGerekli(test, danisan)) {
-      setShowEducationSelection(true);
+    // Cinsiyet seçildikten sonra diğer kontrolleri sırasıyla yap
+    const updatedDanisan = await danisanService.getir(danisanId);
+    if (updatedDanisan) {
+      if (isEgitimDurumuGerekli(test, updatedDanisan)) {
+        setShowEducationSelection(true);
+        return;
+      }
+      if (isMedeniDurumGerekli(test, updatedDanisan)) {
+        setShowMaritalStatusSelection(true);
+        return;
+      }
+      if (isYasGerekli(test, updatedDanisan)) {
+        setShowAgeSelection(true);
+        return;
+      }
     }
   };
 
-  const handleEducationSelectionComplete = () => {
+  const handleEducationSelectionComplete = async () => {
     setShowEducationSelection(false);
+    // Eğitim durumu seçildikten sonra diğer kontrolleri yap
+    const updatedDanisan = await danisanService.getir(danisanId);
+    if (updatedDanisan) {
+      if (isMedeniDurumGerekli(test, updatedDanisan)) {
+        setShowMaritalStatusSelection(true);
+        return;
+      }
+      if (isYasGerekli(test, updatedDanisan)) {
+        setShowAgeSelection(true);
+        return;
+      }
+    }
+  };
+
+  const handleMaritalStatusSelectionComplete = async () => {
+    setShowMaritalStatusSelection(false);
+    // Medeni durum seçildikten sonra yaş kontrolü yap
+    const updatedDanisan = await danisanService.getir(danisanId);
+    if (updatedDanisan) {
+      if (isYasGerekli(test, updatedDanisan)) {
+        setShowAgeSelection(true);
+        return;
+      }
+    }
+  };
+
+  const handleAgeSelectionComplete = () => {
+    setShowAgeSelection(false);
   };
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -276,6 +333,31 @@ export default function MMPITestInterface({
   // Eğitim durumu seçimi ekranı
   if (showEducationSelection && danisan) {
     return <EducationSelectionModal test={test} danisan={danisan} onComplete={handleEducationSelectionComplete} />;
+  }
+
+  // Medeni durum seçimi ekranı
+  if (showMaritalStatusSelection && danisan) {
+    return <MaritalStatusSelectionModal test={test} danisan={danisan} onComplete={handleMaritalStatusSelectionComplete} />;
+  }
+
+  // Yaş kontrolü ekranı (doğum tarihi eksikse)
+  if (showAgeSelection && danisan) {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <div className="text-center space-y-4">
+            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
+            <p className="text-muted-foreground">
+              MMPI testi için doğum tarihi bilgisi gereklidir. 
+              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
+            </p>
+            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
+              Danışan Bilgilerini Düzenle
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   // Loading state

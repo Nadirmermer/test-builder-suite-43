@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FiSave, FiX, FiBook } from 'react-icons/fi';
+import { FiSave, FiX, FiBook, FiHeart } from 'react-icons/fi';
 import {
   CustomDialog,
   CustomDialogContent,
@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/select';
 import { useAppDispatch } from '@/hooks/useRedux';
 import { danisanGuncelle } from '@/store/slices/danisanSlice';
-import { Danisan, EgitimDurumu } from '@/types';
+import { Danisan, EgitimDurumu, MedeniDurum } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 
 const egitimSeviyeleri: EgitimDurumu[] = [
@@ -37,12 +37,21 @@ const egitimSeviyeleri: EgitimDurumu[] = [
   'Doktora'
 ];
 
+const medeniDurumSeviyeleri: MedeniDurum[] = [
+  'Bekar',
+  'Evli',
+  'Boşanmış',
+  'Dul',
+  'Ayrı yaşıyor'
+];
+
 const danisanSchema = z.object({
   adSoyad: z.string().min(1, 'Ad Soyad gereklidir'),
   tcKimlikNo: z.string().optional(),
   dogumTarihi: z.string().optional(),
   cinsiyet: z.enum(['Erkek', 'Kadın', 'Belirtmek istemiyorum']).optional(),
   egitimDurumu: z.enum(['Okuma yazma yok', 'İlkokul', 'Ortaokul', 'Lise', 'Önlisans', 'Lisans', 'Yüksek lisans', 'Doktora', 'Belirtmek istemiyorum']).optional(),
+  medeniDurum: z.enum(['Bekar', 'Evli', 'Boşanmış', 'Dul', 'Ayrı yaşıyor', 'Belirtmek istemiyorum']).optional(),
   telefon: z.string().optional(),
   adres: z.string().optional(),
   notlar: z.string().optional(),
@@ -80,6 +89,7 @@ export default function DanisanGuncelleModal({
       dogumTarihi: danisan.dogumTarihi || '',
       cinsiyet: danisan.cinsiyet,
       egitimDurumu: danisan.egitimDurumu,
+      medeniDurum: danisan.medeniDurum,
       telefon: danisan.telefon || '',
       adres: danisan.adres || '',
       notlar: danisan.notlar || '',
@@ -88,6 +98,7 @@ export default function DanisanGuncelleModal({
 
   const cinsiyetValue = watch('cinsiyet');
   const egitimDurumuValue = watch('egitimDurumu');
+  const medeniDurumValue = watch('medeniDurum');
 
   useEffect(() => {
     if (open && danisan) {
@@ -97,6 +108,7 @@ export default function DanisanGuncelleModal({
         dogumTarihi: danisan.dogumTarihi || '',
         cinsiyet: danisan.cinsiyet,
         egitimDurumu: danisan.egitimDurumu,
+        medeniDurum: danisan.medeniDurum,
         telefon: danisan.telefon || '',
         adres: danisan.adres || '',
         notlar: danisan.notlar || '',
@@ -222,6 +234,32 @@ export default function DanisanGuncelleModal({
                   {egitimSeviyeleri.map((seviye) => (
                     <SelectItem key={seviye} value={seviye}>
                       {seviye}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Medeni Durum */}
+            <div>
+              <Label htmlFor="medeniDurum">
+                <div className="flex items-center gap-2">
+                  <FiHeart size={16} />
+                  Medeni Durum
+                </div>
+              </Label>
+              <Select
+                value={medeniDurumValue || ''}
+                onValueChange={(value) => setValue('medeniDurum', value as any)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Medeni durum seçin" />
+                </SelectTrigger>
+                <SelectContent>
+                  {medeniDurumSeviyeleri.map((durum) => (
+                    <SelectItem key={durum} value={durum}>
+                      {durum}
                     </SelectItem>
                   ))}
                   <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>

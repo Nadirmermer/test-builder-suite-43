@@ -11,8 +11,8 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import { danisanEkle } from '@/store/slices/danisanSlice';
 import { setActiveModal } from '@/store/slices/uiSlice';
 import { toast } from '@/hooks/use-toast';
-import { EgitimDurumu } from '@/types';
-import { FiUser, FiCalendar, FiPhone, FiMapPin, FiFileText, FiBook } from 'react-icons/fi';
+import { EgitimDurumu, MedeniDurum } from '@/types';
+import { FiUser, FiCalendar, FiPhone, FiMapPin, FiFileText, FiBook, FiHeart } from 'react-icons/fi';
 
 const egitimSeviyeleri: EgitimDurumu[] = [
   'Okuma yazma yok',
@@ -23,6 +23,14 @@ const egitimSeviyeleri: EgitimDurumu[] = [
   'Lisans',
   'Yüksek lisans',
   'Doktora'
+];
+
+const medeniDurumSeviyeleri: MedeniDurum[] = [
+  'Bekar',
+  'Evli',
+  'Boşanmış',
+  'Dul',
+  'Ayrı yaşıyor'
 ];
 
 interface YeniDanisanModalProps {
@@ -40,6 +48,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
     dogumTarihi: '',
     cinsiyet: '',
     egitimDurumu: '',
+    medeniDurum: '',
     telefon: '',
     adres: '',
     notlar: ''
@@ -67,6 +76,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
         dogumTarihi: formData.dogumTarihi || undefined,
         cinsiyet: formData.cinsiyet as 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum' || undefined,
         egitimDurumu: formData.egitimDurumu as EgitimDurumu || undefined,
+        medeniDurum: formData.medeniDurum as MedeniDurum || undefined,
         telefon: formData.telefon || undefined,
         adres: formData.adres || undefined,
         notlar: formData.notlar || undefined,
@@ -86,6 +96,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
         dogumTarihi: '',
         cinsiyet: '',
         egitimDurumu: '',
+        medeniDurum: '',
         telefon: '',
         adres: '',
         notlar: ''
@@ -195,6 +206,27 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
                 {egitimSeviyeleri.map((seviye) => (
                   <SelectItem key={seviye} value={seviye}>
                     {seviye}
+                  </SelectItem>
+                ))}
+                <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Medeni Durum */}
+          <div className="space-y-2">
+            <Label className="text-sm font-medium flex items-center gap-1">
+              <FiHeart className="w-4 h-4" />
+              Medeni Durum
+            </Label>
+            <Select value={formData.medeniDurum} onValueChange={(value) => handleChange('medeniDurum', value)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Seçiniz" />
+              </SelectTrigger>
+              <SelectContent>
+                {medeniDurumSeviyeleri.map((durum) => (
+                  <SelectItem key={durum} value={durum}>
+                    {durum}
                   </SelectItem>
                 ))}
                 <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>

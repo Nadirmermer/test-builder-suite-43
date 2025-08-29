@@ -18,10 +18,11 @@ import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { testSonucuOzelPuanlamaIleKaydet } from '@/store/slices/testSlice';
-import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli } from '@/utils/testUtils';
+import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import { getTestInputSettings, convertKeyboardInputToAnswer } from '@/utils/testResponseUtils';
 import GenderSelectionModal from './GenderSelectionModal';
 import EducationSelectionModal from './EducationSelectionModal';
+import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
 
 interface UniversalFastTestInterfaceProps {
   test: TestTanimi;
@@ -40,6 +41,8 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
   const [loading, setLoading] = useState(true);
   const [showGenderSelection, setShowGenderSelection] = useState(false);
   const [showEducationSelection, setShowEducationSelection] = useState(false);
+  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
+  const [showAgeSelection, setShowAgeSelection] = useState(false);
   
   // Test response settings - dinamik cevap ayarları
   const [testInputSettings, setTestInputSettings] = useState<ReturnType<typeof getTestInputSettings> | null>(null);
@@ -71,6 +74,20 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
           // Eğitim durumu kontrolü yap
           if (isEgitimDurumuGerekli(test, danisanData)) {
             setShowEducationSelection(true);
+            setLoading(false);
+            return;
+          }
+
+          // Medeni durum kontrolü yap
+          if (isMedeniDurumGerekli(test, danisanData)) {
+            setShowMaritalStatusSelection(true);
+            setLoading(false);
+            return;
+          }
+
+          // Yaş kontrolü yap
+          if (isYasGerekli(test, danisanData)) {
+            setShowAgeSelection(true);
             setLoading(false);
             return;
           }
@@ -482,9 +499,17 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
             if (updatedDanisan) {
               setDanisan(updatedDanisan);
               
-              // Eğitim durumu kontrolü yap
+              // Sırasıyla diğer kontrolleri yap
               if (isEgitimDurumuGerekli(test, updatedDanisan)) {
                 setShowEducationSelection(true);
+                return;
+              }
+              if (isMedeniDurumGerekli(test, updatedDanisan)) {
+                setShowMaritalStatusSelection(true);
+                return;
+              }
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
                 return;
               }
               
@@ -511,11 +536,22 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
         danisan={danisan}
         onComplete={() => {
           setShowEducationSelection(false);
-          // Test verilerini yeniden yükle
+          // Test verilerini yeniden yükle ve sıradaki kontrolleri yap
           const loadTestData = async () => {
             const updatedDanisan = await danisanService.getir(danisanId);
             if (updatedDanisan) {
               setDanisan(updatedDanisan);
+              
+              // Sırasıyla diğer kontrolleri yap
+              if (isMedeniDurumGerekli(test, updatedDanisan)) {
+                setShowMaritalStatusSelection(true);
+                return;
+              }
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
+                return;
+              }
+              
               const sorular = getTestSorulari(test, updatedDanisan);
               setTestSorulari(sorular);
               
@@ -529,6 +565,59 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
           loadTestData();
         }}
       />
+    );
+  }
+
+  if (showMaritalStatusSelection && danisan) {
+    return (
+      <MaritalStatusSelectionModal
+        test={test}
+        danisan={danisan}
+        onComplete={() => {
+          setShowMaritalStatusSelection(false);
+          // Test verilerini yeniden yükle ve yaş kontrolü yap
+          const loadTestData = async () => {
+            const updatedDanisan = await danisanService.getir(danisanId);
+            if (updatedDanisan) {
+              setDanisan(updatedDanisan);
+              
+              if (isYasGerekli(test, updatedDanisan)) {
+                setShowAgeSelection(true);
+                return;
+              }
+              
+              const sorular = getTestSorulari(test, updatedDanisan);
+              setTestSorulari(sorular);
+              
+              // Test input ayarlarını yükle
+              const inputSettings = getTestInputSettings(test);
+              setTestInputSettings(inputSettings);
+              
+              setLoading(false);
+            }
+          };
+          loadTestData();
+        }}
+      />
+    );
+  }
+
+  if (showAgeSelection && danisan) {
+    return (
+      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
+        <div className="max-w-md w-full">
+          <div className="text-center space-y-4">
+            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
+            <p className="text-muted-foreground">
+              Bu test için doğum tarihi bilgisi gereklidir. 
+              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
+            </p>
+            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
+              Danışan Bilgilerini Düzenle
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   }
 

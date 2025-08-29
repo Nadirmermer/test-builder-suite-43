@@ -1,6 +1,6 @@
 // Test yardımcı fonksiyonları
 
-import { TestTanimi, TestSorusu, Danisan } from '@/types';
+import { TestTanimi, TestSorusu, Danisan, hesaplaYas } from '@/types';
 
 /**
  * Danışanın cinsiyetine göre uygun test sorularını döndürür
@@ -143,4 +143,51 @@ export function calculateSCL90RScore(cevaplar: (number | undefined)[], test: Tes
     cevaplananSoru: cevaplananSoruSayisi,
     toplamSoru: 90
   };
+}
+
+/**
+ * MMPI testi için medeni durum gereksinimini kontrol eder
+ */
+export function isMedeniDurumGerekli(test: TestTanimi, danisan: Danisan): boolean {
+  // Sadece MMPI testinde medeni durum gerekli
+  if (test.id !== 'mmpi' && test.puanlamaTuru !== 'mmpi-profil') {
+    return false;
+  }
+  
+  return !danisan.medeniDurum || danisan.medeniDurum === 'Belirtmek istemiyorum';
+}
+
+/**
+ * MMPI testi için yaş gereksinimini kontrol eder
+ */
+export function isYasGerekli(test: TestTanimi, danisan: Danisan): boolean {
+  // Sadece MMPI testinde yaş bilgisi gerekli
+  if (test.id !== 'mmpi' && test.puanlamaTuru !== 'mmpi-profil') {
+    return false;
+  }
+  
+  // Doğum tarihi yoksa veya yaş hesaplanamıyorsa gerekli
+  const yas = hesaplaYas(danisan.dogumTarihi);
+  return yas === null;
+}
+
+/**
+ * MMPI için yaş aralığı kontrolü (opsiyonel uyarı)
+ */
+export function kontrolYasAraligi(danisan: Danisan): { uygun: boolean; mesaj?: string } {
+  const yas = hesaplaYas(danisan.dogumTarihi);
+  
+  if (yas === null) {
+    return { uygun: false, mesaj: 'Yaş bilgisi gereklidir.' };
+  }
+  
+  if (yas < 16) {
+    return { uygun: false, mesaj: 'MMPI testi 16 yaş altı bireyler için uygun değildir.' };
+  }
+  
+  if (yas > 80) {
+    return { uygun: true, mesaj: 'Test 80 yaş üstü bireyler için norm tabloları sınırlıdır.' };
+  }
+  
+  return { uygun: true };
 }
