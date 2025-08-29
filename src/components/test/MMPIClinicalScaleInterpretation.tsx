@@ -291,7 +291,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
           <AlertDescription>
             <div className="space-y-2">
               <p className="font-semibold">Paranoya Spike Profili Tespit Edildi</p>
-              <p className="text-sm">{getPaSpikeInterpretation(mmpiResults.clinicalScales.Pa.tScore)}</p>
+              <p className="text-sm">{getPaSpikeInterpretation()}</p>
             </div>
           </AlertDescription>
         </Alert>
@@ -303,7 +303,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
           <AlertDescription>
             <div className="space-y-2">
               <p className="font-semibold">Psikasteni Spike Profili Tespit Edildi</p>
-              <p className="text-sm">{getPtSpikeInterpretation(mmpiResults.clinicalScales.Pt.tScore)}</p>
+              <p className="text-sm">{getPtSpikeInterpretation()}</p>
             </div>
           </AlertDescription>
         </Alert>
@@ -317,7 +317,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
           <AlertDescription>
             <div className="space-y-2">
               <p className="font-semibold">Hipomani Spike Profili Tespit Edildi</p>
-              <p className="text-sm">{getMaSpikeInterpretation(mmpiResults.clinicalScales.Ma.tScore)}</p>
+              <p className="text-sm">{getMaSpikeInterpretation()}</p>
             </div>
           </AlertDescription>
         </Alert>
@@ -387,7 +387,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                   // Mf ölçeği cinsiyet gerektirir
                   if (gender === 'Erkek' || gender === 'Kadin') {
                     const mfScale = new MfScale();
-                    interpretation = mfScale.getInterpretation(scale.tScore, gender);
+                    interpretation = mfScale.getInterpretation(scale.tScore, gender as 'Erkek' | 'Kadın');
                   } else {
                     interpretation = {
                       tScore: scale.tScore,
@@ -406,8 +406,8 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                     level: paResult.level,
                     description: paResult.description,
                     characteristics: paResult.characteristics,
-                    psychoticFeatures: paResult.psychoticFeatures,
-                    therapyResponse: paResult.therapyResponse,
+                    // psychoticFeatures: paResult.psychoticFeatures,
+                    // therapyResponse: paResult.therapyResponse,
                     additionalNotes: paResult.additionalNotes
                   };
                 } else if (scaleId === 'Pt') {
@@ -419,7 +419,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                     level: ptResult.level,
                     description: ptResult.description,
                     characteristics: ptResult.characteristics,
-                    therapyResponse: ptResult.therapyResponse,
+                    // therapyResponse: ptResult.therapyResponse,
                     additionalNotes: ptResult.additionalNotes
                   };
                 } else if (scaleId === 'Sc') {
@@ -431,10 +431,10 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                     level: scResult.level,
                     description: scResult.description,
                     characteristics: scResult.characteristics,
-                    psychoticFeatures: scResult.psychoticFeatures,
-                    therapyResponse: scResult.therapyResponse,
-                    additionalNotes: scResult.additionalNotes,
-                    profileConsiderations: scResult.profileConsiderations
+                    // psychoticFeatures: scResult.psychoticFeatures,
+                    // therapyResponse: scResult.therapyResponse,
+                    additionalNotes: scResult.additionalNotes
+                    // profileConsiderations: scResult.profileConsiderations
                   };
                 } else if (scaleId === 'Ma') {
                   // Ma ölçeği yorumlaması
@@ -445,9 +445,9 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                     level: maResult.level,
                     description: maResult.description,
                     characteristics: maResult.characteristics,
-                    therapyResponse: maResult.therapyResponse,
-                    additionalNotes: maResult.additionalNotes,
-                    interpretationWarnings: maResult.interpretationWarnings
+                    // therapyResponse: maResult.therapyResponse,
+                    additionalNotes: maResult.additionalNotes
+                    // interpretationWarnings: maResult.interpretationWarnings
                   };
                 } else if (scaleId === 'Si') {
                   // Si ölçeği yorumlaması
@@ -458,9 +458,9 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                     level: siResult.level,
                     description: siResult.description,
                     characteristics: siResult.characteristics,
-                    additionalNotes: siResult.additionalNotes,
-                    ageConsiderations: siResult.ageConsiderations,
-                    relationshipImplications: siResult.relationshipImplications
+                    additionalNotes: siResult.additionalNotes
+                    // ageConsiderations: siResult.ageConsiderations,
+                    // relationshipImplications: siResult.relationshipImplications
                   };
                 }
               }
