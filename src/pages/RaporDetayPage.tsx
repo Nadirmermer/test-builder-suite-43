@@ -15,7 +15,6 @@ import { TestReportPDF } from '@/components/pdf/TestReportPDF';
 import TestResultEditModal from '@/components/test/TestResultEditModal';
 import MMPIValidityScaleInterpretation from '@/components/test/MMPIValidityScaleInterpretation';
 import MMPIClinicalScaleInterpretation from '@/components/test/MMPIClinicalScaleInterpretation';
-import MMPICodeInterpretation from '@/components/test/MMPICodeInterpretation';
 import TestResultChart from '@/components/test/TestResultChart';
 import SCL90RChart from '@/components/test/SCL90RChart';
 import { 
@@ -326,13 +325,12 @@ export default function RaporDetayPage() {
       {/* Ana İçerik - Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">
         <div className="overflow-x-auto">
-          <TabsList className={`grid w-full min-w-[300px] mb-4 ${testSonucu.mmpiSonuclari ? 'grid-cols-5' : 'grid-cols-4'}`}>
+          <TabsList className="grid w-full min-w-[300px] grid-cols-4 mb-4">
             <TabsTrigger value="overview" className="text-xs sm:text-sm">Genel Bakış</TabsTrigger>
             {testSonucu.mmpiSonuclari ? (
               <>
                 <TabsTrigger value="validity" className="text-xs sm:text-sm">Geçerlik</TabsTrigger>
                 <TabsTrigger value="clinical" className="text-xs sm:text-sm">Klinik</TabsTrigger>
-                <TabsTrigger value="codes" className="text-xs sm:text-sm">Kodlar</TabsTrigger>
               </>
             ) : (
               <TabsTrigger value="results" className="text-xs sm:text-sm">Sonuçlar</TabsTrigger>
@@ -388,13 +386,6 @@ export default function RaporDetayPage() {
               testSonucu={testSonucu} 
               danisanCinsiyet={danisan?.cinsiyet}
             />
-          </TabsContent>
-        )}
-
-        {/* MMPI Kodları (Sadece MMPI) */}
-        {testSonucu.mmpiSonuclari && (
-          <TabsContent value="codes" className="space-y-6">
-            <MMPICodeInterpretation testSonucu={testSonucu} />
           </TabsContent>
         )}
 
