@@ -57,9 +57,15 @@ export default function RaporDetayPage() {
           // Test tanımını yükle
           try {
             const testResponse = await fetch(`/tests/${sonuc.testId}.json`);
-            if (testResponse.ok) {
+            if (!testResponse.ok) {
+              throw new Error(`Test tanımı dosyası bulunamadı veya yüklenemedi (HTTP ${testResponse.status})`);
+            }
+            // JSON parse hatasını da yakala
+            try {
               const testData = await testResponse.json();
               setTestTanimi(testData);
+            } catch (jsonError) {
+              throw new Error('Test tanımı dosyası geçerli bir JSON değil.');
             }
           } catch (error) {
             console.error('Test tanımı yüklenemedi:', error);
@@ -394,7 +400,7 @@ export default function RaporDetayPage() {
         {/* MMPI Kodları (Sadece MMPI) */}
         {testSonucu.mmpiSonuclari && (
           <TabsContent value="codes" className="space-y-6">
-            <MMPICodeInterpretation testSonucu={testSonucu} />
+            <MMPICodeInterpretation testSonucu={testSonucu} danisan={danisan} />
           </TabsContent>
         )}
 

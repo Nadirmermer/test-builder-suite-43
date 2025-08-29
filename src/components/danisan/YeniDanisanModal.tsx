@@ -1,7 +1,7 @@
 // Yeni danışan ekleme modalı
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -126,6 +126,9 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
             <FiUser className="text-primary" />
             Yeni Danışan Ekle
           </DialogTitle>
+          <DialogDescription>
+            Danışan bilgilerini eksiksiz olarak doldurunuz. Tüm alanlar zorunludur.
+          </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6 mt-6">

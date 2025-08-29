@@ -1,17 +1,18 @@
-import { TestSonucu } from '@/types';
+import { TestSonucu, Danisan } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { fromPublicResults } from '@/lib/mmpi';
-import { MMPICodeGenerator, getCodeInterpretation, GeneratedCode, MMPICodeResult } from '@/lib/mmpi/interpretations/codes';
+import { MMPICodeGenerator, getPersonalizedCodeInterpretation, GeneratedCode, MMPICodeResult } from '@/lib/mmpi/interpretations/codes';
 import { Code2, TrendingUp, AlertTriangle, CheckCircle2 } from 'lucide-react';
 
 interface MMPICodeInterpretationProps {
   testSonucu: TestSonucu;
+  danisan?: Danisan | null;
 }
 
-export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpretationProps) {
+export default function MMPICodeInterpretation({ testSonucu, danisan }: MMPICodeInterpretationProps) {
   if (!testSonucu.mmpiSonuclari) {
     return (
       <Card>
@@ -28,6 +29,23 @@ export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpret
   
   // Kodları üret
   const generatedCodes = codeGenerator.generateCodes(mmpiResults.clinicalScales);
+
+  // Kişisel bilgileri hazırla
+  const personalInfo = danisan ? {
+    dogumTarihi: danisan.dogumTarihi,
+    medeniDurum: danisan.medeniDurum,
+    egitimDurumu: danisan.egitimDurumu,
+    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadın'
+  } : undefined;
+
+  // T-skorlarını hazırla
+  const tScores = Object.entries(mmpiResults.clinicalScales).reduce((acc, [scale, data]) => {
+    const scaleNumber = getScaleNumber(scale);
+    if (scaleNumber) {
+      acc[scaleNumber] = (data as any).tScore;
+    }
+    return acc;
+  }, {} as Record<string, number>);
   
   // Yükselmiş ölçekleri al (65+ T puanı)
   const elevatedScales = Object.entries(mmpiResults.clinicalScales)
@@ -39,9 +57,12 @@ export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpret
     }))
     .sort((a, b) => b.tScore - a.tScore);
 
-  // Yorumlanabilir kodlar
+  // Yorumlanabilir kodlar - ÖNCELIK SİSTEMİ İLE SIRALANMIŞ
   const interpretableCodes = generatedCodes.filter(code => code.hasInterpretation);
   const nonInterpretableCodes = generatedCodes.filter(code => !code.hasInterpretation);
+
+  // Kodları öncelik sistemine göre sırala
+  const sortedInterpretableCodes = sortCodesByPriority(interpretableCodes);
 
   return (
     <div className="space-y-6">
@@ -77,7 +98,7 @@ export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpret
               <CheckCircle2 className="h-8 w-8 text-green-600 bg-green-100 rounded-full p-2" />
               <div>
                 <p className="text-sm text-muted-foreground">Yorumlanabilir</p>
-                <p className="font-semibold text-lg">{interpretableCodes.length}</p>
+                <p className="font-semibold text-lg">{sortedInterpretableCodes.length}</p>
               </div>
             </div>
           </CardContent>
@@ -112,19 +133,19 @@ export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpret
             </CardContent>
           </Card>
 
-          {/* Yorumlanabilir Kodlar */}
-          {interpretableCodes.length > 0 && (
+          {/* Yorumlanabilir Kodlar - Öncelik Sırasına Göre */}
+          {sortedInterpretableCodes.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle>Yorumlanabilir MMPI Kodları</CardTitle>
+                <CardTitle>MMPI Kodları - Öncelik Sırasına Göre</CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Bu kodlar için kitaptan alınan detaylı yorumlar mevcuttur
+                  Kodlar önem sırasına göre düzenlenmiştir: Dörtlü → Üçlü → İkili → Tek ölçek
                 </p>
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
-                  {interpretableCodes.map((code, index) => {
-                    const interpretation = getCodeInterpretation(code.code);
+                  {sortedInterpretableCodes.map((code, index) => {
+                    const interpretation = getPersonalizedCodeInterpretation(code.code, personalInfo, tScores);
                     return (
                       <AccordionItem value={`interpretable-${index}`} key={code.code}>
                         <AccordionTrigger>
@@ -140,6 +161,9 @@ export default function MMPICodeInterpretation({ testSonucu }: MMPICodeInterpret
                             <div className="flex items-center gap-2">
                               <Badge variant="outline">
                                 {getCodeTypeName(code.type)}
+                              </Badge>
+                              <Badge variant="secondary" className={getPriorityBadgeStyle(code.type)}>
+                                {getPriorityLevel(code.type)}
                               </Badge>
                               {code.isWithinRange && (
                                 <Badge variant="secondary" className="bg-green-50 text-green-700">
@@ -298,6 +322,22 @@ function getScaleName(scaleId: string): string {
   return names[scaleId] || scaleId;
 }
 
+function getScaleNumber(scaleId: string): string | null {
+  const numbers: Record<string, string> = {
+    'Hs': '1',
+    'D': '2',
+    'Hy': '3',
+    'Pd': '4',
+    'Mf': '5',
+    'Pa': '6',
+    'Pt': '7',
+    'Sc': '8',
+    'Ma': '9',
+    'Si': '0'
+  };
+  return numbers[scaleId] || null;
+}
+
 function getCodeTypeName(type: GeneratedCode['type']): string {
   const types: Record<GeneratedCode['type'], string> = {
     'spike': 'Tek Ölçek',
@@ -306,4 +346,64 @@ function getCodeTypeName(type: GeneratedCode['type']): string {
     'four-point': 'Dörtlü Kod'
   };
   return types[type];
+}
+
+/**
+ * Kodları öncelik sırasına göre sıralar
+ * Mantık: En karmaşık kodlar en üstte (Dörtlü → Üçlü → İkili → Tek)
+ * Aynı tip içinde ±10 aralıktakiler önce, sonra diğerleri
+ */
+function sortCodesByPriority(codes: GeneratedCode[]): GeneratedCode[] {
+  return codes.sort((a, b) => {
+    // 1. Kod tipine göre öncelik (4-3-2-1)
+    const typeOrder = { 'four-point': 4, 'three-point': 3, 'two-point': 2, 'spike': 1 };
+    const aTypeScore = typeOrder[a.type];
+    const bTypeScore = typeOrder[b.type];
+    
+    if (aTypeScore !== bTypeScore) {
+      return bTypeScore - aTypeScore; // Büyük olan önce
+    }
+    
+    // 2. Aynı tip içinde ±10 aralıktakiler önce
+    if (a.isWithinRange !== b.isWithinRange) {
+      return a.isWithinRange ? -1 : 1; // ±10 aralıktakiler önce
+    }
+    
+    // 3. Aynı tipte ve aynı aralık durumunda, en yüksek T-skorlu önce
+    const aMaxScore = Math.max(...a.scores);
+    const bMaxScore = Math.max(...b.scores);
+    
+    if (aMaxScore !== bMaxScore) {
+      return bMaxScore - aMaxScore; // Yüksek skor önce
+    }
+    
+    // 4. Eşitlik durumunda kod uzunluğu (daha uzun önce)
+    return b.code.length - a.code.length;
+  });
+}
+
+/**
+ * Kod tipine göre öncelik seviyesini döndürür
+ */
+function getPriorityLevel(type: GeneratedCode['type']): string {
+  const levels = {
+    'four-point': 'ÇOK YÜKSEK',
+    'three-point': 'YÜKSEK', 
+    'two-point': 'ORTA',
+    'spike': 'DÜŞÜK'
+  };
+  return levels[type];
+}
+
+/**
+ * Öncelik seviyesine göre badge stilini döndürür
+ */
+function getPriorityBadgeStyle(type: GeneratedCode['type']): string {
+  const styles = {
+    'four-point': 'bg-red-100 text-red-800 border-red-200',
+    'three-point': 'bg-orange-100 text-orange-800 border-orange-200',
+    'two-point': 'bg-blue-100 text-blue-800 border-blue-200', 
+    'spike': 'bg-gray-100 text-gray-800 border-gray-200'
+  };
+  return styles[type];
 }

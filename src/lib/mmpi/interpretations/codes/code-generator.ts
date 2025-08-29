@@ -1,6 +1,16 @@
 // MMPI Kod Üretici - Klinik ölçeklerden kod oluşturur
 
 import { GeneratedCode, ScalePair } from './types';
+import { hsCodeInterpretations } from './hs-codes';
+import { dCodeInterpretations } from './d-codes';
+import { hyCodeInterpretations } from './hy-codes';
+import { pdCodeInterpretations } from './pd-codes';
+import { mfCodeInterpretations } from './mf-codes';
+import { paCodeInterpretations } from './pa-codes';
+import { ptCodeInterpretations } from './pt-codes';
+import { scCodeInterpretations } from './sc-codes';
+import { maCodeInterpretations } from './ma-codes';
+import { siCodeInterpretations } from './si-codes';
 
 // Klinik ölçek ID'lerini sayısal karşılıklarına çevir
 const scaleToNumber: Record<string, string> = {
@@ -167,29 +177,20 @@ export class MMPICodeGenerator {
    * Kod için yorum olup olmadığını kontrol eder
    */
   private hasCodeInterpretation(code: string): boolean {
-    // Şimdilik kitapta verilen kodları kontrol edelim
-    const knownCodes = [
-      // İkili kodlar
-      '12', '21', '13', '31', '23', '32', '14', '41', '24', '42',
-      '15', '51', '25', '52', '16', '61', '26', '62', '17', '71',
-      '27', '72', '18', '81', '28', '82', '19', '91', '29', '92',
-      '10', '01', '20', '02', '30', '03', '40', '04', '50', '05',
-      '60', '06', '70', '07', '80', '08', '90', '09',
-      
-      // Üçlü kodlar
-      '123', '213', '124', '214', '125', '215', '126', '216',
-      '127', '217', '128', '218', '129', '219', '120', '210',
-      '134', '314', '135', '315', '136', '316', '137', '317',
-      '138', '318', '139', '319', '130', '310',
-      
-      // Dörtlü kodlar
-      '1234', '2134', '1236', '1237', '1270', '12378',
-      
-      // Spike kodlar
-      '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
+    const allCodeMaps = [
+        hsCodeInterpretations,
+        dCodeInterpretations,
+        hyCodeInterpretations,
+        pdCodeInterpretations,
+        mfCodeInterpretations,
+        paCodeInterpretations,
+        ptCodeInterpretations,
+        scCodeInterpretations,
+        maCodeInterpretations,
+        siCodeInterpretations
     ];
     
-    return knownCodes.includes(code);
+    return allCodeMaps.some(codeMap => code in codeMap);
   }
 
   /**

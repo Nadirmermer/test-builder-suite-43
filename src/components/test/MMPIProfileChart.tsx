@@ -222,13 +222,22 @@ export default function MMPIProfileChart({
                 <ReferenceLine x="|" stroke="hsl(var(--border))" strokeWidth={4} ifOverflow="visible" />
 
                 {/* '?' için tek nokta */}
-                <Line dataKey="questionMarkTScore" stroke="transparent" activeDot={false} dot={(props) => <CustomDot {...props} />} />
+                <Line dataKey="questionMarkTScore" stroke="transparent" activeDot={false} dot={(props) => {
+                  const { key, ...rest } = props;
+                  return <CustomDot key={key} {...rest} />;
+                }} />
 
                 {/* Geçerlik Ölçekleri Çizgisi */}
-                <Line type="linear" dataKey="validityTScore" stroke="hsl(var(--primary))" strokeWidth={3} connectNulls={true} dot={(props) => <CustomDot {...props} />} activeDot={{ r: 7, stroke: 'white', strokeWidth: 2 }} />
+                <Line type="linear" dataKey="validityTScore" stroke="hsl(var(--primary))" strokeWidth={3} connectNulls={true} dot={(props) => {
+                  const { key, ...rest } = props;
+                  return <CustomDot key={key} {...rest} />;
+                }} activeDot={{ r: 7, stroke: 'white', strokeWidth: 2 }} />
                 
                 {/* Klinik Ölçekler Çizgisi */}
-                <Line type="linear" dataKey="clinicalTScore" stroke="hsl(var(--primary))" strokeWidth={3} connectNulls={true} dot={(props) => <CustomDot {...props} />} activeDot={{ r: 7, stroke: 'white', strokeWidth: 2 }} />
+                <Line type="linear" dataKey="clinicalTScore" stroke="hsl(var(--primary))" strokeWidth={3} connectNulls={true} dot={(props) => {
+                  const { key, ...rest } = props;
+                  return <CustomDot key={key} {...rest} />;
+                }} activeDot={{ r: 7, stroke: 'white', strokeWidth: 2 }} />
 
               </LineChart>
             </ResponsiveContainer>
