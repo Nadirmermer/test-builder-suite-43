@@ -259,6 +259,14 @@ export function getDScoreAverages(): { male: number; female: number } {
   };
 }
 
+/**
+ * D Ölçeği İlişkisel Analiz Notları
+ * Kitaptan alınan bilgilere dayanarak
+ */
+export function getDRelationshipNote(): string {
+  return 'D ölçeğinde yüksek puan alan bireyler kişilerarası ilişkilerden kaçınır, insanlarla fazla konuşmaz. Kendini yönlendiren ebeveynlerine karşı olumsuz duyguları vardır. Huzursuzluğu nedeniyle psikoterapiye güdülenir ancak var olan stresi yatıştığında terapiyi sonlandırma eğilimindedir.';
+}
+
 // Geriye uyumluluk için export objesi
 export const dScaleInterpretation = {
   getInterpretation: (tScore: number) => new DScale().getInterpretation(tScore),

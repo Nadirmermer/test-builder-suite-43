@@ -263,6 +263,20 @@ export function getMaScoreAverages(): { male: number; female: number } {
   };
 }
 
+/**
+ * Ma Ölçeği Yorumlama Uyarıları
+ * Kitaptan alınan bilgilere dayanarak
+ */
+export function getMaInterpretationWarnings(): string[] {
+  return [
+    'Yalnızca alt test 9\'u kullanarak bir yoruma gitmek güçtür.',
+    'Diğer klinik alt testlerdeki yükselmelerle bu enerji artışın nedeni araştırılmalıdır.',
+    'Alt test 9\'la birlikte yükseltmiş bir hastadan farklıdır.',
+    'Beyin hasarı olan bir hasta hiperaktivite ve tepkisel davranışlar gösterebilir.',
+    'Bu hastalarda duygusal tepkiler depresyon şeklinde ortaya çıkabilir.'
+  ];
+}
+
 // Geriye uyumluluk için export objesi
 export const maScaleInterpretation = {
   getInterpretation: (tScore: number) => new MaScale().getInterpretation(tScore),

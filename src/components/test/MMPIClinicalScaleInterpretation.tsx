@@ -12,9 +12,9 @@ import { PdScale } from '@/lib/mmpi/interpretations/clinical/pd-scale';
 import { MfScale } from '@/lib/mmpi/interpretations/clinical/mf-scale';
 import { PaScale, getPaSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/pa-scale';
 import { PtScale, getPtSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/pt-scale';
-import { ScScale, getScSpikeInterpretation } from '@/lib/mmpi/interpretations/clinical/sc-scale';
+import { ScScale } from '@/lib/mmpi/interpretations/clinical/sc-scale';
 import { MaScale, getMaSpikeInterpretation, getMaInterpretationWarnings } from '@/lib/mmpi/interpretations/clinical/ma-scale';
-import { SiScale, getSiSpikeInterpretation, getSiAgeConsiderations, getSiRelationshipImplications, getSiScaleCombinations } from '@/lib/mmpi/interpretations/clinical/si-scale';
+import { SiScale } from '@/lib/mmpi/interpretations/clinical/si-scale';
 
 interface MMPIClinicalScaleInterpretationProps {
   testSonucu: TestSonucu;
@@ -255,9 +255,9 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
   const isDSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'D';
   const isPaSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Pa';
   const isPtSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Pt';
-  const isScSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Sc';
+
   const isMaSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Ma';
-  const isSiSpike = elevatedScales.length === 1 && elevatedScales[0][0] === 'Si';
+
 
   return (
     <div className="space-y-6">
@@ -309,17 +309,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
         </Alert>
       )}
 
-      {/* Sc Spike Uyarısı */}
-      {isScSpike && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            <div className="space-y-2">
-              <p className="font-semibold">Şizofreni Spike Profili Tespit Edildi</p>
-              <p className="text-sm">{getScSpikeInterpretation(mmpiResults.clinicalScales.Sc.tScore)}</p>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
+
 
       {/* Ma Spike Uyarısı */}
       {isMaSpike && (
@@ -349,45 +339,9 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
         </Alert>
       )}
 
-      {/* Si Spike Uyarısı */}
-      {isSiSpike && (
-        <Alert variant="destructive">
-          <AlertDescription>
-            <div className="space-y-2">
-              <p className="font-semibold">Sosyal İçedönüklük Spike Profili Tespit Edildi</p>
-              <p className="text-sm">{getSiSpikeInterpretation(mmpiResults.clinicalScales.Si.tScore)}</p>
-            </div>
-          </AlertDescription>
-        </Alert>
-      )}
 
-      {/* Si Yaş Faktörü Uyarısı */}
-      <Alert>
-        <AlertDescription>
-          <div className="space-y-2">
-            <p className="font-semibold">Sosyal İçedönüklük - Yaş Faktörü</p>
-            <ul className="space-y-1 list-disc pl-5 text-sm">
-              {getSiAgeConsiderations().map((consideration, index) => (
-                <li key={index}>{consideration}</li>
-              ))}
-            </ul>
-          </div>
-        </AlertDescription>
-      </Alert>
 
-      {/* Si Ölçek Kombinasyonları */}
-      <Alert>
-        <AlertDescription>
-          <div className="space-y-2">
-            <p className="font-semibold">Sosyal İçedönüklük - Ölçek Kombinasyonları</p>
-            <ul className="space-y-1 list-disc pl-5 text-sm">
-              {getSiScaleCombinations().map((combination, index) => (
-                <li key={index}>{combination}</li>
-              ))}
-            </ul>
-          </div>
-        </AlertDescription>
-      </Alert>
+
 
       {/* D İlişkisel Analiz Notu */}
       {mmpiResults.clinicalScales.D.tScore >= 70 && (
