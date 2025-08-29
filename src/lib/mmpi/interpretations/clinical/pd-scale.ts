@@ -1,5 +1,7 @@
 // Psikopatik Sapma (Pd) Alt Testi - Ölçek 4
-// MMPI Klinik Ölçek - Psikopatik eğilimleri tanımlamak için geliştirilmiştir
+// MMPI Klinik Ölçek - Psikopatik eğilimleri yansıtmak ve psikopatik kişiliği teşhis etmek amacıyla geliştirilmiştir
+
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
 export interface PdScaleInterpretation {
   tScore: number;
@@ -10,125 +12,162 @@ export interface PdScaleInterpretation {
   therapeuticImplications?: string[];
   behavioralIndicators?: string[];
   additionalNotes?: string[];
-  ageConsiderations?: string[];
+  personalizedNotes?: string[];
 }
 
-// Psikopatik Sapma Ölçeği Yorumlama Sınıfı
 export class PdScale {
+  /**
+   * Kişisel bilgileri dahil eden gelişmiş psikopatik sapma ölçeği yorumlaması
+   */
+  getPersonalizedInterpretation(
+    tScore: number,
+    personalInfo?: {
+      dogumTarihi?: string;
+      medeniDurum?: MedeniDurum;
+      egitimDurumu?: EgitimDurumu;
+      cinsiyet?: 'Erkek' | 'Kadın';
+    }
+  ): PdScaleInterpretation {
+    // Temel yorumu al
+    const baseInterpretation = this.getInterpretation(tScore);
+    
+    if (!personalInfo) {
+      return baseInterpretation;
+    }
+
+    // Kişiselleştirilmiş notları oluştur
+    const personalizedNotes: string[] = [];
+
+    // Yaş faktörü (kitapta açık belirtilen)
+    if (personalInfo.dogumTarihi && tScore >= 70) {
+      const yas = hesaplaYas(personalInfo.dogumTarihi);
+      
+      if (yas !== null) {
+        if (yas <= 25) {
+          personalizedNotes.push("Yüksek 4 profilleri (yetişkin normları kullanılarak) ergenler için normaldir, bunlar karakteristik olarak evden uzaklaşmak ve kendi kimlik duygularını oluşturmak için isyan ederler.");
+        } else if (yas > 25) {
+          personalizedNotes.push("25 yaşın üzerinde yüksek 4 profil normal değildir.");
+        }
+        
+        if (yas > 40) {
+          personalizedNotes.push("40 yaşın üstünde yüksek 4 profili uzun süren kişilerarası ilişki kuramama ve antisosyal davranışları yansıtırken.");
+        }
+        
+        if (yas > 60) {
+          personalizedNotes.push("60 yaş üzerinde bu tür puanlar apatik bir biçimde katılmama düzeyine varan bir yabancılaşmayı düşündürür.");
+        }
+      }
+    }
+
+    return {
+      ...baseInterpretation,
+      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
+    };
+  }
+
   getInterpretation(tScore: number): PdScaleInterpretation {
     if (tScore >= 80) {
       return {
         tScore,
-        level: 'Çok Yüksek (T ≥ 80)',
+        level: '80 T Puanı Ve Üstü',
         description: '70-79 T puanında verilen özelliklere ek olarak bu yükselme klinik tanı olarak psikopatik bir bireyi göstermektedir.',
         characteristics: [
-          'Antisosyal davranışlar belirgin',
-          'Otorite figürleri ile çatışma vardır',
+          'Antisosyal davranışlar, otorite figürleri ile çatışma vardır',
           'Diğerleriyle kendi gereksinimlerini nasıl karşılayabileceklerine bakarak ilişki kurarlar'
         ],
-        clinicalSignificance: 'Psikopatik kişilik bozukluğu tanısı için güçlü kanıt'
+        clinicalSignificance: 'Klinik tanı olarak psikopatik birey - Kritik düzey'
       };
     } else if (tScore >= 70) {
       return {
         tScore,
-        level: 'Yüksek (T: 70-79)',
-        description: 'Bu kişiler çocukluklarından itibaren kurallara uymayan ve karşı gelen kişilerdir.',
+        level: '70-79 T Puanı',
+        description: 'Bu alt teste yüksek puan alan bireyler, öfkeli, impulsif, emosyonel açıdan yüzeysel, yordanamaz davranışları olan kişiler olarak tanımlanmaktadır.',
         characteristics: [
-          'Toplumsal normlara karşı gelir',
-          'Risk alır, maceracıdır',
-          'İmpulsif davranır',
-          'Otorite ile sorunları vardır',
-          'Antisosyal davranışlar gösterebilir'
+          'Bu tür kişiler sosyal uyumsuzluk, otoriteye ve diğerlerine karşı olma davranışları gösterirler',
+          'Alt test 4\'teki yükselme antisosyal, tutum ve davranış eğilimlerine işaret eder, ancak bu her zaman açık davranış biçiminde ifade edileceği anlamına gelmez',
+          'Antisosyal davranışlar, açıkça gösteriliyorsa özellikle alt test 9\'la birlikte yükselme görülür',
+          'Yüksek puan verenlerin kendilerine ilişkin mükemmeliyetçi ve narsisistik kavramları vardır',
+          'Bu kişisel standartları, sosyal kuralları reddetmeyi rasyonalizasyon olarak kullanmaktadırlar',
+          'Bunların kızgınlığı ailelerine veya genelde otorite ve topluma karşı ya da her ikisine karşı olabilir',
+          'Bazen bunların kızgınlığı durumsal bir tepki (boşanma vb) ya da ergenlik isyanı olabilir',
+          'Ya da kültürel bir azınlık grubunda olmayla bağlantılı kızgınlığı yansıtabilir',
+          'Böyle olmadığında örüntü uzun sürelidir ve değişme olasılığı düşüktür',
+          'Bireylerin küskünlük ve sosyal olmayan impulsları ele alma biçimleri büyük ölçüde farklılık gösterebilir',
+          'Bu profil diğer yönlerindeki yükselmelere bağlıdır',
+          'Genelde kızgınlığın davranışsal olarak dışa vurup vurmayacağı test 9 ve/ya da 0\'ın yükselmesi ve K\'nın düşük olup olmamasına dayanır',
+          'İmpulsif olma, kötü kişilerarası yargılama, davranışların önceden kestirilememesi',
+          'Sosyal yabancılaşma ve azalmış sorumluluk ve ahlak duygusu',
+          'Buna eşlik eden kötü iş yaşamı ve evlilik uyumsuzluğu vardır',
+          'Uzun vadeli hedeflerini kısa süreli arzuları uğruna feda ederler',
+          'Sonuçları tahmin etme kapasiteleri sınırlıdır'
         ],
-        behavioralIndicators: [
-          'Sürekli yalan söyler',
-          'Çalar, dolandırır',
-          'Alkol/madde kullanım öyküsü',
-          'Cinsel davranışlarda aşırılık',
-          'Saldırgan patlamalar'
-        ],
-        therapeuticImplications: [
-          'Terapiye direnç gösterebilir',
-          'Motivasyon eksikliği',
-          'Davranışsal kontrole odaklanma'
+        additionalNotes: [
+          'Patolojinin var olup olmadığının belirlenmesi için bireyin hem yaşam durumu, hem de yaşı dikkate alınmalıdır',
+          'Bu tür bir kızgınlığı başlatan açık bir yaşam olayı olmadığında test 4 özelikleri kalıcı ve değişime dirençlidir'
         ]
       };
     } else if (tScore >= 60) {
       return {
         tScore,
-        level: 'Orta Derecede Yüksek (T: 60-69)',
-        description: 'Konformiteden uzak, bireysel yaklaşımları olan kişilerdir.',
+        level: '60-69 T Puanı',
+        description: 'Risk alabilen, enerjik, sosyal, maceraperest ve atılgan olan bu bireyle bağlantılıdır.',
         characteristics: [
-          'Bağımsız düşünür',
-          'Geleneksel değerleri sorgular',
-          'Yaratıcı ve yenilikçi',
-          'Girişimci ruha sahip',
-          'Sosyal kurallarda esnek'
-        ],
-        additionalNotes: [
-          'Bu düzeyde pozitif özellikler de vardır',
-          'Liderlik potansiyeli mevcut',
-          'İnovatif yaklaşımlar geliştirebilir'
+          'Ancak, bu bireyler engellendiklerinde bu özellikler huzursuzluk, saldırganlık ve sosyal olarak uyumlu olmayan davranış biçimine dönüşebilir'
         ]
       };
     } else if (tScore >= 45) {
       return {
         tScore,
-        level: 'Normal Aralık (T: 45-59)',
-        description: 'Sosyal kurallara uyumlu, dengeli davranış sergiler.',
+        level: '45-59 T Puanı',
+        description: 'Aşırı kontrol koyma ve kısıtlanma genellikle azdır.',
         characteristics: [
-          'Toplumsal normlara saygılı',
-          'Dengeli risk alma',
-          'Uygun impulse kontrolü',
-          'Sosyal sorumluluk sahibi'
+          'Sosyal kurallara kısmen uyum vardır'
         ]
       };
     } else {
       return {
         tScore,
-        level: 'Düşük (T < 45)',
-        description: 'Aşırı konformist, kurallara katı şekilde bağlı yaklaşım.',
+        level: '20-44 T Puanı',
+        description: 'Durağan, pasif ve atılgan olmayan bireylerdir.',
         characteristics: [
-          'Aşırı kurallara bağlı',
-          'Risk almaktan kaçınır',
-          'Geleneksel değerlere sıkı bağlılık',
-          'Sosyal onay arayışı yüksek',
-          'Yaratıcılık sınırlı'
-        ],
-        therapeuticImplications: [
-          'Değişime direnç gösterebilir',
-          'Esneklik becerilerinin geliştirilmesi',
-          'Esnek düşünce becerilerinin kazandırılması',
-          'Kişilerarası ilişkilerde denge kurma'
+          'Maceraperest değillerdir ve sıklıkla sosyal geleneklere uyma konusunda bağımlı ve hatta katıdırlar',
+          'Danışma durumunda başkalarının onlara karşı olan düşünceleri konusunda güvence ararlar',
+          'Çok sevgi dolu olsalar da, sıklıkla cinsel ilişkiye girme konusunda girişken değildirler'
         ]
       };
     }
   }
 }
 
+/**
+ * Pd Alt Testinde Yüksek Puan Alan Bir Birey
+ */
 export function getPdHighScoreCharacteristics(): string[] {
   return [
     'Toplumun kurallarına ve değerlerine uymada güçlük çeker',
-    'Asosyal ya da anti sosyal davranış içine girer: a. Yalan söyleme, çalma, dolandırıcılık b. Cinsel eyleme vuruk davranış c. Alkol ve/ya da madde kullanım öyküsü',
-    'Otorite figürlerine karşı isyankârdır',
+    'Asosyal ya da anti sosyal davranış içine girer',
+    'Yalan söyleme, çalma, dolandırıcılık',
+    'Cinsel eyleme vuruk davranış',
+    'Alkol ve/ya da madde kullanım öyküsü',
+    'Otorite figürlerine karşı isyankar',
     'Aile ilişkileri fırtınalıdır',
     'Sorunları için ebeveynlerini suçlar',
     'Yaşam öyküsünde kötü bir iş yaşamı vardır',
     'Evlilik sorunları vardır',
     'İmpulsiftir, impulsları için hemen doyum ister',
     'İyi planlama yapamaz',
-    'Davranışının sonuçlarını düşünmeden hareket eder',
+    'Davranışın sonuçlarını düşünmeden hareket eder',
     'Sabırsızdır, engellenme eşiği düşüktür',
     'Yargılaması yetersizdir, düşünmeden tehlikeye atılır',
     'Deneyimlerinden yararlanamaz',
     'İmmatür ve çocuksudur',
     'Narsisistik, benmerkezcil ve bencildir',
-    'Dikkati çekmek ister, gösterişçidir',
+    'Dikkat çekmek ister, gösterişçidir',
     'Diğer kişilere karşı duyarsızdır',
     'Diğerlerini nasıl kullanabileceğiyle ilgilidir',
     'Beğenilir, ilk imajı iyidir',
     'Kişilerarası ilişkileri yüzeyseldir',
-    'Sıcak ve yakın ilişkiler kuramaz',
+    'Sıcak ve yakın ilişkiler kuramazlar',
     'Dışadönük ve sempatiktir',
     'Konuşkan, aktif, enerjik, maceracı, spontandır',
     'Zeki ve kendine güvenlidir',
@@ -143,39 +182,70 @@ export function getPdHighScoreCharacteristics(): string[] {
     'Davranışlarından dolayı çok az suçluluk yaşar',
     'Başı belada olduğu zaman suçluluk ve vicdan azabı hisseder',
     'Anksiyete, depresyon ve psikotik semptomlar göstermez',
-    'Genellikle kişilik bozukluğu tanısı konulur (anti sosyal kişilik ya da pasif agresif kişilik)',
+    'Genellikle kişilik bozukluğu tanısı konulur',
     'Endişeye eğilimli ve tatminsizdir',
     'İçten duygusal tepkileri yoktur',
-    'Can sıkıntısı ve boşluk duyguları vardır'
+    'Can sıkıntısı ve boşluk duyguları vardır',
+    'Psikoterapi ya da danışmanlıkla değişme prognozu kötüdür',
+    'Sorunları için diğerlerini suçlama eğilimindedirler',
+    'Entellektüalizasyonu kullanır. Duygulardan uzaklaşabilmek amacıyla entellektüel süreçlerin aşırı kullanımı',
+    'Hapsedilmekten ya da diğer hoş olmayan yaşantılardan kurtulmak için tedaviyi kabul eder, ancak kısa sürede sonlandırır'
   ];
 }
 
+/**
+ * Pd Alt Testinde Düşük Puan Alan Bir Birey
+ */
 export function getPdLowScoreCharacteristics(): string[] {
   return [
-    'Geleneksel ahlaki değerlere sahiptir',
-    'Toplumsal beklentilere uygundur',
-    'Uyumludur, pasiftir, uysaldır',
-    'İtaatkârdır',
-    'Güvenilirdir, sorumlu ve kararlıdır',
-    'Başkalarının haklarına saygılıdır',
-    'Toleranslıdır, sabırlıdır',
-    'Güvenilir, samimi, dürüst, doğrudur',
-    'İyi iş alışkanlıkları vardır',
-    'Önemli hedefleri vardır',
-    'İlişkilerinde sadık ve bağlıdır',
-    'İnsanlara güvenir, açıktır',
-    'Kendine güveni yoktur',
-    'İnatçı ve katıdır',
-    'Aşırı kontrollüdür',
-    'Spontan olamaz',
-    'Konuşkan değildir'
+    'Geleneksel ve itaatkardır',
+    'Otoriteye boyun eğer',
+    'Pasif, itaatkar ve çekingendir',
+    'Diğerlerinin nasıl tepki vereceğini düşünür',
+    'Samimi ve güvenilirdir',
+    'Enerji düzeyi düşüktür, yarışmacı değildir',
+    'Mevki ve güvencede olmaya dikkat eder',
+    'İlgi alanları daralmıştır',
+    'Yaratıcı ve spontan değildir',
+    'İnatçıdır',
+    'Kuralcı ve katıdır',
+    'Erkekse cinsellikle çok ilgili değildir, kadınlardan korkar',
+    'Kendini eleştirir, kendinden memnun değildir',
+    'Önerileri ve fikirleri kabul eder',
+    'Tedaviye çok bağımlı olmaya eğilimlidir',
+    'Kendi davranışının sorumluluğunu kabul etmekten korkar'
   ];
 }
 
-export function getPdGeneralDescription(): string {
-  return 'Psikopatik Sapma (Pd) alt testi, bireyin toplumsal kurallara ve değerlere uyum sağlama kapasitesini değerlendirir. Bu ölçek, antisosyal eğilimleri, impulse kontrol problemlerini ve otorite ile yaşanan çatışmaları ölçer. Yüksek puanlar genellikle kurallara karşı gelme, risk alma davranışları ve kişilerarası ilişkilerde sorunları işaret eder.';
+/**
+ * Sadece Pd Alt Testinin Yükselmesi (Spike) Yorumu
+ */
+export function getPdSpikeInterpretation(): string {
+  return 'Pd alt testinin diğer testlerden en az 10 ya da daha fazla T puanı yukarı da olmasıdır. Bunlar impulsif, küskün, isyankar ve genelde kurallar, düzenlemeler ve otoriteyi kabullenmekte güçlükleri olan bireylerdir. Sıklıkla yaşam sorunları olabilir. Bunlar sokulgan (insan canlısı) olabilirler (eğer test 0 düşükse) ancak diğerleriyle ilişkileri yüzeysel, yapay ve kısadır. Uzun süren yakın ilişkiler kuramazlar, çünkü bunlar birliktelikle ilgili empati, sorumluluklar ve talepler konusunda güçlükleri olan bireylerdir. Uzun süreli hedeflere doğru organize davranışları sürdüremezler ve bunun yerine doyum veren kısa süreli istekler üzerinde odaklaşma eğiliminde olurlar. Alt test Si 30 T puanına yaklaşırsa bu sorunlar daha kalıcı ve şiddetlidir, ancak birey hoş ve rahat görüntüsü verebilir.';
 }
 
-export function getPdAgeConsiderations(): string {
-  return 'Patolojinin var olup olmadığının belirlenmesi için, bireyin hem yaşam durumu, hem de yaşı dikkate alınmalıdır. Yüksek 4 profilleri (yetişkin normları kullanılarak) ergenler için normaldir, bunlar karakteristik olarak evden uzaklaşmak ve kendi kimlik duygularını oluşturmak için isyan ederler. Ancak 25 yaşın üzerinde yüksek 4 profili doğal değildir. 40 yaşın üstünde yüksek 4 profili uzun süren kişilerarası ilişki kuramama ve antisosyal davranışları yansıtırken, 60 yaşın üzerinde, bu tür puanlar apatik bir biçimde katılmama düzeyine varan bir yabancılaşmayı düşündürür.';
+/**
+ * Pd Alt Testi Genel Özellikleri
+ */
+export function getPdGeneralCharacteristics(): string[] {
+  return [
+    'Psikopatik bir birey toplum kurallarını hiçe sayar, saldırgandır, engelleme eşiği düşüktür',
+    'İç çatışmaları, suçluluk duygusu azdır, deneyimden pek fazla ders almaz',
+    'Bu gibi özelikleri tanımlamak için bu alt test geliştirilmiştir',
+    'Alt test 4, psikopatik eğilimleri de yansıttığı ve psikopatik kişiliği kesin olarak teşhis edemediği için McKinley ve Hathaway alt ölçeğe "Psikopatik sapma" adını vermişlerdir'
+  ];
 }
+
+// Geriye uyumluluk için export objesi
+export const pdScaleInterpretation = {
+  getInterpretation: (tScore: number) => new PdScale().getInterpretation(tScore),
+  getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new PdScale().getPersonalizedInterpretation(tScore, personalInfo),
+  getHighScoreCharacteristics: getPdHighScoreCharacteristics,
+  getLowScoreCharacteristics: getPdLowScoreCharacteristics,
+  getSpikeInterpretation: getPdSpikeInterpretation,
+  getGeneralCharacteristics: getPdGeneralCharacteristics,
+  name: 'Psikopatik Sapma (Pd)',
+  number: 4,
+  description: 'Psikopatik bir birey toplum kurallarını hiçe sayar, saldırgandır, engelleme eşiği düşüktür, iç çatışmaları, suçluluk duygusu azdır, deneyimden pek fazla ders almaz. Bu gibi özelikleri tanımlamak için bu alt test geliştirilmiştir. Alt test 4, psikopatik eğilimleri de yansıttığı ve psikopatik kişiliği kesin olarak teşhis edemediği için McKinley ve Hathaway alt ölçeğe "Psikopatik sapma" adını vermişlerdir.',
+  itemCount: 50
+};

@@ -1,4 +1,6 @@
-// src/lib/mmpi/interpretations/scales/cannotSay.ts
+// src/lib/mmpi/interpretations/validity/cannotSay.ts
+
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
 export const cannotSayInterpretation = {
   general: `Cevaplanmayan ya da hem doğru, hem yanlış olarak işaretlenen maddeler bu alt testi oluşturur. Bu yüzden bu alt test diğer geçerlik ve klinik alt testlerinde olduğu gibi belirli test yüksekliğini düşürür. 30 ya da daha fazla maddenin çıkması profili bozar. Çıkarılan madde sayısını en aza indirmek tercih edilen yoldur. Bireye maddelere yanıt vermesinin öneminin açıklanması faydalı olur. Eğer birey 11 ya da daha fazla soruyu boş bırakmışsa yeniden soruları gözden geçirerek bunları cevaplaması istenir. Yine cevapsız bıraktıkları olursa nedeni sorulur. Bireyin cevaplayamadığı için mi boş bıraktığını yoksa cevaplamak istemediği için mi boş bıraktığını anlamak faydalı olur. (?) Alt testinde güvenirlik verisi yoktur. Genellikle birçok hasta ancak birkaç maddeyi boş bırakır ve bu sorun yaratmaz. Bu nedenle MMPI'da bu konu, bugüne kadar fazla işlenmemiştir. Bu alt testteki yükselmeler şöyle yorumlanabilir:`,
@@ -46,14 +48,24 @@ export const cannotSayInterpretation = {
         "Tekrar o maddelerin üzerinden geçmek. Bunu savunuculuğu artırmadan yapmak gereklidir."
       ]
   },
-  getInterpretation(rawScore: number) {
+  getPersonalizedInterpretation(
+    rawScore: number, 
+    options?: {
+      dogumTarihi?: string;
+      medeniDurum?: MedeniDurum;
+      egitimDurumu?: EgitimDurumu;
+      cinsiyet?: 'Erkek' | 'Kadın';
+    }
+  ) {
     let result: { 
       level: string; 
       interpretation: string;
+      personalizedNotes?: string[];
       reasonsForLeavingBlank?: typeof this.reasonsForLeavingBlank;
       whatToDo?: typeof this.whatToDo;
     } | undefined = undefined;
 
+    // Temel yorumu al
     if (rawScore === 0) {
       const { level, interpretation } = this.scoreTable[0];
       result = { level, interpretation };
@@ -67,7 +79,42 @@ export const cannotSayInterpretation = {
       const { level, interpretation } = this.scoreTable[3];
       result = { level, interpretation, reasonsForLeavingBlank: this.reasonsForLeavingBlank, whatToDo: this.whatToDo };
     }
+
+    // Kişiselleştirilmiş notlar ekle
+    if (result && options && rawScore > 0) {
+      const personalizedNotes: string[] = [];
+      
+      // Yaş faktörü - Ergenler için özel not
+      if (options.dogumTarihi) {
+        const yas = hesaplaYas(options.dogumTarihi);
+        if (yas !== null && yas < 18) {
+          personalizedNotes.push("Bu yaş grubunda (ergen) evlilik ve cinsellik ile ilgili soruları anlayamadığı için boş bırakma eğilimi normaldir.");
+        }
+      }
+
+      // Medeni durum faktörü - Evlilik sorularının anlaşılması
+      if (options.medeniDurum === 'Bekar' && options.dogumTarihi) {
+        const yas = hesaplaYas(options.dogumTarihi);
+        if (yas !== null && yas < 25) {
+          personalizedNotes.push("Genç ve bekar bireyler evlilik ile ilgili maddeleri anlayamadığı için boş bırakabilir.");
+        }
+      }
+
+      // Eğitim faktörü - Anlama güçlüğü
+      if (options.egitimDurumu && ['İlkokul', 'Ortaokul', 'Okur-yazar değil'].includes(options.egitimDurumu)) {
+        personalizedNotes.push("Düşük eğitim seviyesi nedeniyle bazı maddeleri anlayamadığı için boş bırakma olasılığı yüksektir.");
+      }
+
+      if (personalizedNotes.length > 0) {
+        result.personalizedNotes = personalizedNotes;
+      }
+    }
     
     return result;
+  },
+
+  // Geriye uyumluluk için eski metodu koru
+  getInterpretation(rawScore: number) {
+    return this.getPersonalizedInterpretation(rawScore);
   }
 };

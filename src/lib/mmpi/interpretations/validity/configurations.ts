@@ -1,12 +1,47 @@
-// src/lib/mmpi/interpretations/validityConfigurations.ts
+// src/lib/mmpi/interpretations/validity/configurations.ts
 
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
+
+// ============================================================================
+// INTERFACE'LER
+// ============================================================================
+
+/**
+ * Geçerlik konfigürasyonu veri yapısı
+ */
 export interface ValidityConfiguration {
   name: string;
   description: string;
   interpretation: string;
   additionalNotes?: string[];
   clinicalImplications?: string[];
+  personalizedNotes?: string[];
 }
+
+/**
+ * F-K Endeksi analiz sonucu
+ */
+export interface FKIndex {
+  value: number;
+  interpretation: string;
+  validity: 'geçerli' | 'sahte-iyilik' | 'sahte-kötülük' | 'dikkatli-değerlendirme' | 'geçersiz';
+  description?: string;
+  clinicalImplications?: string[];
+}
+
+/**
+ * K+ Profil analiz sonucu
+ */
+export interface KPlusProfile {
+  isKPlusProfile: boolean;
+  interpretation?: string;
+  characteristics?: string[];
+  clinicalImplications?: string[];
+}
+
+// ============================================================================
+// GEÇERLİK KONFİGÜRASYON VERİLERİ
+// ============================================================================
 
 export const validityConfigurations = {
   reverseV: {
@@ -149,7 +184,20 @@ export const validityConfigurations = {
   }
 };
 
-export function analyzeValidityConfiguration(lTScore: number, fTScore: number, kTScore: number, clinicalScales?: Record<string, { rawScore: number; tScore: number }>): ValidityConfiguration | null {
+// ============================================================================
+// ANA KONFİGÜRASYON ANALİZ FONKSİYONLARI
+// ============================================================================
+
+/**
+ * Temel geçerlik konfigürasyonu analizi
+ * L, F, K puanlarına göre hangi konfigürasyona uyduğunu belirler
+ */
+export function analyzeValidityConfiguration(
+  lTScore: number, 
+  fTScore: number, 
+  kTScore: number, 
+  clinicalScales?: Record<string, { rawScore: number; tScore: number }>
+): ValidityConfiguration | null {
   // Konfigürasyon 8 (Tümüne "yanlış" yanıt verme): L, F, K tümü 80+
   if (lTScore >= 80 && fTScore >= 80 && kTScore >= 80) {
     return validityConfigurations.allFalse;
@@ -245,8 +293,164 @@ export function analyzeValidityConfiguration(lTScore: number, fTScore: number, k
   return null;
 }
 
+/**
+ * Kişisel bilgileri dahil eden gelişmiş geçerlik konfigürasyonu analizi
+ * Yaş, eğitim, cinsiyet, medeni durum bilgilerini dikkate alarak kişiselleştirilmiş yorumlar ekler
+ */
+export function analyzeValidityConfigurationWithPersonalInfo(
+  lTScore: number, 
+  fTScore: number, 
+  kTScore: number, 
+  personalInfo?: {
+    dogumTarihi?: string;
+    medeniDurum?: MedeniDurum;
+    egitimDurumu?: EgitimDurumu;
+    cinsiyet?: 'Erkek' | 'Kadın';
+  },
+  clinicalScales?: Record<string, { rawScore: number; tScore: number }>
+): ValidityConfiguration | null {
+  // Temel konfigürasyon analizini al
+  const baseConfig = analyzeValidityConfiguration(lTScore, fTScore, kTScore, clinicalScales);
+  
+  if (!baseConfig || !personalInfo) {
+    return baseConfig;
+  }
+
+  // Kişiselleştirilmiş notları oluştur
+  const personalizedNotes: string[] = [];
+
+  // Yaş faktörü kontrolü
+  if (personalInfo.dogumTarihi) {
+    const yas = hesaplaYas(personalInfo.dogumTarihi);
+    if (yas !== null) {
+      // Genel yaş faktörleri
+      if (yas > 50 && lTScore >= 60) {
+        personalizedNotes.push("50 yaş üstü bireylerde L alt testinin yüksek olması yaş ile tutuculuk ilişkisinden kaynaklanabilir.");
+      }
+      if (yas < 18 && fTScore >= 70) {
+        personalizedNotes.push("Ergenlik döneminde F alt testinin yükselmesi, kimlik arayışı ve gelişimsel faktörlerle ilişkili olabilir.");
+      }
+
+      // Konfigürasyona özel yaş faktörleri (kitapta açık belirtilen)
+      if (baseConfig.name.includes("Konfigürasyon 7")) {
+        if (yas < 18) {
+          personalizedNotes.push("Bu konfigürasyon ergenlerde akut bir rahatsızlık yaşanmasını gösterir.");
+          if (personalInfo.cinsiyet === 'Erkek') {
+            personalizedNotes.push("Özellikle erkek ergenlerde bu durum daha belirgindir.");
+          }
+        }
+      }
+
+      if (baseConfig.name.includes("Konfigürasyon 11")) {
+        if (yas >= 18) {
+          personalizedNotes.push("Ergen grubu dışında kalan bireylerde bu konfigürasyon ego gücünde düşüklük ve yetersiz savunma mekanizmalarını gösterir.");
+        }
+      }
+    }
+  }
+
+  // Eğitim düzeyi faktörü kontrolü
+  if (personalInfo.egitimDurumu) {
+    const lowEducation = ['İlkokul', 'Ortaokul', 'Okur-yazar değil'];
+    const highEducation = ['Üniversite', 'Lisansüstü'];
+    const liseEducation = ['Lise'];
+    
+    // Genel eğitim faktörleri
+    if (lowEducation.includes(personalInfo.egitimDurumu)) {
+      if (lTScore >= 60) {
+        personalizedNotes.push("Düşük eğitim düzeyinde L alt testi yüksek olma eğilimi normaldir.");
+      }
+      if (kTScore < 50) {
+        personalizedNotes.push("Düşük eğitim düzeyinde K alt testinin düşük olma eğilimi normal bir durumdur.");
+      }
+    } else if (highEducation.includes(personalInfo.egitimDurumu)) {
+      if (lTScore >= 60) {
+        personalizedNotes.push("Yüksek eğitim düzeyinde yüksek L değerleri dikkat çekicidir ve yargılama eksikliği gösterebilir.");
+      }
+      if (kTScore >= 60) {
+        personalizedNotes.push("Yüksek eğitim düzeyinde K alt testinin yüksek olması beklenen bir durumdur.");
+      }
+    }
+
+    // Konfigürasyona özel eğitim faktörleri (kitapta açık belirtilen)
+    if (baseConfig.name.includes("Konfigürasyon 4")) {
+      if (liseEducation.includes(personalInfo.egitimDurumu) || highEducation.includes(personalInfo.egitimDurumu)) {
+        personalizedNotes.push("Lise düzeyinde eğitim görmüş bireylerde bu konfigürasyon sofistike savunmaları olan kişilerde görülebilir.");
+      }
+    }
+
+    if (baseConfig.name.includes("Konfigürasyon 5")) {
+      if (lowEducation.includes(personalInfo.egitimDurumu)) {
+        personalizedNotes.push("Bu konfigürasyon eğitimi düşük bireylerde daha çok görülür.");
+      }
+    }
+  }
+
+  // Cinsiyet faktörü kontrolü
+  if (personalInfo.cinsiyet) {
+    // Genel cinsiyet faktörleri (Türk normları)
+    if (personalInfo.cinsiyet === 'Erkek') {
+      if (lTScore > 65 || lTScore < 45) {
+        personalizedNotes.push("Erkek normlarına göre değerlendirildiğinde dikkat çekici bir L değeri. (Erkek ortalaması: 6.45 ham puan)");
+      }
+      if (fTScore > 70 || fTScore < 40) {
+        personalizedNotes.push("Erkek normlarına göre değerlendirildiğinde dikkat çekici bir F değeri. (Erkek ortalaması: 8.3 ham puan)");
+      }
+    } else if (personalInfo.cinsiyet === 'Kadın') {
+      if (lTScore > 65 || lTScore < 45) {
+        personalizedNotes.push("Kadın normlarına göre değerlendirildiğinde dikkat çekici bir L değeri. (Kadın ortalaması: 6.0 ham puan)");
+      }
+      if (fTScore > 75 || fTScore < 45) {
+        personalizedNotes.push("Kadın normlarına göre değerlendirildiğinde dikkat çekici bir F değeri. (Kadın ortalaması: 10.11 ham puan)");
+      }
+    }
+
+    // Konfigürasyona özel cinsiyet faktörleri (kitapta açık belirtilen)
+    if (baseConfig.name.includes("Konfigürasyon 5")) {
+      if (personalInfo.cinsiyet === 'Erkek') {
+        personalizedNotes.push("Bu konfigürasyonda erkeklerde Mf (Erillik-Dişilik) alt testi düşük olabilir.");
+      }
+    }
+  }
+
+  // Medeni durum faktörü kontrolü
+  if (personalInfo.medeniDurum) {
+    // Konfigürasyona özel medeni durum faktörleri (kitapta açık belirtilen)
+    if (baseConfig.name.includes("Konfigürasyon 4")) {
+      if (personalInfo.medeniDurum === 'Evli') {
+        personalizedNotes.push("Bu konfigürasyon evlilik çatışması yaşayan normal bireylerde görülebilir.");
+      }
+    }
+  }
+
+  // Genel ölçekler arası ilişkiler
+  if (lTScore >= 60) {
+    personalizedNotes.push("L alt testi yüksek olması, klinik alt testlerde düşme ve psikopatolojinin inkârını gösterebilir.");
+  }
+  
+  if (kTScore >= 60) {
+    personalizedNotes.push("K alt testi yüksek olması, nevrotik üçlüde (1, 2, 3) yükselme ya da normal sınırlar içinde profil olasılığını artırır.");
+  }
+
+  if (fTScore >= 70 && lTScore < 50 && kTScore < 50) {
+    personalizedNotes.push("F yüksek, L ve K düşük kombinasyonu açık iletişim ve yardım arayışını gösterir.");
+  }
+
+  return {
+    ...baseConfig,
+    personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
+  };
+}
+
+// ============================================================================
+// YARDIMCI ANALİZ FONKSİYONLARI
+// ============================================================================
+
+/**
+ * K düzeltme önerisini kontrol eder
+ * K ve F arasındaki fark 20+ T puanı ise uyarı verir
+ */
 export function getKCorrectionSuggestion(kTScore: number, fTScore: number): string | null {
-  // K alt testi F alt testinden 20 ya da daha çok T puanında ise özel uyarı
   if (kTScore - fTScore >= 20) {
     return "K alt testi F alt testinden 20 veya daha fazla T puanı yüksektir. Bu, bireyin psikolojik yaşantılarını açığa vurmada çok isteksiz ve savunucu olduğunu gösterir. Klinik testlerin yorumlanmasında bu durumun dikkate alınması önerilir.";
   }
@@ -254,21 +458,10 @@ export function getKCorrectionSuggestion(kTScore: number, fTScore: number): stri
   return null;
 }
 
-export interface KPlusProfile {
-  isKPlusProfile: boolean;
-  interpretation?: string;
-  characteristics?: string[];
-  clinicalImplications?: string[];
-}
-
-export interface FKIndex {
-  value: number;
-  interpretation: string;
-  validity: 'geçerli' | 'sahte-iyilik' | 'sahte-kötülük' | 'dikkatli-değerlendirme' | 'geçersiz';
-  description?: string;
-  clinicalImplications?: string[];
-}
-
+/**
+ * F-K Endeksi hesaplama ve yorumlama
+ * Sahte iyilik/kötülük profillerini tespit eder
+ */
 export function calculateFKIndex(fTScore: number, kTScore: number): FKIndex {
   const fkValue = fTScore - kTScore;
   
@@ -330,7 +523,16 @@ export function calculateFKIndex(fTScore: number, kTScore: number): FKIndex {
   };
 }
 
-export function analyzeKPlusProfile(lTScore: number, fTScore: number, kTScore: number, clinicalScales?: Record<string, { rawScore: number; tScore: number }>): KPlusProfile {
+/**
+ * K+ Profil analizi
+ * Özel profil türünü tespit eder (Mark ve Seeman, 1963)
+ */
+export function analyzeKPlusProfile(
+  lTScore: number, 
+  fTScore: number, 
+  kTScore: number, 
+  clinicalScales?: Record<string, { rawScore: number; tScore: number }>
+): KPlusProfile {
   // K+ profili kriterleri:
   // 1. K ve L alt testleri F'den yüksek
   // 2. K alt testi F alt testinden en az 5 T puanı üstünde

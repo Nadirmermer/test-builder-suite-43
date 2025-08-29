@@ -1,4 +1,6 @@
-// src/lib/mmpi/interpretations/scales/kScale.ts
+// src/lib/mmpi/interpretations/validity/kScale.ts
+
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
 export const kScaleInterpretation = {
   scale: "K Alt Testi (Düzeltme)",
@@ -101,11 +103,86 @@ export const kScaleInterpretation = {
     }
   ],
 
+  getPersonalizedInterpretation(
+    tScore: number,
+    options?: {
+      dogumTarihi?: string;
+      medeniDurum?: MedeniDurum;
+      egitimDurumu?: EgitimDurumu;
+      cinsiyet?: 'Erkek' | 'Kadın';
+    }
+  ) {
+    // Temel yorumu al
+    let baseInterpretation: any;
+    if (tScore >= 72) baseInterpretation = this.tScoreInterpretations[0];
+    else if (tScore >= 61) baseInterpretation = this.tScoreInterpretations[1];
+    else if (tScore >= 46) baseInterpretation = this.tScoreInterpretations[2];
+    else if (tScore >= 27) baseInterpretation = this.tScoreInterpretations[3];
+    
+    if (!baseInterpretation || !options) {
+      return baseInterpretation;
+    }
+
+    // Kişiselleştirilmiş notlar oluştur
+    const personalizedNotes: string[] = [];
+    
+    // Eğitim düzeyi göre yorumlama (sosyo-ekonomik düzey tahmini)
+    if (options.egitimDurumu) {
+      const dusukEgitim = ['İlkokul', 'Ortaokul', 'Okur-yazar değil'];
+      const yuksekEgitim = ['Üniversite', 'Lisansüstü'];
+      
+      if (dusukEgitim.includes(options.egitimDurumu)) {
+        if (tScore >= 27 && tScore <= 45) {
+          personalizedNotes.push("Düşük eğitim düzeyiniz dikkate alındığında, bu K puanı normal kabul edilebilir.");
+        }
+      } else if (yuksekEgitim.includes(options.egitimDurumu)) {
+        if (tScore >= 27 && tScore <= 45) {
+          personalizedNotes.push("Yüksek eğitim düzeyiniz dikkate alındığında, bu düşük K puanı daha dikkatli değerlendirilmelidir.");
+        }
+        if (tScore >= 46 && tScore <= 60) {
+          personalizedNotes.push("Yüksek eğitim düzeyli bireyler için bu optimal aralıktadır.");
+        }
+      }
+    }
+
+    // Yaş faktörü (ergenler için özel not)
+    if (options.dogumTarihi) {
+      const yas = hesaplaYas(options.dogumTarihi);
+      if (yas !== null && yas < 18 && tScore < 45) {
+        personalizedNotes.push("Ergenlik döneminde düşük K puanı, kimlik arayışından kaynaklanabilir ve normaldir.");
+      }
+    }
+
+    // Cinsiyet faktörü (Türk normlarına göre)
+    if (options.cinsiyet) {
+      if (options.cinsiyet === 'Erkek' && (tScore > 65 || tScore < 45)) {
+        personalizedNotes.push("Erkek normlarına göre değerlendirildiğinde dikkat çekici bir değer. (Erkek ortalaması: 13.98 ham puan)");
+      } else if (options.cinsiyet === 'Kadın' && (tScore > 62 || tScore < 42)) {
+        personalizedNotes.push("Kadın normlarına göre değerlendirildiğinde dikkat çekici bir değer. (Kadın ortalaması: 11.82 ham puan)");
+      }
+    }
+
+    // Eğitim ile L/K ilişkisi
+    if (options.egitimDurumu) {
+      const dusukEgitim = ['İlkokul', 'Ortaokul', 'Okur-yazar değil'];
+      const yuksekEgitim = ['Üniversite', 'Lisansüstü'];
+      
+      if (dusukEgitim.includes(options.egitimDurumu) && tScore < 50) {
+        personalizedNotes.push("Düşük eğitim düzeyinde K alt testinin düşük olma eğilimi normal bir durumdur.");
+      } else if (yuksekEgitim.includes(options.egitimDurumu) && tScore > 60) {
+        personalizedNotes.push("Yüksek eğitim düzeyinde K alt testinin yüksek olması beklenen bir durumdur.");
+      }
+    }
+
+    // Sonucu döndür
+    return {
+      ...baseInterpretation,
+      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
+    };
+  },
+
+  // Geriye uyumluluk için eski metodu koru
   getInterpretationByTScore(tScore: number) {
-    if (tScore >= 72) return this.tScoreInterpretations[0];
-    if (tScore >= 61) return this.tScoreInterpretations[1];
-    if (tScore >= 46) return this.tScoreInterpretations[2];
-    if (tScore >= 27) return this.tScoreInterpretations[3];
-    return undefined;
+    return this.getPersonalizedInterpretation(tScore);
   }
 };

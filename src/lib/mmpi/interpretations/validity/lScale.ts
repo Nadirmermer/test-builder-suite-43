@@ -1,4 +1,6 @@
-// src/lib/mmpi/interpretations/scales/lScale.ts
+// src/lib/mmpi/interpretations/validity/lScale.ts
+
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
 
 export const lScaleInterpretation = {
   scale: "L (Yalan)",
@@ -93,12 +95,74 @@ export const lScaleInterpretation = {
     ]
   },
 
+  getPersonalizedInterpretation(
+    tScore: number,
+    options?: {
+      dogumTarihi?: string;
+      medeniDurum?: MedeniDurum;
+      egitimDurumu?: EgitimDurumu;
+      cinsiyet?: 'Erkek' | 'Kadın';
+    }
+  ) {
+    // Temel yorumu al
+    let baseInterpretation: any;
+    if (tScore >= 69) baseInterpretation = this.scoreInterpretations[0];
+    else if (tScore >= 64 && tScore < 69) baseInterpretation = this.scoreInterpretations[1];
+    else if (tScore >= 59 && tScore < 64) baseInterpretation = this.scoreInterpretations[2];
+    else if (tScore >= 36 && tScore < 59) baseInterpretation = this.scoreInterpretations[3];
+    else if (tScore <= 35) baseInterpretation = this.scoreInterpretations[4];
+    
+    if (!baseInterpretation || !options) {
+      return baseInterpretation;
+    }
+
+    // Kişiselleştirilmiş notlar oluştur
+    const personalizedNotes: string[] = [];
+    
+    // Yaş faktörü
+    if (options.dogumTarihi) {
+      const yas = hesaplaYas(options.dogumTarihi);
+      if (yas !== null && yas > 50) {
+        personalizedNotes.push("50 yaşın üstündeki bireyler L maddelerine daha fazla yanıt verme eğilimi gösterir. Bu, yaş ile tutuculuk arasındaki ilişkiden kaynaklanır.");
+      }
+    }
+
+    // Eğitim faktörü
+    if (options.egitimDurumu) {
+      const dusukEgitim = ['İlkokul', 'Ortaokul', 'Lise', 'Okur-yazar değil'];
+      if (dusukEgitim.includes(options.egitimDurumu)) {
+        personalizedNotes.push("Düşük eğitim seviyesi (lise ve altı) olan bireylerde L alt testi yaklaşık 5 T puanı daha yüksek çıkar. Bu normal bir durumdur.");
+        
+        if (tScore >= 64) {
+          personalizedNotes.push("Eğitim seviyeniz dikkate alındığında, bu yükselme eğitim seviyesi ile açıklanabilir ve patolojik olmayabilir.");
+        }
+      } else if (['Üniversite', 'Lisansüstü'].includes(options.egitimDurumu)) {
+        if (tScore >= 64) {
+          personalizedNotes.push("Yüksek eğitim seviyeniz dikkate alındığında, bu L değeri yargılama eksikliği veya başarısızlık göstergesi olabilir.");
+        }
+        
+        personalizedNotes.push("Yüksek sosyo-ekonomik sınıftan bireyler genellikle 4'ten fazla L puanı almaz. Bu nedenle mevcut puanınız dikkatle değerlendirilmelidir.");
+      }
+    }
+
+    // Cinsiyet faktörü (mevcut Türk normlarına göre)
+    if (options.cinsiyet) {
+      if (options.cinsiyet === 'Erkek' && tScore >= 65) {
+        personalizedNotes.push("Erkek normlarına göre bu değer ortalamanın üstündedir. (Erkek ortalaması: 6.45 ham puan)");
+      } else if (options.cinsiyet === 'Kadın' && tScore >= 62) {
+        personalizedNotes.push("Kadın normlarına göre bu değer ortalamanın üstündedir. (Kadın ortalaması: 6.00 ham puan)");
+      }
+    }
+
+    // Sonucu döndür
+    return {
+      ...baseInterpretation,
+      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
+    };
+  },
+
+  // Geriye uyumluluk için eski metodu koru
   getInterpretation(tScore: number) {
-    if (tScore >= 69) return this.scoreInterpretations[0];
-    if (tScore >= 64 && tScore < 69) return this.scoreInterpretations[1];
-    if (tScore >= 59 && tScore < 64) return this.scoreInterpretations[2];
-    if (tScore >= 36 && tScore < 59) return this.scoreInterpretations[3];
-    if (tScore <= 35) return this.scoreInterpretations[4];
-    return undefined;
+    return this.getPersonalizedInterpretation(tScore);
   }
 };

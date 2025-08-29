@@ -1,4 +1,4 @@
-import { TestSonucu } from '@/types';
+import { TestSonucu, Danisan } from '@/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
@@ -11,6 +11,7 @@ import {
   kScaleInterpretation,
   carelessnessScaleInterpretation,
   analyzeValidityConfiguration,
+  analyzeValidityConfigurationWithPersonalInfo,
   getKCorrectionSuggestion,
   analyzeKPlusProfile,
   calculateFKIndex
@@ -18,6 +19,7 @@ import {
 
 interface MMPIValidityScaleInterpretationProps {
   testSonucu: TestSonucu;
+  danisan?: Danisan;
 }
 
 interface InterpretationItem {
@@ -36,6 +38,7 @@ interface InterpretationData {
   validity?: 'geçerli' | 'şüpheli' | 'geçersiz';
   clinicalImplications?: string[];
   recommendations?: string[];
+  personalizedNotes?: string[];
   reasonsForLeavingBlank?: {
     title: string;
     reasons: string[];
@@ -106,11 +109,22 @@ const renderInterpretation = (data: InterpretationData | null) => {
           </ul>
         </div>
       )}
+
+      {data.personalizedNotes && (
+        <div>
+          <h4 className="font-semibold mt-4 text-blue-700">🔸 Kişisel Bilgilerinize Göre Özel Notlar:</h4>
+          <ul className="space-y-2 list-disc pl-5 mt-2 bg-blue-50 p-3 rounded-md">
+            {data.personalizedNotes.map((note: string, index: number) => (
+              <li key={index} className="text-blue-800">{note}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
 
-export default function MMPIValidityScaleInterpretation({ testSonucu }: MMPIValidityScaleInterpretationProps) {
+export default function MMPIValidityScaleInterpretation({ testSonucu, danisan }: MMPIValidityScaleInterpretationProps) {
   if (!testSonucu.mmpiSonuclari) {
     return null;
   }
@@ -134,40 +148,60 @@ export default function MMPIValidityScaleInterpretation({ testSonucu }: MMPIVali
   const carelessnessScore = carelessnessScaleInterpretation.calculateScore(mmpiResponses);
   const carelessnessInterpretation = carelessnessScaleInterpretation.getInterpretation(carelessnessScore);
 
+  // Kişiselleştirilmiş yorumlar için danışan bilgilerini hazırla
+  const personalInfo = danisan ? {
+    dogumTarihi: danisan.dogumTarihi,
+    medeniDurum: danisan.medeniDurum,
+    egitimDurumu: danisan.egitimDurumu,
+    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadın'
+  } : undefined;
+
   // Geçerlik konfigürasyonu analizi
   const lTScore = mmpiResults.validityScales.L.tScore;
   const fTScore = mmpiResults.validityScales.F.tScore;
   const kTScore = mmpiResults.validityScales.K.tScore;
   
-  const validityConfig = analyzeValidityConfiguration(lTScore, fTScore, kTScore, mmpiResults.clinicalScales);
+  const validityConfig = personalInfo ? 
+    analyzeValidityConfigurationWithPersonalInfo(lTScore, fTScore, kTScore, personalInfo, mmpiResults.clinicalScales) :
+    analyzeValidityConfiguration(lTScore, fTScore, kTScore, mmpiResults.clinicalScales);
   const kCorrectionSuggestion = getKCorrectionSuggestion(kTScore, fTScore);
   const kPlusProfile = analyzeKPlusProfile(lTScore, fTScore, kTScore, mmpiResults.clinicalScales);
   const fkIndex = calculateFKIndex(fTScore, kTScore);
+
+  // Bu bölüm kaldırıldı - configurations.ts'ye entegre edilecek
 
   const interpretations: InterpretationItem[] = [
     {
       scaleName: 'Bir Şey Diyemem (?)',
       rawScore: unansweredCount,
       tScore: null,
-      data: cannotSayInterpretation.getInterpretation(unansweredCount),
+      data: personalInfo ? 
+        cannotSayInterpretation.getPersonalizedInterpretation(unansweredCount, personalInfo) :
+        cannotSayInterpretation.getInterpretation(unansweredCount),
     },
     {
       scaleName: 'Yalan (L)',
       rawScore: mmpiResults.validityScales.L.rawScore,
       tScore: mmpiResults.validityScales.L.tScore,
-      data: lScaleInterpretation.getInterpretation(mmpiResults.validityScales.L.tScore),
+      data: personalInfo ? 
+        lScaleInterpretation.getPersonalizedInterpretation(mmpiResults.validityScales.L.tScore, personalInfo) :
+        lScaleInterpretation.getInterpretation(mmpiResults.validityScales.L.tScore),
     },
     {
       scaleName: 'Sıklık (F)',
       rawScore: mmpiResults.validityScales.F.rawScore,
       tScore: mmpiResults.validityScales.F.tScore,
-      data: fScaleInterpretation.getInterpretationByTScore(mmpiResults.validityScales.F.tScore),
+      data: personalInfo ? 
+        fScaleInterpretation.getPersonalizedInterpretation(mmpiResults.validityScales.F.tScore, personalInfo) :
+        fScaleInterpretation.getInterpretationByTScore(mmpiResults.validityScales.F.tScore),
     },
     {
       scaleName: 'Düzeltme (K)',
       rawScore: mmpiResults.validityScales.K.rawScore,
       tScore: mmpiResults.validityScales.K.tScore,
-      data: kScaleInterpretation.getInterpretationByTScore(mmpiResults.validityScales.K.tScore),
+      data: personalInfo ? 
+        kScaleInterpretation.getPersonalizedInterpretation(mmpiResults.validityScales.K.tScore, personalInfo) :
+        kScaleInterpretation.getInterpretationByTScore(mmpiResults.validityScales.K.tScore),
     },
     {
       scaleName: 'Dikkatsizlik (DIKKAT)',
@@ -339,6 +373,17 @@ export default function MMPIValidityScaleInterpretation({ testSonucu }: MMPIVali
                 </ul>
               </div>
             )}
+
+            {validityConfig.personalizedNotes && (
+              <div className="bg-blue-50 p-3 rounded-md">
+                <h4 className="font-semibold text-sm mb-2 text-blue-700">🔸 Kişisel Bilgilerinize Göre Özel Notlar:</h4>
+                <ul className="space-y-1 list-disc pl-5 text-sm text-blue-800">
+                  {validityConfig.personalizedNotes.map((note, index) => (
+                    <li key={index}>{note}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
@@ -393,6 +438,8 @@ export default function MMPIValidityScaleInterpretation({ testSonucu }: MMPIVali
           </Accordion>
         </CardContent>
       </Card>
+
+      {/* Geçerlik konfigürasyonları burada gösterilecek */}
     </div>
   );
 }

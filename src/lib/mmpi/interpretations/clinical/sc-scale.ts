@@ -1,244 +1,193 @@
-interface ScScaleInterpretation {
+// Şizofreni (Sc) Alt Testi - Ölçek 8
+// MMPI Klinik Ölçek - Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır
+
+import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
+
+export interface ScScaleInterpretation {
   tScore: number;
   level: string;
   description: string;
   characteristics: string[];
-  psychoticFeatures?: string[];
-  therapyResponse?: string[];
+  clinicalSignificance?: string;
+  therapeuticImplications?: string[];
+  behavioralIndicators?: string[];
   additionalNotes?: string[];
-  profileConsiderations?: string[];
+  personalizedNotes?: string[];
 }
 
-// Şizofreni Ölçeği Yorumlama Sınıfı
 export class ScScale {
-  getInterpretation(tScore: number): ScScaleInterpretation {
-    let interpretation: ScScaleInterpretation;
-    
-    if (tScore >= 100) {
-      interpretation = getScExtremelyHighInterpretation();
-    } else if (tScore >= 75) {
-      interpretation = getScVeryHighInterpretation();
-    } else if (tScore >= 65) {
-      interpretation = getScHighInterpretation();
-    } else if (tScore >= 45) {
-      interpretation = getScNormalInterpretation();
-    } else {
-      interpretation = getScLowInterpretation();
+  /**
+   * Kişisel bilgileri dahil eden gelişmiş şizofreni ölçeği yorumlaması
+   */
+  getPersonalizedInterpretation(
+    tScore: number,
+    personalInfo?: {
+      dogumTarihi?: string;
+      medeniDurum?: MedeniDurum;
+      egitimDurumu?: EgitimDurumu;
+      cinsiyet?: 'Erkek' | 'Kadın';
     }
+  ): ScScaleInterpretation {
+    // Temel yorumu al
+    const baseInterpretation = this.getInterpretation(tScore);
     
-    // tScore'u set et
-    interpretation.tScore = tScore;
-    return interpretation;
+    if (!personalInfo) {
+      return baseInterpretation;
+    }
+
+    // Kişiselleştirilmiş notları oluştur
+    const personalizedNotes: string[] = [];
+
+    // Bu alt testte kitapta açık belirtilen yaş, eğitim, medeni hal veya cinsiyet faktörleri bulunmamaktadır
+    // Sadece T puanı aralıklarına göre yorumlama yapılmaktadır
+
+    return {
+      ...baseInterpretation,
+      personalizedNotes: personalizedNotes.length > 0 ? personalizedNotes : undefined
+    };
+  }
+
+  getInterpretation(tScore: number): ScScaleInterpretation {
+    if (tScore >= 100) {
+      return {
+        tScore,
+        level: '100 T Puanı Ve Üstü',
+        description: 'Akut bozukluğun eşlik ettiği uzun süreli ciddi bir stresin sonucunda ortaya çıkar.',
+        characteristics: [
+          'Bu kişiler tipik olarak şizofren değildir',
+          'Daha çok akut psikotik reaksiyon içine giren hastalardır',
+          'Ayrıca kimlik krizindeki engellerle de bu ranja rastlanır',
+          'T>95\'in üzerinde olan değerler akut durumsal stres ve ciddi özdeşim krizleri gösterir'
+        ],
+        clinicalSignificance: 'Akut psikotik reaksiyon - Kimlik krizi'
+      };
+    } else if (tScore >= 75) {
+      return {
+        tScore,
+        level: '75 T Puanı Ve Üstü',
+        description: 'Yabancılaşma yaşayan ve doğru düşünemeyen bireyler tarafından verilir.',
+        characteristics: [
+          'Düşünce ve hareketlerde sıradan değildirler',
+          'Olasılıkla sosyal açıdan çekiniktirler ve derin kişilerarası ilişki kuramazlar',
+          'Kendilerinin kim olduğu konusunda oldukça bozuk düşünceleri vardır',
+          'Genellikle bu dünyaya ait olmadıklarını düşünürler',
+          'İletişim kurmada sorunlar temeldir, dezorganize düşünceleri vardır',
+          'Bunların açık ve mantıklı düşünmesini engeller',
+          'Bu bireylerin gerçek ile bağlantıları var gibi görünse de bu oldukça yüzeyseldir',
+          'Alt test 8\'deki yüksek puanlar, gerçek psikotik düşünce bozukluğunu yansıtabilecek soğuk, apatik, yabancılaşma, düşünme, iletişim ve anlamada bozulma olması gibi özellikleri gösterebilir',
+          'Kişilerarası ilişkiler yerine hayalleri ve fantezileri yeğlerler',
+          'Aşağılık duyguları, kendinden hoşnutsuzluk ve yalnızlık duyguları içindedirler',
+          'T puanı 80\'e yaklaştığında, mantıkla ve düşünmede tuhaflık belirginleşirler',
+          'Gerçek şizoid düşünce süreci gözlenebilir',
+          'Bunlara depresif özellikler ve psikomotor gerilime eşlik eder',
+          'Bu davranışlar ve şizofrenik bir sürecin ya da şizoid bir uyumun ya da uzun süreli ciddi bir stresin sonucu olabilir'
+        ]
+      };
+    } else if (tScore >= 60) {
+      return {
+        tScore,
+        level: '60-74 T Puanı',
+        description: 'Bu yükselme değerlendirilirken profilin tümü ele alınmalıdır.',
+        characteristics: [
+          'Bir yükselmenin alt sınırında ve nevrotik profillerde yükselme varsa bu bireyin soyut konularla ilgilendiğini göstermektedir',
+          'Eğer Si alt testi de yükselmişse diğerleri tarafından uzak ve anlaşılmaz kişiler olarak tanımlanmaktadır',
+          '65-74 T puanı aralığındaki değerlendirmede genel bir yabancılaşma ya da örtük psikoz olup olmadığı ilişkilerinde çekingen, derin duygusal ilişkilerden kaçınan, temkinli, tutucu, rekabet etmek istemeyen kişilerdir'
+        ]
+      };
+    } else {
+      return {
+        tScore,
+        level: '60 Altı T Puanı',
+        description: 'Normal aralık - Şizofreni belirtileri belirgin değil.',
+        characteristics: [
+          'Bu T puanı aralığında özel bir tanımlama bulunmamaktadır'
+        ]
+      };
+    }
   }
 }
 
-function getScExtremelyHighInterpretation(): ScScaleInterpretation {
-  return {
-    tScore: 0, // Will be set by caller
-    level: "Aşırı Yüksek (T ≥ 100)",
-    description: "Açık psikotik süreçler gösterir, şizofrenik düşünce bozukluğu belirgindir.",
-    characteristics: [
-      "Açık düşünce bozukluğu",
-      "Bizarrlik",
-      "Şüpheci paranoidlik",
-      "Sosyal izolasyon"
-    ],
-    psychoticFeatures: [
-      "Delüzyonlar",
-      "Halüsinasyonlar",
-      "Düşünce uçması",
-      "Derealizasyon",
-      "Depersonalizasyon"
-    ],
-    profileConsiderations: [
-      "Diğer klinik ölçeklerle birlikte değerlendirilmeli",
-      "Pa ve Ma ölçekleri yüksekse organik beyin hasarı düşünülebilir",
-      "F ölçeği de yüksekse psikotik bozukluk daha olasıdır"
-    ]
-  };
-}
-
-function getScVeryHighInterpretation(): ScScaleInterpretation {
-  return {
-    tScore: 0, // Will be set by caller
-    level: "Çok Yüksek (T: 75-99)",
-    description: "Şizofreniye benzer davranışlar ve düşünce kalıpları gösterir.",
-    characteristics: [
-      "Sosyal izolasyon",
-      "Paranoid eğilimler",
-      "Bizarrlik",
-      "Düşük sosyal statü",
-      "Kişilerarası sorunlar"
-    ],
-    psychoticFeatures: [
-      "Olağandışı düşünce içerikleri",
-      "Sıradışı algılar",
-      "Tuhaf davranışlar",
-      "Sosyal konvansiyonlara uyumsuzluk"
-    ],
-    therapyResponse: [
-      "Psikoterapiye sınırlı yanıt",
-      "Güven kurma zorluğu",
-      "İçgörü eksikliği",
-      "İlaç tedavisi gerekebilir"
-    ]
-  };
-}
-
-function getScHighInterpretation(): ScScaleInterpretation {
-  return {
-    tScore: 0, // Will be set by caller
-    level: "Yüksek (T: 65-74)",
-    description: "Konformiteden uzak, alışılmadık düşünce ve davranışlar sergiler.",
-    characteristics: [
-      "Yaratıcı ve orijinal",
-      "Sosyal kuralları sorgular",
-      "Bağımsız düşünce",
-      "Sanatsal ilgileri olabilir",
-      "Geleneksel değerlere karşı çıkar"
-    ],
-    additionalNotes: [
-      "Bu düzeyde yaratıcılık ve orijinallik pozitif özellikler olabilir",
-      "Sosyal uyumsuzluk hafif düzeydedir",
-      "Entelektüel merak yüksektir"
-    ]
-  };
-}
-
-function getScNormalInterpretation(): ScScaleInterpretation {
-  return {
-    tScore: 0, // Will be set by caller
-    level: "Normal Aralık (T: 45-64)",
-    description: "Sosyal konvansiyonlara uygun, dengeli düşünce yapısı.",
-    characteristics: [
-      "Sosyal kurallara uyum",
-      "Geleneksel değerlere saygı",
-      "Uyumlu kişilerarası ilişkiler",
-      "Gerçekçi düşünce"
-    ]
-  };
-}
-
-function getScLowInterpretation(): ScScaleInterpretation {
-  return {
-    tScore: 0, // Will be set by caller
-    level: "Düşük (T < 45)",
-    description: "Aşırı konformist, geleneksel ve muhafazakar yaklaşım.",
-    characteristics: [
-      "Aşırı konformist",
-      "Geleneksel değerlere bağlı",
-      "Risk almaktan kaçınır",
-      "Sosyal onay arayışı",
-      "Yaratıcılık sınırlı"
-    ],
-    additionalNotes: [
-      "Bazen aşırı uyum problematik olabilir",
-      "Kendini ifade etmede zorlanabilir",
-      "Otoriteye aşırı bağımlılık gösterebilir"
-    ]
-  };
-}
-
+/**
+ * Sc Alt Testinde Yüksek Puan Alan Birey (T: 80-100) (Graham 1987)
+ */
 export function getScHighScoreCharacteristics(): string[] {
   return [
-    "Şüpheci, alıngan",
-    "Ağırbaşlı, ciddi, sakin, sessiz",
-    "İçe dönük",
-    "Fantezi dünyasında yaşar",
-    "Gündüz düşleri kurar",
-    "Yaratıcı, atak, orijinal",
-    "Sıradışı düşünceleri vardır",
-    "Çok önemli sorunlarla ilgilenir",
-    "Korku ve kayıplarla ilgili düşünceleri vardır",
-    "Adaletsizlik duygularına sahiptir",
-    "Güvensizdir",
-    "Öfkeli ve hinclidir",
-    "Sosyal uyum problemi yaşar",
-    "Kişilerarası ilişkilerde başarısız",
-    "Sosyal beceriler yetersiz",
-    "Dışlanmış hisseder",
-    "Kırılgan, hassas",
-    "Boyun eğmez, direngen",
-    "Aşağılık duygularına sahip",
-    "Kendine güveni yoktur",
-    "Cinsel problemleri olabilir",
-    "Kimlik karmaşası yaşayabilir"
+    'Açık psikotik davranış gösterebilir',
+    'Konfüzyonlardadır, dezorganize ve dezoryantedir',
+    'Garip düşünce ve tutumları delüzyonları vardır',
+    'Hallüsinasyonları vardır',
+    'Yargılaması kötüdür',
+    'Şizoid yaşam biçimi sergiler',
+    'Kendini sosyal çevrenin dışında görür',
+    'Kendini izole, yabancılaşmış, yanlış anlaşılmış hisseder',
+    'Arkadaşları tarafından kabul görmediğini düşünür',
+    'Yalnız ve ulaşılmazdır',
+    'İnsanlarla ve yeni durumlarla karşılaşmaktan kaçınır',
+    'Utangaç ve çekingendir',
+    'Yaygın anksiyete yaşar',
+    'Kendini öç alıcı, hostil, saldırgan hisseder',
+    'Duygularını ifade edemez',
+    'Strese, hayal ve fantezi dünyasına çekilerek tepki verir',
+    'Gerçekle hayaliyi ayırma da sorun yaşar',
+    'Kendi ile ilgili kuşkuları vardır',
+    'Aşağılık, yetersizlik, tatminsizlik duyguları vardır',
+    'Cinsellikle ilgili düşünsel uğraşları vardır, cinsel kimliğine ilişkin rol karmaşası yaşar',
+    'Alışılmamış, olağandışı, garip ve tuhaftır',
+    'Belirgin olmayan ve uzun süredir devam eden psikolojik sorunları vardır',
+    'İnatçı, kaprisli, dik kafalıdır',
+    'Cömert, sakin ve duygusaldır',
+    'İmmatür ve impulsiftir',
+    'Maceraperesttir',
+    'Zekidir',
+    'Vicdanlıdır',
+    'Çok sinirlidir',
+    'İlgi alanının genişliğine bağlı olarak dikkat toplaması güçtür',
+    'Yaratıcıdır ve hayal gücü zengindir',
+    'Soyut, belirsiz amaçları vardır',
+    'Sorun çözümüne ilişkin temel bilgilerin farkında değildir',
+    'Psikoterapide prognozu kötüdür',
+    'Terapistle anlamlı bir ilişki kurmak konusunda gönülsüzdür',
+    'Pek çok hastadan daha uzun süre psikoterapide kalır',
+    'Terapiste güven duyması zor olabilir',
+    'Tıbbi yardım ve ilaç tedavisinde yararlanabilir'
   ];
 }
 
-export function getScPsychoticFeatures(): string[] {
+/**
+ * Sc Alt Testinde Düşük Puan Alan Birey
+ */
+export function getScLowScoreCharacteristics(): string[] {
   return [
-    "Düşünce bozukluğu:",
-    "- Dereizm",
-    "- Tangensiyalite", 
-    "- Sirkümsansiyalite",
-    "- Neolojizm",
-    "Algı bozuklukları:",
-    "- Halüsinasyonlar",
-    "- İllüzyonlar",
-    "- Derealizasyon",
-    "- Depersonalizasyon",
-    "Paranoid belirtiler:",
-    "- Delüzyonlar",
-    "- Referans düşünceleri",
-    "- Şüphecilik",
-    "Davranış bozuklukları:",
-    "- Bizarrlik",
-    "- Uygunsuz etki",
-    "- Sosyal çekilme"
+    'Arkadaşça, neşeli, duyarlı, güvenilirdir',
+    'Dengeli, uyumludur',
+    'Sorumluluk sahibidir, bağımlıdır',
+    'İlişkilerde tutucudur, derin duygusal ilişkiler kurmaktan kaçınır',
+    'İtaatkardır, uysal, otoriteyi açıkça kabul eder',
+    'Temkinli ve geleneksel tutucudur, sorunlara yaklaşımında hayal gücünden yoksundur',
+    'Pratiktir, somut düşünür',
+    'Başarı, statü ve güçle ilgilidir',
+    'Rekabet gerektiren durumlara girmekten gönülsüzdür'
   ];
 }
 
-export function getScTherapyResponse(): string[] {
+/**
+ * Sc Alt Testi Genel Özellikleri
+ */
+export function getScGeneralCharacteristics(): string[] {
   return [
-    "Psikoterapiye yanıt değişken",
-    "Güven kurma sorunu yaşar",
-    "İçgörü geliştirmekte zorlanır",
-    "Terapötik ilişkide mesafeli",
-    "Çelişkili tutum sergileyebilir",
-    "İlaç tedavisine gereksinim olabilir",
-    "Uzun süreli tedavi gerekebilir",
-    "Destekleyici yaklaşım tercih edilir",
-    "Aile terapisi faydalı olabilir",
-    "Sosyal beceri antrenmanı önerilir"
+    'Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır'
   ];
 }
 
-export function getScProfileInterpretation(scores: { [key: string]: number }): string {
-  const scScore = scores.Sc;
-  const paScore = scores.Pa || 0;
-  const maScore = scores.Ma || 0;
-  const fScore = scores.F || 0;
-
-  if (scScore >= 75) {
-    if (paScore >= 70 && maScore >= 70) {
-      return "Sc-Pa-Ma üçlüsü yüksek: Organik beyin hasarı veya şiddetli psikotik bozukluk olasılığı yüksek.";
-    } else if (paScore >= 70) {
-      return "Sc-Pa yüksekliği: Paranoid şizofreni veya paranoid kişilik bozukluğu düşünülebilir.";
-    } else if (fScore >= 70) {
-      return "Sc-F yüksekliği: Psikotik süreç aktif, belirtiler belirgin.";
-    } else {
-      return "İzole Sc yüksekliği: Şizotipal özellikler, sosyal çekilme, yaratıcılık.";
-    }
-  } else if (scScore >= 65) {
-    return "Orta düzeyde Sc yüksekliği: Konformiteden uzaklaşma, orijinallik, yaratıcı düşünce.";
-  } else if (scScore < 45) {
-    return "Düşük Sc: Aşırı konformizm, geleneksellik, yaratıcılık eksikliği.";
-  } else {
-    return "Normal Sc düzeyi: Dengeli sosyal uyum ve bireysellik.";
-  }
-}
-
-export function getScSpikeInterpretation(tScore: number): string {
-  if (tScore >= 100) {
-    return "Aşırı yüksek Sc puanı açık psikotik süreçleri gösterir. Acil psikiyatrik değerlendirme gereklidir.";
-  } else if (tScore >= 75) {
-    return "Çok yüksek Sc puanı şizofrenik spektrum bozukluğu riskini gösterir. Ayrıntılı psikiyatrik değerlendirme önerilir.";
-  } else if (tScore >= 65) {
-    return "Yüksek Sc puanı yaratıcılık, orijinallik ve sosyal konvansiyonlardan uzaklaşma gösterir.";
-  } else if (tScore < 45) {
-    return "Düşük Sc puanı aşırı konformizm ve geleneksel düşünce yapısını gösterir.";
-  } else {
-    return "Sc puanı normal aralıkta, dengeli sosyal uyum gösterir.";
-  }
-}
+// Geriye uyumluluk için export objesi
+export const scScaleInterpretation = {
+  getInterpretation: (tScore: number) => new ScScale().getInterpretation(tScore),
+  getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new ScScale().getPersonalizedInterpretation(tScore, personalInfo),
+  getHighScoreCharacteristics: getScHighScoreCharacteristics,
+  getLowScoreCharacteristics: getScLowScoreCharacteristics,
+  getGeneralCharacteristics: getScGeneralCharacteristics,
+  name: 'Şizofreni (Sc)',
+  number: 8,
+  description: 'Şizofreni, bir aylık bir dönem boyunca bu sürenin önemli bir kesiminde hezeyanlar, hallüsinasyonlar, dezorganize konuşma, ileri derecede dezorganize ya da katatonik davranış, negatif semptomlar yani affektif donukluk, konuşamazlık belirtilerden ikisinin bulunmasıdır.',
+  itemCount: 78
+};

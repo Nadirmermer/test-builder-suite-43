@@ -375,7 +375,7 @@ export default function RaporDetayPage() {
         {/* Geçerlik Ölçekleri (Sadece MMPI) */}
         {testSonucu.mmpiSonuclari && (
           <TabsContent value="validity" className="space-y-6">
-            <MMPIValidityScaleInterpretation testSonucu={testSonucu} />
+            <MMPIValidityScaleInterpretation testSonucu={testSonucu} danisan={danisan} />
           </TabsContent>
         )}
 

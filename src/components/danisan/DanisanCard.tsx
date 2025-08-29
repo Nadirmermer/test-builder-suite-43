@@ -68,7 +68,7 @@ export default function DanisanCard({ danisan, onClick, className, onDelete }: D
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
-          <div className="w-12 h-12 rounded-full bg-gradient-medical flex items-center justify-center text-white font-semibold shadow-medical">
+          <div className="w-8 h-8 rounded-full bg-gradient-medical flex items-center justify-center text-white font-semibold shadow-medical">
             {getInitials(danisan.adSoyad)}
           </div>
           

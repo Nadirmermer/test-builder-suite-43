@@ -5,3 +5,4 @@ export * from './validity';
 
 // Klinik Ölçekler
 export * from './clinical';
+
