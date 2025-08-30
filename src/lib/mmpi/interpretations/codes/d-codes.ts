@@ -99,7 +99,7 @@ export const dCodeInterpretations: Record<string, MMPICodeResult> = {
     gender: 'Erkek', // "Bu koddaki erkekler"
     conditions: {
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: 'depresiftirler ve kendilerine yönelmişlerdir, ancak başkalarına dayanmak yerine kendi kendilerine yetmeye çalışırlar',
         characteristics: ['Depresif', 'Kendi kendine yetme çabası', 'Bağımsızlık isteği']
       }]
@@ -228,7 +228,7 @@ export const dCodeInterpretations: Record<string, MMPICodeResult> = {
           characteristics: ['Anne bağımlılığı', 'Bağımlı ilişki arayışı', 'Kontrol istememe']
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'sıklıkla babaları tarafından ilgi ve övünme nesnesi olmuşlardır',
           characteristics: ['Baba övünme nesnesi', 'Kendini izole etme', 'Zayıf görünme çabası']
         }
@@ -338,7 +338,7 @@ export const dCodeInterpretations: Record<string, MMPICodeResult> = {
         }
       ],
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: '5 alt testi düşmüşse kendilerine bedel ödeme hissi ve mazohistik kızgınlık',
         characteristics: ['Kendine bedel ödeme', 'Mazohistik davranış', 'Çoklu nevrotik semptomlar']
       }]

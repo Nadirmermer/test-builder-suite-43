@@ -25,7 +25,7 @@ export class PdScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): PdScaleInterpretation {
     // Temel yorumu al

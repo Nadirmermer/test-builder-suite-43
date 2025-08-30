@@ -146,9 +146,9 @@ export default function BulkMMPIInterface({ test, danisanId, onComplete }: BulkM
     }
 
     // Cinsiyet bilgisini al
-    const cinsiyetBilgisi = (danisan?.cinsiyet === 'Erkek' || danisan?.cinsiyet === 'Kadın') 
+    const cinsiyetBilgisi = (danisan?.cinsiyet === 'Erkek' || danisan?.cinsiyet === 'Kadin') 
       ? danisan.cinsiyet 
-      : localStorage.getItem(`danisan_${danisanId}_cinsiyet`) as 'Erkek' | 'Kadın' || 'Erkek';
+      : localStorage.getItem(`danisan_${danisanId}_cinsiyet`) as 'Erkek' | 'Kadin' || 'Erkek';
 
     setIsLoading(true);
     try {

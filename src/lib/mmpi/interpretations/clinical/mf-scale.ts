@@ -25,7 +25,7 @@ export class MfScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): MfScaleInterpretation {
     // Temel yorumu al
@@ -44,7 +44,7 @@ export class MfScale {
       
       if (yas !== null) {
         // Ergen kızlarda özel durum
-        if (personalInfo.cinsiyet === 'Kadın' && yas >= 14 && yas <= 19 && tScore >= 65) {
+        if (personalInfo.cinsiyet === 'Kadin' && yas >= 14 && yas <= 19 && tScore >= 65) {
           personalizedNotes.push("Ergen kızlarda 5'in yükselmesi ev, okul ve yasalarla ilgili sorunlar olduğunu gösterir. 14-19 yaşları arasındaki kızlarda 5 yüksekliği normal olabilir, ancak bu yaşlardan sonra oldukça nadirdir.");
         }
       }
@@ -65,7 +65,7 @@ export class MfScale {
       }
       
       // Kadınlarda eğitim faktörü
-      if (personalInfo.cinsiyet === 'Kadın') {
+      if (personalInfo.cinsiyet === 'Kadin') {
         if (tScore <= 40 && ['İlkokul', 'Ortaokul', 'Lise'].includes(personalInfo.egitimDurumu)) {
           personalizedNotes.push("Eğitim Düzeyi Düşük Kadınlarda Mf Alt Testinde Düşüklük: Kendini geleneksel kadın rolünde gibi sergiler, pasif, uysal, itaatkardır.");
         }
@@ -86,7 +86,7 @@ export class MfScale {
     };
   }
 
-  getInterpretation(tScore: number, cinsiyet?: 'Erkek' | 'Kadın'): MfScaleInterpretation {
+  getInterpretation(tScore: number, cinsiyet?: 'Erkek' | 'Kadin'): MfScaleInterpretation {
     if (!cinsiyet) {
       return this.getGeneralInterpretation(tScore);
     }
@@ -342,7 +342,7 @@ export function getMfScoreAverages(): { male: number; female: number } {
 
 // Geriye uyumluluk için export objesi
 export const mfScaleInterpretation = {
-  getInterpretation: (tScore: number, cinsiyet?: 'Erkek' | 'Kadın') => new MfScale().getInterpretation(tScore, cinsiyet),
+  getInterpretation: (tScore: number, cinsiyet?: 'Erkek' | 'Kadin') => new MfScale().getInterpretation(tScore, cinsiyet),
   getPersonalizedInterpretation: (tScore: number, personalInfo?: any) => new MfScale().getPersonalizedInterpretation(tScore, personalInfo),
   getMaleHighScoreCharacteristics: getMfMaleHighScoreCharacteristics,
   getFemaleHighScoreCharacteristics: getMfFemaleHighScoreCharacteristics,

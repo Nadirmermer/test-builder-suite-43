@@ -1,4 +1,4 @@
-﻿// Hipokondriyazis (Hs) Alt Testi - Ölçek 1
+﻿﻿// Hipokondriyazis (Hs) Alt Testi - Ölçek 1
 // MMPI Klinik Ölçek - Hipokondriyak bireylerin kişilik özelliklerini değerlendirmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
@@ -25,7 +25,7 @@ export class HsScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): HsScaleInterpretation {
     // Temel yorumu al

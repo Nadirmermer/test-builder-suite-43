@@ -111,7 +111,7 @@ export const hsCodeInterpretations: Record<string, MMPICodeResult> = {
         }
       ],
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: 'Mf alt testinin düşmesi aşırı derecede sorumluluk almalarını gösterir',
         characteristics: ['Aşırı derecede sorumluluk alma', 'Uzun süreli sıkıntılar']
       }]

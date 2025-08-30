@@ -38,7 +38,7 @@ export const maCodeInterpretations: Record<string, MMPICodeResult> = {
       ],
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Kadınlar fiziksel çekicilik konusunda teşhircidirler (Eğer 5 alt testinde T:40\'ın altında ise)',
           characteristics: [
             'Böylece kendilerini kabul ettirir ve diğerlerini kontrol ettiklerini düşünürler'
@@ -60,7 +60,7 @@ export const maCodeInterpretations: Record<string, MMPICodeResult> = {
     conditions: {
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Kadınlar, eksibisyonist bir biçimde kendilerini sergileyerek dikkatleri bu şekilde üstlerine çekerler',
           characteristics: []
         }

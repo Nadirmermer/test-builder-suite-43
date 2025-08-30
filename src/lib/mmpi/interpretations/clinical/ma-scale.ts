@@ -25,7 +25,7 @@ export class MaScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): MaScaleInterpretation {
     // Temel yorumu al

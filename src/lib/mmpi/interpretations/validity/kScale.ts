@@ -109,7 +109,7 @@ export const kScaleInterpretation = {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ) {
     // Temel yorumu al
@@ -157,7 +157,7 @@ export const kScaleInterpretation = {
     if (options.cinsiyet) {
       if (options.cinsiyet === 'Erkek' && (tScore > 65 || tScore < 45)) {
         personalizedNotes.push("Erkek normlarına göre değerlendirildiğinde dikkat çekici bir değer. (Erkek ortalaması: 13.98 ham puan)");
-      } else if (options.cinsiyet === 'Kadın' && (tScore > 62 || tScore < 42)) {
+      } else if (options.cinsiyet === 'Kadin' && (tScore > 62 || tScore < 42)) {
         personalizedNotes.push("Kadın normlarına göre değerlendirildiğinde dikkat çekici bir değer. (Kadın ortalaması: 11.82 ham puan)");
       }
     }

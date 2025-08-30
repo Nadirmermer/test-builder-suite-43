@@ -20,14 +20,14 @@ export function getTestSorulari(test: TestTanimi, danisan: Danisan): TestSorusu[
   // Danışanın cinsiyetine göre formu seç
   const cinsiyet = danisan.cinsiyet;
   
-  if (cinsiyet === 'Kadın' && test.formlar.Kadın) {
-    return test.formlar.Kadın;
+  if (cinsiyet === 'Kadin' && test.formlar.Kadin) {
+    return test.formlar.Kadin;
   } else if (cinsiyet === 'Erkek' && test.formlar.Erkek) {
     return test.formlar.Erkek;
   } else {
     // Cinsiyet belirtilmemişse veya uygun form yoksa, varsayılan olarak erkek formunu kullan
     console.warn(`Danışan cinsiyeti "${cinsiyet}" için uygun form bulunamadı, erkek formu kullanılıyor`);
-    return test.formlar.Erkek || test.formlar.Kadın || test.sorular;
+    return test.formlar.Erkek || test.formlar.Kadin || test.sorular;
   }
 }
 
@@ -36,7 +36,7 @@ export function getTestSorulari(test: TestTanimi, danisan: Danisan): TestSorusu[
  */
 export function getTestTalimatlar(test: TestTanimi, danisan: Danisan): string {
   if (test.formTuru === 'cinsiyete-ozel') {
-    const cinsiyetInfo = danisan.cinsiyet === 'Kadın' ? 'kadın formu' : 'erkek formu';
+    const cinsiyetInfo = danisan.cinsiyet === 'Kadin' ? 'kadın formu' : 'erkek formu';
     return `${test.talimatlar}\n\nNot: Bu test için ${cinsiyetInfo} kullanılmaktadır.`;
   }
   return test.talimatlar;

@@ -49,7 +49,7 @@ const danisanSchema = z.object({
   adSoyad: z.string().min(1, 'Ad Soyad gereklidir'),
   tcKimlikNo: z.string().optional(),
   dogumTarihi: z.string().optional(),
-  cinsiyet: z.enum(['Erkek', 'Kadın', 'Belirtmek istemiyorum']).optional(),
+  cinsiyet: z.enum(['Erkek', 'Kadin', 'Belirtmek istemiyorum']).optional(),
   egitimDurumu: z.enum(['Okuma yazma yok', 'İlkokul', 'Ortaokul', 'Lise', 'Önlisans', 'Lisans', 'Yüksek lisans', 'Doktora', 'Belirtmek istemiyorum']).optional(),
   medeniDurum: z.enum(['Bekar', 'Evli', 'Boşanmış', 'Dul', 'Ayrı yaşıyor', 'Belirtmek istemiyorum']).optional(),
   telefon: z.string().optional(),
@@ -209,7 +209,7 @@ export default function DanisanGuncelleModal({
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Erkek">Erkek</SelectItem>
-                  <SelectItem value="Kadın">Kadın</SelectItem>
+                  <SelectItem value="Kadin">Kadın</SelectItem>
                   <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
                 </SelectContent>
               </Select>

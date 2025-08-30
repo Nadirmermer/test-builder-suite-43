@@ -62,7 +62,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
     gender: 'Tüm',
     conditions: {
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: 'depresiftirler ve kendilerine yönelmişlerdir, ancak başkalarına dayanmak yerine kendi kendilerine yetmeye çalışırlar',
         characteristics: ['Depresif özellikler', 'Kendine yönelme', 'Bağımsızlık çabası']
       }],
@@ -181,7 +181,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
           characteristics: ['5 yüksektir']
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'pasifliği, kadınsı rol ve kendilikle birleştirirler',
           characteristics: ['5 düşüktür', 'Geleneksel olarak kadınsı olmayan yaşam biçimi']
         }
@@ -238,7 +238,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
     gender: 'Tüm',
     conditions: {
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: 'çok daha az agresif ve daha çok kendilerini analiz eden kişilerdir',
         characteristics: ['Az agresif', 'Kendini analiz etme', 'Entellektüel yarışmacılık']
       }],
@@ -316,7 +316,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
           characteristics: ['Entellektüalizasyon', 'İnkar', 'Rasyonalizasyon', 'Akademik başarı']
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'saldırganlığın açığa çıkmasını gösterir',
           characteristics: ['Saldırganlık (sözel veya davranışsal)', 'Enerjik ve yarışmacı', 'Kendine güvenli', 'Maceracı']
         }
@@ -339,7 +339,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
       'Eğer onların istekleri sorgulanır ya da engellenmek istenirse sinirli ya da kendine dönük olurlar'
     ],
     ageGroup: 'Tüm',
-    gender: 'Kadın'
+    gender: 'Kadin'
   },
 
   '50': {
@@ -367,7 +367,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
     gender: 'Tüm',
     conditions: {
       genderConditions: [{
-        gender: 'Kadın',
+        gender: 'Kadin',
         effect: 'daha az kendine güvenen, spontan ve güçlü, beklenenenden daha atılgan',
         characteristics: ['Az kendine güvenli', 'Az spontan', 'Daha atılgan', 'Düşük eğitim düzeyi', 'Alt sosyo-ekonomik düzey']
       }]
@@ -417,7 +417,7 @@ export const mfCodeInterpretations: Record<string, MMPICodeResult> = {
           characteristics: ['Aşırı maskülin davranış', 'Kadınları aşağılama', 'Güç ve kontrol kanıtlama']
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'kızgındır, ancak duygularını doğrudan ifade edemez',
           characteristics: ['Erkeklere yönelik kızgınlık', 'Heteroseksüel sorunlar', 'Yüzeysel ilişkiler', 'Pasif-agresif davranış']
         }

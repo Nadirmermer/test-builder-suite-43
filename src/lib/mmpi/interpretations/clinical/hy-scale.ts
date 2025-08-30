@@ -1,4 +1,4 @@
-﻿// Histeri (Hy) Alt Testi - Ölçek 3
+﻿﻿// Histeri (Hy) Alt Testi - Ölçek 3
 // MMPI Klinik Ölçek - Nevrotik bozuklardan konversiyon histerisine tanı koymada yardımcı olmak amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
@@ -25,7 +25,7 @@ export class HyScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): HyScaleInterpretation {
     // Temel yorumu al

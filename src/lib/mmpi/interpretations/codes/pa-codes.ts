@@ -275,7 +275,7 @@ export const paCodeInterpretations: Record<string, MMPICodeResult> = {
     conditions: {
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Kadınlarda 278/728 kodunda 5 alt testi düşmüşse bu kişiler, kendileri için bedel ödemeleri gerektiğini hissederler',
           characteristics: [
             'Mazohistik biçimde kendilerine kızarlar',
@@ -362,7 +362,7 @@ export const paCodeInterpretations: Record<string, MMPICodeResult> = {
           ]
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Kadınlarda 46/64 kodu psikoz ya da prepsikozla ilişkili olabilir, ancak sıklıkla pasif-agresif kişilik biçimleri ile özellikle erkeklere kızgınlıkla bağlantılıdır',
           characteristics: []
         }
@@ -679,7 +679,7 @@ export const paCodeInterpretations: Record<string, MMPICodeResult> = {
           characteristics: []
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Genç kadınlarda hemen hemen hiç görülmeyebilir. Kadınlarda özellikle 30 yaşından sonra rastlanır',
           characteristics: []
         }
@@ -710,7 +710,7 @@ export const paCodeInterpretations: Record<string, MMPICodeResult> = {
     conditions: {
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Genellikle kadınlarda görülen bir örüntüdür',
           characteristics: [
             'Yüzeysel bir sosyallik',
@@ -722,7 +722,7 @@ export const paCodeInterpretations: Record<string, MMPICodeResult> = {
       ]
     },
     ageGroup: 'Tüm',
-    gender: 'Kadın'
+    gender: 'Kadin'
   }
 
   // ✅ TÜM PA KODLARI TAMAMLANDI 

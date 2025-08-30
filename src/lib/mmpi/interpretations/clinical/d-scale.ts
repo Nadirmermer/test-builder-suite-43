@@ -1,4 +1,4 @@
-﻿// Depresyon (D) Alt Testi - Ölçek 2
+﻿﻿// Depresyon (D) Alt Testi - Ölçek 2
 // MMPI Klinik Ölçek - Depresyon belirtilerinin derecesini ölçmek amacıyla geliştirilmiştir
 
 import { hesaplaYas, MedeniDurum, EgitimDurumu } from '@/types';
@@ -25,7 +25,7 @@ export class DScale {
       dogumTarihi?: string;
       medeniDurum?: MedeniDurum;
       egitimDurumu?: EgitimDurumu;
-      cinsiyet?: 'Erkek' | 'Kadın';
+      cinsiyet?: 'Erkek' | 'Kadin';
     }
   ): DScaleInterpretation {
     // Temel yorumu al

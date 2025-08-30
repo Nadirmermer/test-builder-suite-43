@@ -24,7 +24,7 @@ export interface Danisan {
   adSoyad: string;
   tcKimlikNo?: string;
   dogumTarihi?: string;
-  cinsiyet?: 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum';
+  cinsiyet?: 'Erkek' | 'Kadin' | 'Belirtmek istemiyorum';
   egitimDurumu?: EgitimDurumu;
   medeniDurum?: MedeniDurum;
   telefon?: string;

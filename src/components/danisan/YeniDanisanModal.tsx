@@ -74,7 +74,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
         adSoyad: formData.adSoyad.trim(),
         tcKimlikNo: formData.tcKimlikNo || undefined,
         dogumTarihi: formData.dogumTarihi || undefined,
-        cinsiyet: formData.cinsiyet as 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum' || undefined,
+        cinsiyet: formData.cinsiyet as 'Erkek' | 'Kadin' | 'Belirtmek istemiyorum' || undefined,
         egitimDurumu: formData.egitimDurumu as EgitimDurumu || undefined,
         medeniDurum: formData.medeniDurum as MedeniDurum || undefined,
         telefon: formData.telefon || undefined,
@@ -188,7 +188,7 @@ export default function YeniDanisanModal({ open, onClose }: YeniDanisanModalProp
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="Erkek">Erkek</SelectItem>
-                  <SelectItem value="Kadın">Kadın</SelectItem>
+                  <SelectItem value="Kadin">Kadın</SelectItem>
                   <SelectItem value="Belirtmek istemiyorum">Belirtmek istemiyorum</SelectItem>
                 </SelectContent>
               </Select>

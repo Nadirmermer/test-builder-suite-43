@@ -213,11 +213,11 @@ export default function MMPITestInterface({
     }
 
     // Cinsiyet bilgisini al (localStorage'dan veya danışan bilgilerinden)
-    const cinsiyetBilgisi = danisan?.cinsiyet === 'Erkek' || danisan?.cinsiyet === 'Kadın' ? danisan.cinsiyet : localStorage.getItem(`danisan_${danisanId}_cinsiyet`) as 'Erkek' | 'Kadın' || 'Erkek';
+    const cinsiyetBilgisi = danisan?.cinsiyet === 'Erkek' || danisan?.cinsiyet === 'Kadin' ? danisan.cinsiyet : localStorage.getItem(`danisan_${danisanId}_cinsiyet`) as 'Erkek' | 'Kadin' || 'Erkek';
     setIsLoading(true);
     try {
       // MMPI puanlama motoru ile hesaplama
-      const results = calculateMMPIScores(cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadın' ? 'Kadin' : 'Erkek');
+      const results = calculateMMPIScores(cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadin' ? 'Kadin' : 'Erkek');
       const mmpiSonuclari = toPublicResults(results);
 
       // Toplam T-skoru hesaplama (genel puan için)

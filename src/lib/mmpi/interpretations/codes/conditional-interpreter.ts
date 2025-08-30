@@ -8,7 +8,7 @@ export interface PersonalInfo {
   dogumTarihi?: string;
   medeniDurum?: string;
   egitimDurumu?: string;
-  cinsiyet?: 'Erkek' | 'Kadın';
+  cinsiyet?: 'Erkek' | 'Kadin';
 }
 
 export interface TScores {

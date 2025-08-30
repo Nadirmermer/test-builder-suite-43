@@ -62,7 +62,7 @@ export const pdCodeInterpretations: Record<string, MMPICodeResult> = {
       ],
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'kızgındır, ancak bu duygularını doğrudan ifade edemezler. Bunların kızgınlığı özel olarak erkeklere yöneliktir ve heteroseksüel sorunlar beklenir',
           characteristics: [
             'Kızgınlık ancak doğrudan ifade edememe',
@@ -124,7 +124,7 @@ export const pdCodeInterpretations: Record<string, MMPICodeResult> = {
           ]
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'tipik olarak bu bireyler pasifliği, kadınsı rol ve kendilikle birleştirirler',
           characteristics: [
             'Pasifliği, kadınsı rol ve kendilikle birleştirme',
@@ -205,7 +205,7 @@ export const pdCodeInterpretations: Record<string, MMPICodeResult> = {
       ],
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'psikoz ya da prepsikozla ilişkili olabilir, ancak sıklıkla pasif-agresif kişilik biçimleri ile özellikle erkeklere kızgınlıkla bağlantılıdır',
           characteristics: [
             'Psikoz ya da prepsikoz riski (özellikle eğer test 8 yüksek ve K düşük ise)',
@@ -282,7 +282,7 @@ export const pdCodeInterpretations: Record<string, MMPICodeResult> = {
     conditions: {
       genderConditions: [
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: '5 alt testinin 40 T puanının altında olduğu kadınlarda pasiflik, bağımlılık ve kendine acıma görülür',
           characteristics: [
             'Pasiflik, bağımlılık ve kendine acıma',
@@ -445,7 +445,7 @@ export const pdCodeInterpretations: Record<string, MMPICodeResult> = {
           ]
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'sıklıkla istenmeyen gebelikleri ve her alanda başarısız olan erkeklerle ilişki kurma öyküleri vardır',
           characteristics: [
             'İstenmeyen gebelikler',

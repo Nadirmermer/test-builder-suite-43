@@ -19,7 +19,7 @@ interface GenderSelectionModalProps {
 
 export default function GenderSelectionModal({ test, danisan, onComplete }: GenderSelectionModalProps) {
   const navigate = useNavigate();
-  const [selectedGender, setSelectedGender] = useState<'Erkek' | 'Kadın' | ''>('');
+  const [selectedGender, setSelectedGender] = useState<'Erkek' | 'Kadin' | ''>('');
   const [loading, setLoading] = useState(false);
 
   const handleSave = async () => {
@@ -70,11 +70,11 @@ export default function GenderSelectionModal({ test, danisan, onComplete }: Gend
               <Label className="text-base font-medium">Cinsiyetinizi seçin:</Label>
               <RadioGroup
                 value={selectedGender}
-                onValueChange={(value) => setSelectedGender(value as 'Erkek' | 'Kadın')}
+                onValueChange={(value) => setSelectedGender(value as 'Erkek' | 'Kadin')}
                 className="space-y-3"
               >
                 <div className="flex items-center space-x-3 p-3 rounded-lg border hover:bg-secondary/50 transition-smooth cursor-pointer">
-                  <RadioGroupItem value="Kadın" id="kadin" />
+                  <RadioGroupItem value="Kadin" id="kadin" />
                   <Label htmlFor="kadin" className="cursor-pointer flex-1">
                     <div className="flex items-center gap-2">
                       <FiUser className="h-4 w-4" />

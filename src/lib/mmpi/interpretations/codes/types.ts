@@ -7,7 +7,7 @@ export interface MMPICodeResult {
   diagnosis?: string;
   characteristics: string[];
   additionalNotes?: string[];
-  gender?: 'Erkek' | 'Kadın' | 'Tüm';
+  gender?: 'Erkek' | 'Kadin' | 'Tüm';
   ageGroup?: 'Ergen' | 'Genç Yetişkin' | 'Yetişkin' | 'Tüm';
   educationLevel?: 'İlköğretim' | 'Lise' | 'Üniversite' | 'Tüm';
   maritalStatus?: 'Bekar' | 'Evli' | 'Boşanmış' | 'Tüm';
@@ -61,7 +61,7 @@ export interface AgeCondition {
 }
 
 export interface GenderCondition {
-  gender: 'Erkek' | 'Kadın';
+  gender: 'Erkek' | 'Kadin';
   effect: string;
   characteristics?: string[];
 }

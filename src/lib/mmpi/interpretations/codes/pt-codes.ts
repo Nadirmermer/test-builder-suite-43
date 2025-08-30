@@ -344,7 +344,7 @@ export const ptCodeInterpretations: Record<string, MMPICodeResult> = {
           ]
         },
         {
-          gender: 'Kadın',
+          gender: 'Kadin',
           effect: 'Kadınlarda eğer 5 alt testi, 40 T puanının altında ise aynı örüntü vardır',
           characteristics: [
             'Eğer 5 alt testi 40 T puanının altında ise erkeklerle aynı örüntü',

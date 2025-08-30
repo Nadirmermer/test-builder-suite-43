@@ -305,7 +305,7 @@ export function analyzeValidityConfigurationWithPersonalInfo(
     dogumTarihi?: string;
     medeniDurum?: MedeniDurum;
     egitimDurumu?: EgitimDurumu;
-    cinsiyet?: 'Erkek' | 'Kadın';
+    cinsiyet?: 'Erkek' | 'Kadin';
   },
   clinicalScales?: Record<string, { rawScore: number; tScore: number }>
 ): ValidityConfiguration | null {
@@ -396,7 +396,7 @@ export function analyzeValidityConfigurationWithPersonalInfo(
       if (fTScore > 70 || fTScore < 40) {
         personalizedNotes.push("Erkek normlarına göre değerlendirildiğinde dikkat çekici bir F değeri. (Erkek ortalaması: 8.3 ham puan)");
       }
-    } else if (personalInfo.cinsiyet === 'Kadın') {
+    } else if (personalInfo.cinsiyet === 'Kadin') {
       if (lTScore > 65 || lTScore < 45) {
         personalizedNotes.push("Kadın normlarına göre değerlendirildiğinde dikkat çekici bir L değeri. (Kadın ortalaması: 6.0 ham puan)");
       }
