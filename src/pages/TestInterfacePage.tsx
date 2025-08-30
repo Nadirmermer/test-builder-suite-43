@@ -8,6 +8,7 @@ import UniversalFastTestInterface from '@/components/test/UniversalFastTestInter
 import FastTestInterface from '@/components/test/FastTestInterface';
 import MMPITestInterface from '@/components/test/MMPITestInterface';
 import BulkMMPIInterface from '@/components/test/BulkMMPIInterface';
+import MMSEInterface from '@/components/test/MMSEInterface';
 import { createDanisanUrl } from '@/utils/urlUtils';
 
 import { TestTanimi } from '@/types';
@@ -84,6 +85,19 @@ export default function TestInterfacePage() {
           <h2 className="text-xl font-semibold text-foreground">Test bulunamadı</h2>
           <p className="text-muted-foreground mt-2">Geçersiz test parametreleri.</p>
         </div>
+      </div>
+    );
+  }
+
+  // MMSE için özel interface kullan
+  if (selectedTest.puanlamaTuru === 'mmse') {
+    return (
+      <div className="min-h-screen bg-background">
+        <MMSEInterface
+          test={selectedTest}
+          danisanId={parseInt(danisanId)}
+          onComplete={handleComplete}
+        />
       </div>
     );
   }

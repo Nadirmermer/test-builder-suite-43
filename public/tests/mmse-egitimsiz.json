@@ -1,0 +1,341 @@
+{
+  "id": "mmse-egitimsiz",
+  "testAdi": "Standardize Mini Mental Test - Eğitimsizler",
+  "kisaAciklama": "Bilişsel işlevleri değerlendirmek için kullanılan standardize test - Eğitimsiz kişiler için",
+  "talimatlar": "Bu test bilişsel işlevlerinizi değerlendirmek için tasarlanmıştır. Her soruyu dikkatlice dinleyip en doğru cevabı verin. Sorular anlaşılmadığında en fazla 3 kez tekrarlanabilir.",
+  "kategori": "Bilişsel Değerlendirme",
+  "sureDakika": 10,
+  "formTuru": "mmse",
+  "puanlamaTuru": "mmse",
+  "sorular": [
+    {
+      "id": "yonelim_yil",
+      "metin": "Hangi yıl içindeyiz?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_mevsim",
+      "metin": "Hangi mevsimdeyiz?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_ay",
+      "metin": "Hangi aydayız?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_gun_hafta",
+      "metin": "Hangi gündeyiz?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_zaman",
+      "metin": "Şu anda sabah mı, öğlen mi, akşam mı?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_ulke",
+      "metin": "Hangi ülkede yaşıyoruz?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_sehir",
+      "metin": "Şu an hangi şehirde bulunmaktasınız?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_semt",
+      "metin": "Şu an bulunduğunuz semt neresidir?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_bina",
+      "metin": "Şu an bulunduğunuz bina neresidir?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "yonelim_kat",
+      "metin": "Şu an bu binada kaçıncı kattasınız?",
+      "kategori": "yonelim",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "kayit_masa",
+      "metin": "Kayıt Hafızası - MASA kelimesini tekrarladı",
+      "kategori": "kayit",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "kayit_bayrak",
+      "metin": "Kayıt Hafızası - BAYRAK kelimesini tekrarladı",
+      "kategori": "kayit",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "kayit_elbise",
+      "metin": "Kayıt Hafızası - ELBİSE kelimesini tekrarladı",
+      "kategori": "kayit",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "dikkat_pazar",
+      "metin": "Dikkat - Pazar gününü söyledi",
+      "kategori": "dikkat",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "dikkat_cumartesi",
+      "metin": "Dikkat - Cumartesi gününü söyledi",
+      "kategori": "dikkat",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "dikkat_cuma",
+      "metin": "Dikkat - Cuma gününü söyledi",
+      "kategori": "dikkat",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "dikkat_persembe",
+      "metin": "Dikkat - Perşembe gününü söyledi",
+      "kategori": "dikkat",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "dikkat_carsamba",
+      "metin": "Dikkat - Çarşamba gününü söyledi",
+      "kategori": "dikkat",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "hatirlama_masa",
+      "metin": "Hatırlama - MASA kelimesini hatırladı",
+      "kategori": "hatirlama",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "hatirlama_bayrak",
+      "metin": "Hatırlama - BAYRAK kelimesini hatırladı",
+      "kategori": "hatirlama",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "hatirlama_elbise",
+      "metin": "Hatırlama - ELBİSE kelimesini hatırladı",
+      "kategori": "hatirlama",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_saat",
+      "metin": "Lisan - Saati doğru isimlendirdi",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_kalem",
+      "metin": "Lisan - Kalemi doğru isimlendirdi",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_tekrar",
+      "metin": "Lisan - 'Eğer ve fakat istemiyorum' cümlesini doğru tekrarladı",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_kagit_al",
+      "metin": "Lisan - Kağıdı doğru eliyle aldı",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_kagit_katla",
+      "metin": "Lisan - Kağıdı iki eliyle ikiye katladı",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_kagit_birak",
+      "metin": "Lisan - Kağıdı yere bıraktı",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_goz_kapat_taklit",
+      "metin": "Lisan - Yüze bakarak gözleri kapatma hareketini taklit etti",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_ev_cumle",
+      "metin": "Lisan - Eviyle ilgili anlamlı bir şey söyledi",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    },
+    {
+      "id": "lisan_sekil_ciz",
+      "metin": "Lisan - Gösterilen şeklin aynısını çizdi",
+      "kategori": "lisan",
+      "secenekler": [
+        { "metin": "Doğru", "puan": 1 },
+        { "metin": "Yanlış", "puan": 0 }
+      ]
+    }
+  ],
+  "altOlcekler": {
+    "yonelim": {
+      "ad": "Yönelim",
+      "kisaAd": "YÖN",
+      "aciklama": "Zaman ve mekana yönelim",
+      "sorular": ["yonelim_yil", "yonelim_mevsim", "yonelim_ay", "yonelim_gun_hafta", "yonelim_zaman", "yonelim_ulke", "yonelim_sehir", "yonelim_semt", "yonelim_bina", "yonelim_kat"],
+      "toplamSoru": 10
+    },
+    "kayit": {
+      "ad": "Kayıt Hafızası",
+      "kisaAd": "KAY",
+      "aciklama": "Üç kelimeyi tekrar etme",
+      "sorular": ["kayit_masa", "kayit_bayrak", "kayit_elbise"],
+      "toplamSoru": 3
+    },
+    "dikkat": {
+      "ad": "Dikkat ve Hesaplama",
+      "kisaAd": "DİK",
+      "aciklama": "Haftanın günlerini geriye sayma",
+      "sorular": ["dikkat_pazar", "dikkat_cumartesi", "dikkat_cuma", "dikkat_persembe", "dikkat_carsamba"],
+      "toplamSoru": 5
+    },
+    "hatirlama": {
+      "ad": "Hatırlama",
+      "kisaAd": "HAT",
+      "aciklama": "Önceki üç kelimeyi hatırlama",
+      "sorular": ["hatirlama_masa", "hatirlama_bayrak", "hatirlama_elbise"],
+      "toplamSoru": 3
+    },
+    "lisan": {
+      "ad": "Lisan",
+      "kisaAd": "LİS",
+      "aciklama": "Dil ve motor işlevler",
+      "sorular": ["lisan_saat", "lisan_kalem", "lisan_tekrar", "lisan_kagit_al", "lisan_kagit_katla", "lisan_kagit_birak", "lisan_goz_kapat_taklit", "lisan_ev_cumle", "lisan_sekil_ciz"],
+      "toplamSoru": 9
+    }
+  },
+  "sonucYorumlari": [
+    {
+      "aralik": [24, 30],
+      "yorum": "Normal bilişsel işlev",
+      "seviye": "normal"
+    },
+    {
+      "aralik": [21, 23],
+      "yorum": "Hafif Bilişsel Bozukluk (HBB)",
+      "seviye": "hafif"
+    },
+    {
+      "aralik": [10, 20],
+      "yorum": "Orta derecede bilişsel bozukluk",
+      "seviye": "orta"
+    },
+    {
+      "aralik": [0, 9],
+      "yorum": "Ağır bilişsel bozukluk",
+      "seviye": "siddetli"
+    }
+  ]
+}
