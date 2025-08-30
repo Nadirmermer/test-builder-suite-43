@@ -24,7 +24,7 @@ export interface Danisan {
   adSoyad: string;
   tcKimlikNo?: string;
   dogumTarihi?: string;
-  cinsiyet?: 'Erkek' | 'Kadın' | 'Belirtmek istemiyorum';
+  cinsiyet?: 'Erkek' | 'Kadin' | 'Belirtmek istemiyorum';
   egitimDurumu?: EgitimDurumu;
   medeniDurum?: MedeniDurum;
   telefon?: string;
@@ -92,8 +92,8 @@ export interface TestTanimi {
   kategori?: string;
   anahtar_kelimeler?: string[];
   sureDakika?: number;
-  formTuru?: 'standart' | 'cinsiyete-ozel' | 'mmpi-profil' | 'mmse';
-  puanlamaTuru?: 'basit' | 'cinsiyete-ozel' | 'gorusmeci-degerlendirmesi' | 'coklu_alt_olcek' | 'mmpi-profil' | 'scl-90-r' | 'mmse';
+  formTuru?: 'standart' | 'cinsiyete-ozel' | 'mmpi-profil';
+  puanlamaTuru?: 'basit' | 'cinsiyete-ozel' | 'gorusmeci-degerlendirmesi' | 'coklu_alt_olcek' | 'mmpi-profil' | 'scl-90-r';
   formlar?: {
     Kadın?: TestSorusu[];
     Erkek?: TestSorusu[];
@@ -103,7 +103,7 @@ export interface TestTanimi {
   k_duzeltmesi?: Record<string, number>;
   t_skoru_tablolari?: {
   Erkek: Record<string, Record<string, number>>;
-  Kadın: Record<string, Record<string, number>>;
+  Kadin: Record<string, Record<string, number>>;
 };
 }
 
