@@ -12,14 +12,13 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { TestTanimi } from '@/types';
 import { testSonucuService } from '@/lib/db';
 import { toast } from '@/hooks/use-toast';
-import { useAppSelector } from '@/hooks/useRedux';
+import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { createDanisanUrl } from '@/utils/urlUtils';
-import { isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
-import GenderSelectionModal from './GenderSelectionModal';
-import EducationSelectionModal from './EducationSelectionModal';
-import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
+import { isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
+import DemographicInfoModal from './DemographicInfoModal';
 import { danisanService } from '@/lib/db';
+import { danisanGetir } from '@/store/slices/danisanSlice';
 interface MMPITestInterfaceProps {
   test: TestTanimi;
   danisanId: number;
@@ -32,39 +31,48 @@ export default function MMPITestInterface({
 }: MMPITestInterfaceProps) {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const dispatch = useAppDispatch();
 
-  // MMPI cinsiyet kontrolü için danışan bilgisi
+  // Danışan bilgisi ve demografik bilgi kontrolü
   const {
     selectedDanisan
   } = useAppSelector(state => state.danisanlar);
   const danisan = selectedDanisan;
-  const [showGenderSelection, setShowGenderSelection] = useState(!danisan?.cinsiyet);
-  const [showEducationSelection, setShowEducationSelection] = useState(false);
-  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
-  const [showAgeSelection, setShowAgeSelection] = useState(false);
+  
+  // Demografik bilgilerin eksik olup olmadığını kontrol et
+  const [showDemographicModal, setShowDemographicModal] = useState(() => {
+    if (!danisan) return false;
+    return (
+      isCinsiyetGerekli(test, danisan) ||
+      isEgitimDurumuGerekli(test, danisan) ||
+      isMedeniDurumGerekli(test, danisan) ||
+      isYasGerekli(test, danisan)
+    );
+  });
 
-  // Adım adım bilgi kontrolü için useEffect
+  // Danışan değiştiğinde demografik kontrol yap
   useEffect(() => {
-    if (danisan && !showGenderSelection && !showEducationSelection && !showMaritalStatusSelection) {
-      // Eğitim durumu kontrolü
-      if (isEgitimDurumuGerekli(test, danisan)) {
-        setShowEducationSelection(true);
-        return;
-      }
-      
-      // Medeni durum kontrolü
-      if (isMedeniDurumGerekli(test, danisan)) {
-        setShowMaritalStatusSelection(true);
-        return;
-      }
-      
-      // Yaş kontrolü
-      if (isYasGerekli(test, danisan)) {
-        setShowAgeSelection(true);
-        return;
-      }
+    if (danisan) {
+      const hasExistingDemo = (
+        isCinsiyetGerekli(test, danisan) ||
+        isEgitimDurumuGerekli(test, danisan) ||
+        isMedeniDurumGerekli(test, danisan) ||
+        isYasGerekli(test, danisan)
+      );
+      setShowDemographicModal(hasExistingDemo);
     }
-  }, [danisan, showGenderSelection, showEducationSelection, showMaritalStatusSelection, test]);
+  }, [danisan, test]);
+
+  // Demografik bilgi modal'ı tamamlandığında çağrılacak fonksiyon
+  const handleDemographicComplete = async () => {
+    // Danışan bilgilerini yeniden yükle ve Redux store'u güncelle
+    const updatedDanisan = await danisanService.getir(danisanId);
+    if (updatedDanisan) {
+      // Redux store'u da güncelle
+      await dispatch(danisanGetir(danisanId));
+      setShowDemographicModal(false);
+    }
+  };
 
   // State'ler - hooks kuralına uygun şekilde hep aynı sırada
   const [aktifSoruIndex, setAktifSoruIndex] = useState(0);
@@ -212,8 +220,17 @@ export default function MMPITestInterface({
       return;
     }
 
-    // Cinsiyet bilgisini al (localStorage'dan veya danışan bilgilerinden)
-    const cinsiyetBilgisi = danisan?.cinsiyet === 'Erkek' || danisan?.cinsiyet === 'Kadin' ? danisan.cinsiyet : localStorage.getItem(`danisan_${danisanId}_cinsiyet`) as 'Erkek' | 'Kadin' || 'Erkek';
+    // Cinsiyet bilgisini al - Redux'tan güncel bilgiyi kullan
+    const cinsiyetBilgisi = danisan?.cinsiyet;
+    
+    if (!cinsiyetBilgisi || cinsiyetBilgisi === 'Belirtmek istemiyorum') {
+      toast({
+        title: "Eksik Bilgi",
+        description: "MMPI testi için cinsiyet bilgisi gereklidir.",
+        variant: "destructive"
+      });
+      return;
+    }
     setIsLoading(true);
     try {
       // MMPI puanlama motoru ile hesaplama
@@ -268,95 +285,21 @@ export default function MMPITestInterface({
       navigate('/danisanlar');
     }
   };
-  const handleGenderSelectionComplete = async () => {
-    setShowGenderSelection(false);
-    // Cinsiyet seçildikten sonra diğer kontrolleri sırasıyla yap
-    const updatedDanisan = await danisanService.getir(danisanId);
-    if (updatedDanisan) {
-      if (isEgitimDurumuGerekli(test, updatedDanisan)) {
-        setShowEducationSelection(true);
-        return;
-      }
-      if (isMedeniDurumGerekli(test, updatedDanisan)) {
-        setShowMaritalStatusSelection(true);
-        return;
-      }
-      if (isYasGerekli(test, updatedDanisan)) {
-        setShowAgeSelection(true);
-        return;
-      }
-    }
-  };
 
-  const handleEducationSelectionComplete = async () => {
-    setShowEducationSelection(false);
-    // Eğitim durumu seçildikten sonra diğer kontrolleri yap
-    const updatedDanisan = await danisanService.getir(danisanId);
-    if (updatedDanisan) {
-      if (isMedeniDurumGerekli(test, updatedDanisan)) {
-        setShowMaritalStatusSelection(true);
-        return;
-      }
-      if (isYasGerekli(test, updatedDanisan)) {
-        setShowAgeSelection(true);
-        return;
-      }
-    }
-  };
-
-  const handleMaritalStatusSelectionComplete = async () => {
-    setShowMaritalStatusSelection(false);
-    // Medeni durum seçildikten sonra yaş kontrolü yap
-    const updatedDanisan = await danisanService.getir(danisanId);
-    if (updatedDanisan) {
-      if (isYasGerekli(test, updatedDanisan)) {
-        setShowAgeSelection(true);
-        return;
-      }
-    }
-  };
-
-  const handleAgeSelectionComplete = () => {
-    setShowAgeSelection(false);
-  };
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Cinsiyet seçimi ekranı
-  if (showGenderSelection && danisan) {
-    return <GenderSelectionModal test={test} danisan={danisan} onComplete={handleGenderSelectionComplete} />;
-  }
-
-  // Eğitim durumu seçimi ekranı
-  if (showEducationSelection && danisan) {
-    return <EducationSelectionModal test={test} danisan={danisan} onComplete={handleEducationSelectionComplete} />;
-  }
-
-  // Medeni durum seçimi ekranı
-  if (showMaritalStatusSelection && danisan) {
-    return <MaritalStatusSelectionModal test={test} danisan={danisan} onComplete={handleMaritalStatusSelectionComplete} />;
-  }
-
-  // Yaş kontrolü ekranı (doğum tarihi eksikse)
-  if (showAgeSelection && danisan) {
+  // Demografik bilgi modal'ını göster
+  if (showDemographicModal && danisan) {
     return (
-      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="text-center space-y-4">
-            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
-            <p className="text-muted-foreground">
-              MMPI testi için doğum tarihi bilgisi gereklidir. 
-              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
-            </p>
-            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
-              Danışan Bilgilerini Düzenle
-            </Button>
-          </div>
-        </div>
-      </div>
+      <DemographicInfoModal
+        test={test}
+        danisan={danisan}
+        onComplete={handleDemographicComplete}
+      />
     );
   }
 

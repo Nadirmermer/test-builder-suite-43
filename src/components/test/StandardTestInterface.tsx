@@ -17,9 +17,8 @@ import { TestTanimi, TestOturumu, Danisan, TestSorusu } from '@/types';
 import { danisanService } from '@/lib/db';
 import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
-import GenderSelectionModal from './GenderSelectionModal';
-import EducationSelectionModal from './EducationSelectionModal';
-import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
+import DemographicInfoModal from './DemographicInfoModal';
+import { danisanGetir } from '@/store/slices/danisanSlice';
 
 
 interface StandardTestInterfaceProps {
@@ -37,10 +36,9 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
   const [testSorulari, setTestSorulari] = useState<TestSorusu[]>([]);
   const [testTalimatlar, setTestTalimatlar] = useState<string>('');
   const [loading, setLoading] = useState(true);
-  const [showGenderSelection, setShowGenderSelection] = useState(false);
-  const [showEducationSelection, setShowEducationSelection] = useState(false);
-  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
-  const [showAgeSelection, setShowAgeSelection] = useState(false);
+  
+  // Demografik bilgilerin eksik olup olmadığını kontrol et
+  const [showDemographicModal, setShowDemographicModal] = useState(false);
   
   const [oturum, setOturum] = useState<TestOturumu>({
     testId: test.id,
@@ -63,30 +61,16 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
         if (danisanData) {
           setDanisan(danisanData);
           
-          // Cinsiyet kontrolü yap
-          if (isCinsiyetGerekli(test, danisanData)) {
-            setShowGenderSelection(true);
-            setLoading(false);
-            return;
-          }
+          // Demografik bilgi kontrolü yap
+          const hasExistingDemo = (
+            isCinsiyetGerekli(test, danisanData) ||
+            isEgitimDurumuGerekli(test, danisanData) ||
+            isMedeniDurumGerekli(test, danisanData) ||
+            isYasGerekli(test, danisanData)
+          );
           
-          // Eğitim durumu kontrolü yap
-          if (isEgitimDurumuGerekli(test, danisanData)) {
-            setShowEducationSelection(true);
-            setLoading(false);
-            return;
-          }
-          
-          // Medeni durum kontrolü yap
-          if (isMedeniDurumGerekli(test, danisanData)) {
-            setShowMaritalStatusSelection(true);
-            setLoading(false);
-            return;
-          }
-          
-          // Yaş kontrolü yap
-          if (isYasGerekli(test, danisanData)) {
-            setShowAgeSelection(true);
+          if (hasExistingDemo) {
+            setShowDemographicModal(true);
             setLoading(false);
             return;
           }
@@ -105,6 +89,24 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
 
     loadDanisanAndTest();
   }, [test, danisanId]);
+
+  // Demografik bilgi modal'ı tamamlandığında çağrılacak fonksiyon
+  const handleDemographicComplete = async () => {
+    const danisanData = await danisanService.getir(danisanId);
+    if (danisanData) {
+      setDanisan(danisanData);
+      // Redux store'u da güncelle
+      await dispatch(danisanGetir(danisanId));
+      setShowDemographicModal(false);
+      
+      const sorular = getTestSorulari(test, danisanData);
+      const talimatlar = getTestTalimatlar(test, danisanData);
+      setTestSorulari(sorular);
+      setTestTalimatlar(talimatlar);
+      
+      setLoading(false);
+    }
+  };
 
   // Timer effect for elapsed time
   useEffect(() => {
@@ -293,92 +295,6 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
     return `${minutes}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const handleGenderSelectionComplete = async () => {
-    setShowGenderSelection(false);
-    const danisanData = await danisanService.getir(danisanId);
-    if (danisanData) {
-      setDanisan(danisanData);
-      
-      // Sırasıyla diğer kontrolleri yap
-      if (isEgitimDurumuGerekli(test, danisanData)) {
-        setShowEducationSelection(true);
-        return;
-      }
-      if (isMedeniDurumGerekli(test, danisanData)) {
-        setShowMaritalStatusSelection(true);
-        return;
-      }
-      if (isYasGerekli(test, danisanData)) {
-        setShowAgeSelection(true);
-        return;
-      }
-      
-      // Hepsi tamsa test sorularını yükle
-      const sorular = getTestSorulari(test, danisanData);
-      const talimatlar = getTestTalimatlar(test, danisanData);
-      setTestSorulari(sorular);
-      setTestTalimatlar(talimatlar);
-    }
-  };
-
-  const handleEducationSelectionComplete = async () => {
-    setShowEducationSelection(false);
-    const danisanData = await danisanService.getir(danisanId);
-    if (danisanData) {
-      setDanisan(danisanData);
-      
-      // Sırasıyla diğer kontrolleri yap
-      if (isMedeniDurumGerekli(test, danisanData)) {
-        setShowMaritalStatusSelection(true);
-        return;
-      }
-      if (isYasGerekli(test, danisanData)) {
-        setShowAgeSelection(true);
-        return;
-      }
-      
-      // Hepsi tamsa test sorularını yükle
-      const sorular = getTestSorulari(test, danisanData);
-      const talimatlar = getTestTalimatlar(test, danisanData);
-      setTestSorulari(sorular);
-      setTestTalimatlar(talimatlar);
-    }
-  };
-
-  const handleMaritalStatusSelectionComplete = async () => {
-    setShowMaritalStatusSelection(false);
-    const danisanData = await danisanService.getir(danisanId);
-    if (danisanData) {
-      setDanisan(danisanData);
-      
-      // Yaş kontrolü yap
-      if (isYasGerekli(test, danisanData)) {
-        setShowAgeSelection(true);
-        return;
-      }
-      
-      // Hepsi tamsa test sorularını yükle
-      const sorular = getTestSorulari(test, danisanData);
-      const talimatlar = getTestTalimatlar(test, danisanData);
-      setTestSorulari(sorular);
-      setTestTalimatlar(talimatlar);
-    }
-  };
-
-  const handleAgeSelectionComplete = async () => {
-    setShowAgeSelection(false);
-    const danisanData = await danisanService.getir(danisanId);
-    if (danisanData) {
-      setDanisan(danisanData);
-      
-      // Test sorularını yükle
-      const sorular = getTestSorulari(test, danisanData);
-      const talimatlar = getTestTalimatlar(test, danisanData);
-      setTestSorulari(sorular);
-      setTestTalimatlar(talimatlar);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -390,52 +306,13 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
     );
   }
 
-  if (showGenderSelection && danisan) {
+  if (showDemographicModal && danisan) {
     return (
-      <GenderSelectionModal
+      <DemographicInfoModal
         test={test}
         danisan={danisan}
-        onComplete={handleGenderSelectionComplete}
+        onComplete={handleDemographicComplete}
       />
-    );
-  }
-
-  if (showEducationSelection && danisan) {
-    return (
-      <EducationSelectionModal
-        test={test}
-        danisan={danisan}
-        onComplete={handleEducationSelectionComplete}
-      />
-    );
-  }
-
-  if (showMaritalStatusSelection && danisan) {
-    return (
-      <MaritalStatusSelectionModal
-        test={test}
-        danisan={danisan}
-        onComplete={handleMaritalStatusSelectionComplete}
-      />
-    );
-  }
-
-  if (showAgeSelection && danisan) {
-    return (
-      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="text-center space-y-4">
-            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
-            <p className="text-muted-foreground">
-              Bu test için doğum tarihi bilgisi gereklidir. 
-              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
-            </p>
-            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
-              Danışan Bilgilerini Düzenle
-            </Button>
-          </div>
-        </div>
-      </div>
     );
   }
 

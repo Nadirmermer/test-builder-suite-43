@@ -95,7 +95,7 @@ export interface TestTanimi {
   formTuru?: 'standart' | 'cinsiyete-ozel' | 'mmpi-profil';
   puanlamaTuru?: 'basit' | 'cinsiyete-ozel' | 'gorusmeci-degerlendirmesi' | 'coklu_alt_olcek' | 'mmpi-profil' | 'scl-90-r';
   formlar?: {
-    Kadın?: TestSorusu[];
+    Kadin?: TestSorusu[];
     Erkek?: TestSorusu[];
   };
   altOlcekler?: Record<string, AltOlcek>;

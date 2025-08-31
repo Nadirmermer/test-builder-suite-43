@@ -9,9 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ConfirmationDialog } from '@/components/ui/confirmation-dialog';
-import GenderSelectionModal from './GenderSelectionModal';
-import EducationSelectionModal from './EducationSelectionModal';
-import MaritalStatusSelectionModal from './MaritalStatusSelectionModal';
+import DemographicInfoModal from './DemographicInfoModal';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { testleriYukle, testSonucuKaydet } from '@/store/slices/testSlice';
 import { danisanService } from '@/lib/db';
@@ -19,6 +17,7 @@ import { TestTanimi, Danisan, TestSorusu } from '@/types';
 import { getTestSorulari, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { useToast } from '@/hooks/use-toast';
+import { danisanGetir } from '@/store/slices/danisanSlice';
 
 // Test cevap patterni analizi için tipler
 interface TestResponsePattern {
@@ -108,10 +107,7 @@ export default function FastTestInterface() {
   const [emptyAnswers, setEmptyAnswers] = useState<Set<string>>(new Set());
   const [elapsedTime, setElapsedTime] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [showGenderSelection, setShowGenderSelection] = useState(false);
-  const [showEducationSelection, setShowEducationSelection] = useState(false);
-  const [showMaritalStatusSelection, setShowMaritalStatusSelection] = useState(false);
-  const [showAgeSelection, setShowAgeSelection] = useState(false);
+  const [showDemographicModal, setShowDemographicModal] = useState(false);
   const [showExitDialog, setShowExitDialog] = useState(false);
   const [showKeyboardShortcuts, setShowKeyboardShortcuts] = useState(false);
 
@@ -144,30 +140,16 @@ export default function FastTestInterface() {
 
         setDanisan(danisanData);
 
-        // Cinsiyet kontrolü
-        if (isCinsiyetGerekli(test, danisanData)) {
-          setShowGenderSelection(true);
-          setLoading(false);
-          return;
-        }
-
-        // Eğitim durumu kontrolü
-        if (isEgitimDurumuGerekli(test, danisanData)) {
-          setShowEducationSelection(true);
-          setLoading(false);
-          return;
-        }
-
-        // Medeni durum kontrolü
-        if (isMedeniDurumGerekli(test, danisanData)) {
-          setShowMaritalStatusSelection(true);
-          setLoading(false);
-          return;
-        }
-
-        // Yaş kontrolü
-        if (isYasGerekli(test, danisanData)) {
-          setShowAgeSelection(true);
+        // Demografik bilgi kontrolü - birleşik modal ile
+        const hasExistingDemo = (
+          isCinsiyetGerekli(test, danisanData) ||
+          isEgitimDurumuGerekli(test, danisanData) ||
+          isMedeniDurumGerekli(test, danisanData) ||
+          isYasGerekli(test, danisanData)
+        );
+        
+        if (hasExistingDemo) {
+          setShowDemographicModal(true);
           setLoading(false);
           return;
         }
@@ -193,6 +175,27 @@ export default function FastTestInterface() {
 
     loadTestData();
   }, [test, danisanId, toast]);
+
+  // Demografik bilgi modal'ı tamamlandığında çağrılacak fonksiyon
+  const handleDemographicComplete = async () => {
+    const danisanData = await danisanService.getir(parseInt(danisanId!));
+    if (danisanData) {
+      setDanisan(danisanData);
+      // Redux store'u da güncelle
+      await dispatch(danisanGetir(parseInt(danisanId!)));
+      setShowDemographicModal(false);
+      
+      // Test sorularını yükle
+      const sorular = getTestSorulari(test!, danisanData);
+      setTestSorulari(sorular);
+
+      // Test patternini analiz et
+      const pattern = analyzeTestPattern(test!, sorular);
+      setTestPattern(pattern);
+
+      setLoading(false);
+    }
+  };
 
   // Timer
   useEffect(() => {
@@ -452,130 +455,14 @@ export default function FastTestInterface() {
     );
   }
 
-  // Modal'lar
-  if (showGenderSelection && danisan) {
+  // Demografik bilgi modal'ını göster
+  if (showDemographicModal && danisan) {
     return (
-      <GenderSelectionModal
+      <DemographicInfoModal
         test={test}
         danisan={danisan}
-        onComplete={() => {
-          setShowGenderSelection(false);
-          // Test verilerini yeniden yükle ve sıradaki kontrolleri yap
-          const loadData = async () => {
-            const updatedDanisan = await danisanService.getir(danisan.id!);
-            if (updatedDanisan) {
-              setDanisan(updatedDanisan);
-              
-              // Sırasıyla diğer kontrolleri yap
-              if (isEgitimDurumuGerekli(test, updatedDanisan)) {
-                setShowEducationSelection(true);
-                return;
-              }
-              if (isMedeniDurumGerekli(test, updatedDanisan)) {
-                setShowMaritalStatusSelection(true);
-                return;
-              }
-              if (isYasGerekli(test, updatedDanisan)) {
-                setShowAgeSelection(true);
-                return;
-              }
-              
-              const sorular = getTestSorulari(test, updatedDanisan);
-              setTestSorulari(sorular);
-              const pattern = analyzeTestPattern(test, sorular);
-              setTestPattern(pattern);
-              setLoading(false);
-            }
-          };
-          loadData();
-        }}
+        onComplete={handleDemographicComplete}
       />
-    );
-  }
-
-  if (showEducationSelection && danisan) {
-    return (
-      <EducationSelectionModal
-        test={test}
-        danisan={danisan}
-        onComplete={() => {
-          setShowEducationSelection(false);
-          // Test verilerini yeniden yükle ve sıradaki kontrolleri yap
-          const loadData = async () => {
-            const updatedDanisan = await danisanService.getir(danisan.id!);
-            if (updatedDanisan) {
-              setDanisan(updatedDanisan);
-              
-              // Sırasıyla diğer kontrolleri yap
-              if (isMedeniDurumGerekli(test, updatedDanisan)) {
-                setShowMaritalStatusSelection(true);
-                return;
-              }
-              if (isYasGerekli(test, updatedDanisan)) {
-                setShowAgeSelection(true);
-                return;
-              }
-              
-              const sorular = getTestSorulari(test, updatedDanisan);
-              setTestSorulari(sorular);
-              const pattern = analyzeTestPattern(test, sorular);
-              setTestPattern(pattern);
-              setLoading(false);
-            }
-          };
-          loadData();
-        }}
-      />
-    );
-  }
-
-  if (showMaritalStatusSelection && danisan) {
-    return (
-      <MaritalStatusSelectionModal
-        test={test}
-        danisan={danisan}
-        onComplete={() => {
-          setShowMaritalStatusSelection(false);
-          // Test verilerini yeniden yükle ve yaş kontrolü yap
-          const loadData = async () => {
-            const updatedDanisan = await danisanService.getir(danisan.id!);
-            if (updatedDanisan) {
-              setDanisan(updatedDanisan);
-              
-              if (isYasGerekli(test, updatedDanisan)) {
-                setShowAgeSelection(true);
-                return;
-              }
-              
-              const sorular = getTestSorulari(test, updatedDanisan);
-              setTestSorulari(sorular);
-              const pattern = analyzeTestPattern(test, sorular);
-              setTestPattern(pattern);
-              setLoading(false);
-            }
-          };
-          loadData();
-        }}
-      />
-    );
-  }
-
-  if (showAgeSelection && danisan) {
-    return (
-      <div className="min-h-screen bg-background p-4 flex items-center justify-center">
-        <div className="max-w-md w-full">
-          <div className="text-center space-y-4">
-            <h2 className="text-xl font-semibold">Doğum Tarihi Gerekli</h2>
-            <p className="text-muted-foreground">
-              Bu test için doğum tarihi bilgisi gereklidir. 
-              Lütfen danışan bilgilerini düzenleyerek doğum tarihini ekleyin.
-            </p>
-            <Button onClick={() => navigate(`/danisan/${danisan.id}`)}>
-              Danışan Bilgilerini Düzenle
-            </Button>
-          </div>
-        </div>
-      </div>
     );
   }
 

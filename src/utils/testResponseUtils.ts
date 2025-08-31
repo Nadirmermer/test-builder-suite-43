@@ -30,7 +30,7 @@ export function analyzeTestResponsePattern(test: TestTanimi): TestResponsePatter
   // Form türüne göre soruları topla
   if (test.formTuru === 'cinsiyete-ozel' && test.formlar) {
     // Kadın ve erkek formlarındaki tüm soruları birleştir
-    const kadinSorular = test.formlar.Kadın || [];
+    const kadinSorular = test.formlar.Kadin || [];
     const erkekSorular = test.formlar.Erkek || [];
     allSorular = [...kadinSorular, ...erkekSorular];
   } else {
