@@ -176,10 +176,7 @@ export default function DemographicInfoModal({ test, danisan, onComplete }: Demo
                 <FiArrowLeft className="h-4 w-4 mr-2" />
                 Geri Dön
               </Button>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <FiLock className="h-4 w-4" />
-                <span>Güvenli ve gizli</span>
-              </div>
+              
             </div>
           </div>
 
