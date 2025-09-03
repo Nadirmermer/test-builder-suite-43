@@ -61,9 +61,28 @@ export default function Sidebar() {
       </nav>
 
       {!sidebarCollapsed && <div className="p-4 border-t border-sidebar-border">
-          <div className="text-xs text-sidebar-foreground/60 text-center">
-            <p>PsikoTest v1.0</p>
-            <p>Nadir Mermer</p>
+          <div className="text-xs text-sidebar-foreground/60 space-y-3">
+            <div className="flex items-center justify-center gap-2">
+              <img 
+                src="/logo.png" 
+                alt="PsikoTest Logo" 
+                className="w-10 h-10 object-cover rounded-lg"
+              />
+              <span className="font-medium">PsikoTest v1.0</span>
+            </div>
+            
+            <div className="text-center space-y-1">
+              <p className="font-medium">
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Nadir MERMER
+                </span>
+              </p>
+              <div className="flex items-center justify-center gap-1 text-[10px] text-sidebar-foreground/40">
+                <span>💝</span>
+                <span>Aşk ile yapıldı</span>
+                <span>💝</span>
+              </div>
+            </div>
           </div>
         </div>}
     </aside>;

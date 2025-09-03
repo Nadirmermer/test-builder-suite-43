@@ -12,8 +12,12 @@ export default function Header() {
   return <header className="h-16 w-full border-b border-border flex items-center justify-between px-6">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-medical flex items-center justify-center shadow-medical transition-smooth hover:scale-105">
-            <span className="text-white font-bold text-lg">Ψ</span>
+          <div className="w-12 h-12 rounded-xl bg-white shadow-medical transition-smooth hover:scale-105 border border-gray-200 overflow-hidden">
+            <img 
+              src="/logo.png" 
+              alt="PsikoTest Logo" 
+              className="w-full h-full object-cover"
+            />
           </div>
           <div>
             <h1 className="text-xl font-bold text-foreground tracking-tight">PsikoTest</h1>

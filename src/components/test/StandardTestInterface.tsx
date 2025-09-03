@@ -17,6 +17,8 @@ import { TestTanimi, TestOturumu, Danisan, TestSorusu } from '@/types';
 import { danisanService } from '@/lib/db';
 import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
+import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
+import { toast } from '@/hooks/use-toast';
 import DemographicInfoModal from './DemographicInfoModal';
 import { danisanGetir } from '@/store/slices/danisanSlice';
 
@@ -169,7 +171,67 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
   };
 
   const handleTestComplete = async () => {
-    // Puanlama türüne göre hesaplama yap
+    // MMPI testleri için özel puanlama kontrolü
+    if (test.id === 'mmpi-2' || test.id === 'mmpi-2-rf' || test.puanlamaTuru === 'mmpi-profil') {
+      // Cinsiyet bilgisini kontrol et
+      const cinsiyetBilgisi = danisan?.cinsiyet;
+      if (!cinsiyetBilgisi || cinsiyetBilgisi === 'Belirtmek istemiyorum') {
+        toast({
+          title: "Eksik Bilgi",
+          description: "MMPI testi için cinsiyet bilgisi gereklidir.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      try {
+        // Boş cevapları belirle
+        const bosCevaplar = new Set<string>();
+        
+        // MMPI puanlama motoru ile hesaplama
+        const results = calculateMMPIScores(oturum.cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadin' ? 'Kadin' : 'Erkek');
+        const mmpiSonuclari = toPublicResults(results);
+
+        // Toplam T-skoru hesaplama (genel puan için)
+        const toplamTSkoru = Object.values(mmpiSonuclari.klinikOlcekler)
+          .reduce((sum, olcek) => sum + olcek.tSkoru, 0);
+
+        const testSonucu = {
+          danisanId: danisanId,
+          testId: test.id,
+          testAdi: test.testAdi + " (Standart)",
+          tamamlanmaTarihi: new Date(),
+          puan: Math.round(toplamTSkoru / Object.keys(mmpiSonuclari.klinikOlcekler).length) || 50,
+          sonucYorumu: 'MMPI test sonuçları hesaplandı.',
+          cevaplar: Object.entries(oturum.cevaplar).map(([soruId, verilenPuan]) => ({
+            soruId,
+            verilenPuan
+          })),
+          mmpiSonuclari
+        };
+
+        await dispatch(testSonucuKaydet(testSonucu));
+        dispatch(testOturumuBitir());
+        
+        toast({
+          title: "Test Tamamlandı",
+          description: "MMPI test sonuçları başarıyla hesaplandı ve kaydedildi."
+        });
+        
+        onComplete();
+        return;
+      } catch (error) {
+        console.error('MMPI test sonucu kaydetme hatası:', error);
+        toast({
+          title: "Hata",
+          description: "MMPI test sonucu kaydedilirken bir hata oluştu.",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
+    // Diğer testler için mevcut puanlama sistemi
     let toplamPuan = 0;
     let altOlcekPuanlari: Record<string, {
       toplamPuan: number;
