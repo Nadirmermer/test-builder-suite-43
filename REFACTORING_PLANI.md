@@ -1,40 +1,40 @@
-# 🎯 Test Builder Suite - Kapsamlı Kod Analizi ve Refactoring Planı
+# 🎯 Test Builder Suite - Kapsamlı Kod Analizi ve Yeniden Yapılandırma Planı
 
 ## 📊 DETAYLI MEVCUT DURUM ANALİZİ
 
-### 🔍 **1. Test Interface Karmaşıklığı Analizi**
+### 🔍 **1. Test Arayüzü Karmaşıklığı Analizi**
 
-#### **Mevcut Test Interface'leri:**
+#### **Mevcut Test Arayüzleri:**
 - `StandardTestInterface.tsx` (520 satır) - Tek soru gösterimi
 - `FastTestInterface.tsx` (949 satır) - Hızlı numpad girişi 
-- `UniversalFastTestInterface.tsx` (646 satır) - Universal hızlı giriş
-- `MMPITestInterface.tsx` (420 satır) - MMPI özel interface
+- `UniversalFastTestInterface.tsx` (646 satır) - Evrensel hızlı giriş
+- `MMPITestInterface.tsx` (420 satır) - MMPI özel arayüzü
 - `BulkMMPIInterface.tsx` - MMPI toplu işlem
 
-**🚨 PROBLEM:** Toplam ~2500+ satır kod duplikasyonu!
+**🚨 SORUN:** Toplam ~2500+ satır kod tekrarı!
 
-#### **Her Interface'in Farklı Özellikleri:**
+#### **Her Arayüzün Farklı Özellikleri:**
 ```typescript
-// StandardTestInterface - Sayfa bazlı navegasyon
+// StandardTestInterface - Sayfa bazlı gezinme
 const [oturum, setOturum] = useState<TestOturumu>({
   aktifSoruIndex: 0,
   cevaplar: {},
   yontem: 'standart'
 });
 
-// FastTestInterface - Keyboard shortcuts + pattern analysis
+// FastTestInterface - Klavye kısayolları + desen analizi
 function analyzeTestPattern(test: TestTanimi): TestResponsePattern {
-  // MMPI, SCL-90-R, vs için farklı pattern'ler
+  // MMPI, SCL-90-R, vs için farklı desenler
 }
 
-// UniversalFastTestInterface - Dynamic response settings
+// UniversalFastTestInterface - Dinamik cevap ayarları
 const [testInputSettings, setTestInputSettings] = useState<ReturnType<typeof getTestInputSettings>>();
 
-// MMPITestInterface - MMPI specific logic
+// MMPITestInterface - MMPI özel mantığı
 const [mmpiSonuclari, setMmpiSonuclari] = useState<MMPIResults>();
 ```
 
-### 🗂️ **2. Test Data Organizasyonu Problemi**
+### 🗂️ **2. Test Verisi Organizasyon Sorunu**
 
 #### **Mevcut JSON Yapısı:**
 ```
@@ -49,11 +49,11 @@ public/tests/
 └── scl-90-r-semptom-tarama-listesi.json
 ```
 
-**🚨 PROBLEMLER:**
+**🚨 SORUNLAR:**
 - Kategori yok (Beck testleri dağınık)
-- MMPI hardcode'd lib'de
-- Test meta-data dağınık
-- Yorumlama kuralları embeded
+- MMPI hardcode edilmiş lib'de
+- Test meta-verileri dağınık
+- Yorumlama kuralları gömülü
 
 #### **Test Türü Karmaşıklığı:**
 ```typescript
@@ -61,7 +61,7 @@ public/tests/
 export type PuanlamaTuru = 
   | 'basit'                    // Toplam puan
   | 'cinsiyete-ozel'          // Cinsiyet bazlı
-  | 'coklu_alt_olcek'         // Young Schema (18 alt ölçek)
+  | 'coklu_alt_olcek'         // Young Şema (18 alt ölçek)
   | 'mmpi-profil'             // MMPI (10 klinik + 4 geçerlik)
   | 'scl-90-r'                // SCL-90-R (9 faktör)
   | 'gorusmeci-degerlendirmesi'; // Manuel değerlendirme
@@ -72,15 +72,15 @@ export type FormTuru =
   | 'cinsiyete-ozel'    // Arizona (Kadın/Erkek)
   | 'mmpi-profil';      // MMPI özel
 
-// Test response pattern'leri
+// Test cevap desenleri
 interface TestResponsePattern {
-  type: 'binary' | 'scale' | 'custom';
+  type: 'ikili' | 'olcek' | 'ozel';
   options: { value: number; text: string; shortcut: string }[];
   allowEmpty: boolean;
 }
 ```
 
-### 🎮 **3. State Management Analizi**
+### 🎮 **3. Durum Yönetimi Analizi**
 
 #### **Redux Store Yapısı:**
 ```typescript
@@ -101,36 +101,36 @@ interface DanisanState {
 }
 ```
 
-**🚨 PROBLEMLER:**
-- Test oturumu her interface'de local state
-- Test data loading logic duplkated
-- Demografik validation her yerde tekrar
+**🚨 SORUNLAR:**
+- Test oturumu her arayüzde yerel durum
+- Test veri yükleme mantığı tekrarlanmış
+- Demografik doğrulama her yerde tekrar
 
-### 🛠️ **4. Utils/Helper Functions Dağınıklığı**
+### 🛠️ **4. Yardımcı Fonksiyonlar Dağınıklığı**
 
-#### **Mevcut Utility Files:**
-- `testUtils.ts` (251 satır) - Test helper'ları
-- `testResponseUtils.ts` (207 satır) - Response pattern analysis
-- `testResponseUtils.ts` - Keyboard input conversion
-- `urlUtils.ts` - URL generation
-- `encryption.ts` - Data encryption
-- `performance.ts` - Performance monitoring
+#### **Mevcut Yardımcı Dosyalar:**
+- `testUtils.ts` (251 satır) - Test yardımcıları
+- `testResponseUtils.ts` (207 satır) - Cevap deseni analizi
+- `testResponseUtils.ts` - Klavye girişi dönüştürme
+- `urlUtils.ts` - URL oluşturma
+- `encryption.ts` - Veri şifreleme
+- `performance.ts` - Performans izleme
 
-**🚨 PROBLEMLER:**
-- Functionality overlap
-- Inconsistent naming
-- No clear module boundaries
+**🚨 SORUNLAR:**
+- Fonksiyon çakışması
+- Tutarsız isimlendirme
+- Net modül sınırları yok
 
-### 🎨 **5. Component Structure Analizi**
+### 🎨 **5. Bileşen Yapısı Analizi**
 
-#### **Test Components:**
+#### **Test Bileşenleri:**
 ```
 src/components/test/
 ├── ArizonaResult.tsx           # Arizona özel sonuç
 ├── YoungSchemaResult.tsx       # Young özel sonuç  
-├── SCL90RChart.tsx            # SCL-90-R chart
-├── TestResultChart.tsx        # Generic chart
-├── MMPIProfileChart.tsx       # MMPI profil
+├── SCL90RChart.tsx            # SCL-90-R grafiği
+├── TestResultChart.tsx        # Genel grafik
+├── MMPIProfileChart.tsx       # MMPI profili
 ├── MMPIClinicalScaleInterpretation.tsx
 ├── MMPIValidityScaleInterpretation.tsx
 ├── MMPICodeInterpretation.tsx
@@ -141,103 +141,103 @@ src/components/test/
 └── TestSearch.tsx
 ```
 
-**🚨 PROBLEMLER:**
-- Test-specific result components
-- Modal components mixed with logic
-- No reusable chart system
-- MMPI logic spread across 4 files
+**🚨 SORUNLAR:**
+- Test özel sonuç bileşenleri
+- Modal bileşenler mantık ile karışık
+- Yeniden kullanılabilir grafik sistemi yok
+- MMPI mantığı 4 dosyaya dağılmış
 
-### 🏗️ **6. MMPI Complexity Analysis**
+### 🏗️ **6. MMPI Karmaşıklık Analizi**
 
-#### **MMPI Module Structure:**
+#### **MMPI Modül Yapısı:**
 ```
 src/lib/mmpi/
-├── core/           # Scoring engine
-├── data/           # Questions & scales
-├── interpretations/ # Result interpretation
-├── types/          # Type definitions
-└── index.ts        # Public API
+├── core/           # Puanlama motoru
+├── data/           # Sorular ve ölçekler
+├── interpretations/ # Sonuç yorumlama
+├── types/          # Tip tanımları
+└── index.ts        # Genel API
 ```
 
 **🚨 MMPI Özel Karmaşıklığı:**
 - 566 soru
 - 10 klinik ölçek + 4 geçerlik ölçeği
-- T-score conversion
-- Profile code generation
-- Complex interpretation rules
+- T-skor dönüştürme
+- Profil kod oluşturma
+- Karmaşık yorumlama kuralları
 
-### 📈 **7. Test Execution Flow Analizi**
+### 📈 **7. Test Yürütme Akışı Analizi**
 
-#### **Current Test Flow:**
+#### **Mevcut Test Akışı:**
 ```mermaid
 graph TD
-    A[Test Selection] --> B{Test Type?}
-    B -->|Standard| C[StandardTestInterface]
-    B -->|Fast| D[FastTestInterface] 
-    B -->|Universal| E[UniversalFastTestInterface]
+    A[Test Seçimi] --> B{Test Türü?}
+    B -->|Standart| C[StandardTestInterface]
+    B -->|Hızlı| D[FastTestInterface] 
+    B -->|Evrensel| E[UniversalFastTestInterface]
     B -->|MMPI| F[MMPITestInterface]
     
-    C --> G[Demographics Check]
+    C --> G[Demografik Kontrol]
     D --> G
     E --> G  
     F --> G
     
-    G --> H[Test Questions Load]
-    H --> I[Answer Collection]
-    I --> J{Scoring Type?}
+    G --> H[Test Soruları Yükle]
+    H --> I[Cevap Toplama]
+    I --> J{Puanlama Türü?}
     
-    J -->|Simple| K[Simple Sum]
-    J -->|Multi-scale| L[Complex Scoring]
-    J -->|MMPI| M[MMPI Scoring Engine]
+    J -->|Basit| K[Basit Toplam]
+    J -->|Çoklu-ölçek| L[Karmaşık Puanlama]
+    J -->|MMPI| M[MMPI Puanlama Motoru]
     
-    K --> N[Result Display]
+    K --> N[Sonuç Gösterimi]
     L --> N
     M --> N
 ```
 
-**🚨 FLOW PROBLEMLERI:**
-- Her interface kendi demographic check
-- Test loading logic duplicated
-- Scoring scattered across files
-- No unified result system
+**🚨 AKIŞ SORUNLARI:**
+- Her arayüz kendi demografik kontrolü
+- Test yükleme mantığı tekrarlanmış
+- Puanlama dosyalar arasında dağınık
+- Birleşik sonuç sistemi yok
 
 ---
 
 ## 🎯 **ÖNERİLEN YENİ MİMARİ**
 
-### **1. Single Responsibility Principle**
+### **1. Tek Sorumluluk İlkesi**
 
-#### **Core Test Engine (Tek Motor):**
+#### **Temel Test Motoru (Tek Motor):**
 ```typescript
 interface TestMotoru {
-  // Test lifecycle
+  // Test yaşam döngüsü
   testBaslat(testId: string, danisanId: number): Promise<TestOturumu>
   soruGetir(index: number): TestSorusu
   cevapKaydet(soruId: string, cevap: number): void
   testBitir(): Promise<TestSonucu>
   
-  // Navigation
+  // Gezinme
   sonrakiSoru(): boolean
   oncekiSoru(): boolean
   sorunaGit(index: number): void
   
-  // State
+  // Durum
   getState(): TestOturumuState
   setState(state: Partial<TestOturumuState>): void
 }
 ```
 
-#### **Modular Interface System:**
+#### **Modüler Arayüz Sistemi:**
 ```typescript
 interface TestArayuzBileşeni {
-  mode: 'single-question' | 'multi-question' | 'grid-view'
-  navigation: 'free' | 'sequential' | 'adaptive'
-  inputMethod: 'click' | 'keyboard' | 'mixed'
-  layout: 'mobile' | 'desktop' | 'responsive'
+  mode: 'tek-soru' | 'coklu-soru' | 'tablo-gorunum'
+  navigation: 'serbest' | 'sıralı' | 'uyarlanabilir'
+  inputMethod: 'tiklama' | 'klavye' | 'karisik'
+  layout: 'mobil' | 'masaustu' | 'duyarlı'
 }
 ```
 
-### **2. Test Data Architecture**
+### **2. Test Veri Mimarisi**
 
 #### **Kategori Bazlı Organizasyon:**
 ```
@@ -268,57 +268,57 @@ src/data/testler/
     └── scl-90-r-puanlama.json
 ```
 
-### **3. Component Architecture**
+### **3. Bileşen Mimarisi**
 
-#### **Reusable Component System:**
+#### **Yeniden Kullanılabilir Bileşen Sistemi:**
 ```
 src/testler/
 ├── core/
-│   ├── TestMotoru.ts              # Main test engine
-│   ├── SonucHesaplayici.ts        # Universal scoring
-│   ├── YorumMotoru.ts             # Result interpretation
-│   └── ValidasyonMotoru.ts        # Input validation
+│   ├── TestMotoru.ts              # Ana test motoru
+│   ├── SonucHesaplayici.ts        # Evrensel puanlama
+│   ├── YorumMotoru.ts             # Sonuç yorumlama
+│   └── ValidasyonMotoru.ts        # Girdi doğrulama
 ├── bilesenler/
-│   ├── temel/                     # Basic components
+│   ├── temel/                     # Temel bileşenler
 │   │   ├── TestBasligi.tsx
 │   │   ├── SoruGosterici.tsx  
 │   │   ├── CevapSecenekleri.tsx
 │   │   ├── TestNavigasyonu.tsx
 │   │   └── IlerlemeGostergesi.tsx
-│   ├── girdi/                     # Input components
+│   ├── girdi/                     # Girdi bileşenleri
 │   │   ├── TekSecimGirdi.tsx
 │   │   ├── CokluSecimGirdi.tsx
 │   │   ├── OlcekGirdi.tsx
 │   │   └── KlavyeKısayolu.tsx
-│   ├── sonuc/                     # Result components
+│   ├── sonuc/                     # Sonuç bileşenleri
 │   │   ├── SonucKarti.tsx
 │   │   ├── GrafikGosterici.tsx
 │   │   ├── AltOlcekGosterici.tsx
 │   │   └── YorumPaneli.tsx
-│   └── modal/                     # Modal components
+│   └── modal/                     # Modal bileşenler
 │       ├── DemografikBilgiModali.tsx
 │       ├── TestBilgiModali.tsx
 │       └── SonucDetayModali.tsx
-├── arayuzler/                     # Interface layouts
-│   ├── TekSoruArayuzu.tsx        # Single question view
-│   ├── CokluSoruArayuzu.tsx      # Multi question view
-│   ├── HizliGirişArayuzu.tsx     # Fast input view
-│   └── TabletModeArayuzu.tsx     # Tablet optimized
+├── arayuzler/                     # Arayüz düzenleri
+│   ├── TekSoruArayuzu.tsx        # Tek soru görünümü
+│   ├── CokluSoruArayuzu.tsx      # Çoklu soru görünümü
+│   ├── HizliGirişArayuzu.tsx     # Hızlı girdi görünümü
+│   └── TabletModeArayuzu.tsx     # Tablet optimize
 └── tipler/
     ├── TestTipleri.ts
     ├── SonucTipleri.ts
     └── ArayuzTipleri.ts
 ```
 
-### **4. Smart Test Resolution System**
+### **4. Akıllı Test Çözüm Sistemi**
 
-#### **Automatic Interface Selection:**
+#### **Otomatik Arayüz Seçimi:**
 ```typescript
 interface TestKonfigurasyonu {
   testId: string
   danisanId: number
   tercihEdilenMod: 'otomatik' | 'hizli' | 'standart' | 'tablet'
-  cihazTipi: 'mobile' | 'tablet' | 'desktop'
+  cihazTipi: 'mobil' | 'tablet' | 'masaustu'
   kullaniciTercihleri: KullaniciTercihleri
 }
 
@@ -326,40 +326,40 @@ class TestArayuzCozucu {
   static cozTestArayuzu(config: TestKonfigurasyonu): TestArayuzBileşeni {
     const test = TestKataloglari.getir(config.testId)
     
-    // Auto-detect best interface based on:
-    // - Test type (MMPI needs special handling)
-    // - Question count (>50 questions = fast mode recommended)  
-    // - Device type (mobile = simplified interface)
-    // - User preferences (power users = keyboard shortcuts)
+    // Otomatik en iyi arayüz seçimi:
+    // - Test türü (MMPI özel işlem gerektirir)
+    // - Soru sayısı (>50 soru = hızlı mod önerilir)  
+    // - Cihaz türü (mobil = basitleştirilmiş arayüz)
+    // - Kullanıcı tercihleri (uzman kullanıcılar = klavye kısayolları)
     
-    if (test.sorular.length > 100 && config.cihazTipi === 'desktop') {
+    if (test.sorular.length > 100 && config.cihazTipi === 'masaustu') {
       return new HizliGirişArayuzu({
-        keyboardShortcuts: true,
-        bulkInput: true,
-        progressTracking: true
+        klavyeKısayollari: true,
+        topluGirdi: true,
+        ilerlemeIzleme: true
       })
     }
     
-    if (config.cihazTipi === 'mobile') {
+    if (config.cihazTipi === 'mobil') {
       return new TekSoruArayuzu({
-        touchOptimized: true,
-        largeButtons: true,
-        swipeNavigation: true
+        dokunmaOptimize: true,
+        buyukDugmeler: true,
+        kaydirmaGezinme: true
       })
     }
     
     return new CokluSoruArayuzu({
-      questionsPerPage: 5,
-      freeNavigation: true,
-      progressBar: true
+      sayfaBasinaSoru: 5,
+      serbestGezinme: true,
+      ilerlemeÇubuğu: true
     })
   }
 }
 ```
 
-### **5. Universal Scoring Engine**
+### **5. Evrensel Puanlama Motoru**
 
-#### **Flexible Scoring System:**
+#### **Esnek Puanlama Sistemi:**
 ```typescript
 interface PuanlamaKurali {
   tip: 'toplam' | 'ortalama' | 'agirlikli' | 'dönüştürme'
@@ -376,7 +376,7 @@ interface AltOlcekTanimi {
   yorumKurallari: YorumKurali[]
 }
 
-class UniversalScoringEngine {
+class EvrenselPuanlamaMotoru {
   static hesaplaSonuc(
     testId: string, 
     cevaplar: Record<string, number>,
@@ -401,78 +401,78 @@ class UniversalScoringEngine {
 
 ---
 
-## 🚀 **REFACTORING IMPLEMENTATION PLAN**
+## 🚀 **YENİDEN YAPILANDIRMA UYGULAMA PLANI**
 
-### **Phase 1: Foundation (Hafta 1-2)**
-1. ✅ Create new folder structure
-2. ✅ Extract core test engine
-3. ✅ Create type definitions
-4. ✅ Setup test data categories
+### **Aşama 1: Temel (Hafta 1-2)**
+1. ✅ Yeni klasör yapısını oluştur
+2. ✅ Temel test motorunu çıkart
+3. ✅ Tip tanımlarını oluştur
+4. ✅ Test veri kategorilerini kur
 
-### **Phase 2: Component Unification (Hafta 3-4)**  
-1. ✅ Create reusable base components
-2. ✅ Merge interface logic into single system
-3. ✅ Implement smart interface selection
-4. ✅ Create universal input system
+### **Aşama 2: Bileşen Birleştirme (Hafta 3-4)**  
+1. ✅ Yeniden kullanılabilir temel bileşenler oluştur
+2. ✅ Arayüz mantığını tek sistemde birleştir
+3. ✅ Akıllı arayüz seçimini uygula
+4. ✅ Evrensel girdi sistemi oluştur
 
-### **Phase 3: Data Migration (Hafta 5)**
-1. ✅ Reorganize test JSON files
-2. ✅ Extract scoring rules
-3. ✅ Create test catalog system
-4. ✅ Migrate MMPI integration
+### **Aşama 3: Veri Taşıma (Hafta 5)**
+1. ✅ Test JSON dosyalarını yeniden düzenle
+2. ✅ Puanlama kurallarını çıkart
+3. ✅ Test katalog sistemi oluştur
+4. ✅ MMPI entegrasyonunu taşı
 
-### **Phase 4: Testing & Optimization (Hafta 6)**
-1. ✅ Compatibility testing
-2. ✅ Performance optimization  
-3. ✅ Mobile responsiveness
-4. ✅ Documentation
-
----
-
-## 📊 **EXPECTED BENEFITS**
-
-### **Code Quality Improvements:**
-- 🔥 **70% reduction** in interface code (2500+ → ~750 lines)
-- 🔄 **Zero duplication** in test logic
-- 🎯 **Single responsibility** per component
-- 📱 **100% responsive** design
-- ⚡ **Better performance** through code splitting
-
-### **Developer Experience:**
-- 🆕 **Easy test addition** (just JSON + category)
-- 🔧 **Maintainable codebase** 
-- 📖 **Clear documentation**
-- 🧪 **Better testing** capability
-- 🚀 **Faster development** cycles
-
-### **User Experience:**
-- 🎮 **Smart interface selection**
-- ⌨️ **Consistent keyboard shortcuts**
-- 📊 **Better result visualization**
-- 💾 **Reliable data persistence**
-- 🔄 **Seamless test switching**
-
-### **Scalability:**
-- ➕ **Unlimited test capacity**
-- 🏗️ **Modular architecture**
-- 🔌 **Plugin system** for custom tests
-- 🌐 **Multi-language support** ready
-- 📈 **Analytics integration** ready
+### **Aşama 4: Test ve Optimizasyon (Hafta 6)**
+1. ✅ Uyumluluk testi
+2. ✅ Performans optimizasyonu  
+3. ✅ Mobil duyarlılık
+4. ✅ Dokümantasyon
 
 ---
 
-Bu detaylı analizi onaylıyor musunuz? Hangi phase'den başlamak istersiniz?
+## 📊 **BEKLENİLEN FAYDALAR**
+
+### **Kod Kalitesi İyileştirmeleri:**
+- 🔥 **%70 azalma** arayüz kodunda (2500+ → ~750 satır)
+- 🔄 **Sıfır tekrar** test mantığında
+- 🎯 **Tek sorumluluk** her bileşen için
+- 📱 **%100 duyarlı** tasarım
+- ⚡ **Daha iyi performans** kod bölme ile
+
+### **Geliştirici Deneyimi:**
+- 🆕 **Kolay test ekleme** (sadece JSON + kategori)
+- 🔧 **Sürdürülebilir kod tabanı** 
+- 📖 **Net dokümantasyon**
+- 🧪 **Daha iyi test** kabiliyeti
+- 🚀 **Hızlı geliştirme** döngüleri
+
+### **Kullanıcı Deneyimi:**
+- 🎮 **Akıllı arayüz seçimi**
+- ⌨️ **Tutarlı klavye kısayolları**
+- 📊 **Daha iyi sonuç görselleştirme**
+- 💾 **Güvenilir veri kalıcılığı**
+- 🔄 **Sorunsuz test geçişi**
+
+### **Ölçeklenebilirlik:**
+- ➕ **Sınırsız test kapasitesi**
+- 🏗️ **Modüler mimari**
+- 🔌 **Özel testler için eklenti sistemi**
+- 🌐 **Çoklu dil desteği** hazır
+- 📈 **Analitik entegrasyonu** hazır
 
 ---
 
-## 🔬 **ÇOK DETAYLI KOD ANALİZİ - DEVİM II**
+Bu detaylı analizi onaylıyor musunuz? Hangi aşamadan başlamak istersiniz?
 
-### 🧬 **1. State Management Chaos Analysis**
+---
 
-#### **useState Hook Usage Analizi:**
+## 🔬 **ÇOK DETAYLI KOD ANALİZİ - BÖLÜM II**
+
+### 🧬 **1. Durum Yönetimi Kaos Analizi**
+
+#### **useState Hook Kullanımı Analizi:**
 ```typescript
-// Toplam useState kullanımı: 100+ instances
-// Her test interface kendi state management'ı:
+// Toplam useState kullanımı: 100+ örnek
+// Her test arayüzü kendi durum yönetimi:
 
 // StandardTestInterface.tsx - 8 useState
 const [danisan, setDanisan] = useState<Danisan | null>(null);
@@ -480,7 +480,7 @@ const [testSorulari, setTestSorulari] = useState<TestSorusu[]>([]);
 const [testTalimatlar, setTestTalimatlar] = useState<string>('');
 const [loading, setLoading] = useState(true);
 const [showDemographicModal, setShowDemographicModal] = useState(false);
-const [oturum, setOturum] = useState<TestOturumu>({ /* complex object */ });
+const [oturum, setOturum] = useState<TestOturumu>({ /* karmaşık nesne */ });
 const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
 const [showExitDialog, setShowExitDialog] = useState(false);
 
@@ -506,18 +506,18 @@ const [isLoading, setIsLoading] = useState(false);
 const [elapsedTime, setElapsedTime] = useState(0);
 ```
 
-**🚨 STATE DUPLICATION PROBLEMS:**
+**🚨 DURUM TEKRARı SORUNLARI:**
 - **Danışan bilgisi** 5 farklı yerde tekrar
-- **Test sorular** 4 farklı yerde
-- **Loading states** her interface'de ayrı
-- **Demografik modal** logic duplikasyonu
-- **Timer logic** her yerde kopyala-yapıştır
+- **Test soruları** 4 farklı yerde
+- **Yükleme durumları** her arayüzde ayrı
+- **Demografik modal** mantığı tekrarı
+- **Zamanlayıcı mantığı** her yerde kopyala-yapıştır
 
-### 🔀 **2. Function/Logic Duplication Analysis**
+### 🔀 **2. Fonksiyon/Mantık Tekrarı Analizi**
 
-#### **Demographic Check Logic - 5 Farklı Yerde:**
+#### **Demografik Kontrol Mantığı - 5 Farklı Yerde:**
 ```typescript
-// StandardTestInterface.tsx - Line 105-120
+// StandardTestInterface.tsx - Satır 105-120
 const hasExistingDemo = (
   isCinsiyetGerekli(test, danisanData) ||
   isEgitimDurumuGerekli(test, danisanData) ||
@@ -525,7 +525,7 @@ const hasExistingDemo = (
   isYasGerekli(test, danisanData)
 );
 
-// UniversalFastTestInterface.tsx - Line 75-85  
+// UniversalFastTestInterface.tsx - Satır 75-85  
 const hasExistingDemo = (
   isCinsiyetGerekli(test, danisanData) ||
   isEgitimDurumuGerekli(test, danisanData) ||
@@ -533,7 +533,7 @@ const hasExistingDemo = (
   isYasGerekli(test, danisanData)
 );
 
-// MMPITestInterface.tsx - Line 56-67
+// MMPITestInterface.tsx - Satır 56-67
 const hasExistingDemo = (
   isCinsiyetGerekli(test, danisan) ||
   isEgitimDurumuGerekli(test, danisan) ||
@@ -541,7 +541,7 @@ const hasExistingDemo = (
   isYasGerekli(test, danisan)
 );
 
-// BulkMMPIInterface.tsx - Line 52-62
+// BulkMMPIInterface.tsx - Satır 52-62
 const hasExistingDemo = (
   isCinsiyetGerekli(test, danisan) ||
   isEgitimDurumuGerekli(test, danisan) ||
@@ -550,32 +550,32 @@ const hasExistingDemo = (
 );
 ```
 
-#### **Test Data Loading Logic - 4 Farklı Implementasyon:**
+#### **Test Veri Yükleme Mantığı - 4 Farklı Uygulama:**
 ```typescript
-// StandardTestInterface.tsx - Line 78-95
+// StandardTestInterface.tsx - Satır 78-95
 const loadDanisanAndTest = async () => {
   const danisanData = await danisanService.getir(danisanId);
-  // ... demographic check
+  // ... demografik kontrol
   const sorular = getTestSorulari(test, danisanData);
   const talimatlar = getTestTalimatlar(test, danisanData);
   setTestSorulari(sorular);
   setTestTalimatlar(talimatlar);
 };
 
-// UniversalFastTestInterface.tsx - Line 60-85
+// UniversalFastTestInterface.tsx - Satır 60-85
 const loadDanisanAndTest = async () => {
   const danisanData = await danisanService.getir(danisanId);
-  // ... demographic check
+  // ... demografik kontrol
   const sorular = getTestSorulari(test, danisanData);
   const inputSettings = getTestInputSettings(test);
   setTestSorulari(sorular);
   setTestInputSettings(inputSettings);
 };
 
-// FastTestInterface.tsx - Line 150-180
+// FastTestInterface.tsx - Satır 150-180
 const loadTestData = async () => {
   const danisanData = await danisanService.getir(parseInt(danisanId));
-  // ... demographic check  
+  // ... demografik kontrol  
   const sorular = getTestSorulari(test, danisanData);
   const pattern = analyzeTestPattern(test, sorular);
   setTestSorulari(sorular);
