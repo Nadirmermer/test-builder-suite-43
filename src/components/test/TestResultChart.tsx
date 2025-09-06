@@ -1,4 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { YoungSchemaResult } from './YoungSchemaResult';
+import { ArizonaResult } from './ArizonaResult';
 import { Badge } from '@/components/ui/badge';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TestSonucu } from '@/types';
@@ -11,6 +13,9 @@ interface TestResultChartProps {
 }
 
 export default function TestResultChart({ testSonucu, showOverallScore = true }: TestResultChartProps) {
+  console.log('TestResultChart render edildi, testSonucu:', testSonucu);
+  console.log('Test sonucu full object:', JSON.stringify(testSonucu, null, 2));
+  
   // MMPI için özel grafik bileşenini kullan
   if (testSonucu.mmpiSonuclari) {
     return <MMPIProfileChart testSonucu={testSonucu} />;
@@ -19,6 +24,14 @@ export default function TestResultChart({ testSonucu, showOverallScore = true }:
   // SCL-90-R için özel grafik bileşenini kullan
   if (testSonucu.testId === 'scl-90-r') {
     return <SCL90RChart testSonucu={testSonucu} showOverallScore={showOverallScore} />;
+  }
+
+  // Young Şema Ölçeği özel görünümü için kontrol
+  const isYoungSchema = testSonucu.testId === 'young-sema-olcegi-ysq';
+
+  // Young Şema Ölçeği için özel görünüm
+  if (isYoungSchema) {
+    return <YoungSchemaResult testSonucu={testSonucu} />;
   }
 
   // SCL-90-R için özel renk kodlaması
@@ -84,13 +97,20 @@ export default function TestResultChart({ testSonucu, showOverallScore = true }:
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            {isSCL90R ? 'SCL-90-R Alt Ölçek Puanları' : 'Alt Ölçek Puanları'}
+            {isSCL90R ? 'SCL-90-R Alt Ölçek Puanları' : 
+             isYoungSchema ? 'Young Şema Ölçeği Alt Ölçek Puanları' : 
+             'Alt Ölçek Puanları'}
           </CardTitle>
           {isSCL90R && (
             <div className="flex flex-wrap gap-2 text-xs">
               <Badge variant="outline" className="text-green-600">Normal (&lt; 0.5)</Badge>
               <Badge variant="outline" className="text-orange-600">Orta (0.5-1.0)</Badge>
               <Badge variant="outline" className="text-red-600">Yüksek (≥ 1.0)</Badge>
+            </div>
+          )}
+          {isYoungSchema && (
+            <div className="text-sm text-muted-foreground">
+              Her alt ölçek için soruların toplam puanları gösterilmektedir.
             </div>
           )}
         </CardHeader>
@@ -174,7 +194,9 @@ export default function TestResultChart({ testSonucu, showOverallScore = true }:
           {/* Detay tablo */}
           <div className="mt-6 space-y-2">
             <h4 className="font-semibold text-sm">
-              {isSCL90R ? 'Alt Ölçek Detayları:' : 'Detaylı Puanlar:'}
+              {isSCL90R ? 'Alt Ölçek Detayları:' : 
+               isYoungSchema ? 'Alt Ölçek Toplam Puanları:' : 
+               'Detaylı Puanlar:'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
               {chartData.map((item, index) => (
@@ -183,19 +205,22 @@ export default function TestResultChart({ testSonucu, showOverallScore = true }:
                   className={`flex justify-between items-center p-2 rounded ${
                     isSCL90R && item.seviye === 'Yüksek' ? 'bg-red-50 border border-red-200' :
                     isSCL90R && item.seviye === 'Orta' ? 'bg-orange-50 border border-orange-200' :
+                    isYoungSchema ? 'bg-blue-50 border border-blue-200' :
                     'bg-muted/30'
                   }`}
                 >
                   <div className="flex flex-col">
                     <span className="font-medium">{item.fullName}</span>
                     {isSCL90R && <span className="text-xs text-muted-foreground">{item.seviye}</span>}
+                    {isYoungSchema && <span className="text-xs text-muted-foreground">Toplam Puan</span>}
                   </div>
                   <span className={`font-mono ${
                     isSCL90R && item.seviye === 'Yüksek' ? 'text-red-600 font-semibold' :
                     isSCL90R && item.seviye === 'Orta' ? 'text-orange-600 font-semibold' :
+                    isYoungSchema ? 'text-blue-600 font-semibold' :
                     ''
                   }`}>
-                    {item.puan.toFixed(2)}
+                    {isYoungSchema ? item.toplamPuan : item.puan.toFixed(2)}
                   </span>
                 </div>
               ))}

@@ -146,6 +146,64 @@ export function calculateSCL90RScore(cevaplar: (number | undefined)[], test: Tes
 }
 
 /**
+ * Young Şema Ölçeği (YSQ) için özel puanlama fonksiyonu
+ * Sadece toplam puanları hesaplar, yorum yapmaz
+ */
+export function calculateYoungSchemaScore(cevaplar: (number | undefined)[], test: TestTanimi) {
+  console.log('calculateYoungSchemaScore çağrıldı');
+  console.log('Cevaplar:', cevaplar);
+  console.log('Test alt ölçekler:', test.altOlcekler);
+  
+  if (!test.altOlcekler) {
+    console.log('Alt ölçekler bulunamadı');
+    return null;
+  }
+
+  const altOlcekSonuclari = Object.entries(test.altOlcekler).map(([key, altOlcek]) => {
+    let toplamPuan = 0;
+    let cevaplananSoru = 0;
+
+    console.log(`${key} alt ölçeği için hesaplama başlıyor:`, altOlcek);
+    
+    altOlcek.sorular.forEach(soruNo => {
+      const soruIndex = typeof soruNo === 'number' ? soruNo - 1 : parseInt(soruNo) - 1;
+      const cevap = cevaplar[soruIndex];
+      console.log(`Soru ${soruNo} (index ${soruIndex}): ${cevap}`);
+      
+      if (cevap !== undefined && typeof cevap === 'number') {
+        toplamPuan += cevap;
+        cevaplananSoru++;
+      }
+    });
+
+    const sonuc = {
+      ad: altOlcek.ad,
+      kisaAd: key,
+      toplamPuan: toplamPuan,
+      soruSayisi: altOlcek.sorular.length,
+      cevaplananSoru: cevaplananSoru
+    };
+    
+    console.log(`${key} sonucu:`, sonuc);
+    return sonuc;
+  });
+
+  // Genel toplam puan hesaplama
+  const toplamPuan = cevaplar.reduce((sum, cevap) => sum + (cevap || 0), 0);
+  const cevaplananSoruSayisi = cevaplar.filter(c => c !== undefined).length;
+
+  const finalSonuc = {
+    altOlcekler: altOlcekSonuclari,
+    toplamPuan,
+    cevaplananSoru: cevaplananSoruSayisi,
+    toplamSoru: 90
+  };
+  
+  console.log('Final sonuç:', finalSonuc);
+  return finalSonuc;
+}
+
+/**
  * MMPI testi için medeni durum gereksinimini kontrol eder
  */
 export function isMedeniDurumGerekli(test: TestTanimi, danisan: Danisan): boolean {

@@ -17,6 +17,7 @@ import MMPIValidityScaleInterpretation from '@/components/test/MMPIValidityScale
 import MMPIClinicalScaleInterpretation from '@/components/test/MMPIClinicalScaleInterpretation';
 import MMPICodeInterpretation from '@/components/test/MMPICodeInterpretation';
 import TestResultChart from '@/components/test/TestResultChart';
+import { ArizonaResult } from '@/components/test/ArizonaResult';
 import SCL90RChart from '@/components/test/SCL90RChart';
 import { 
   ArrowLeft, 
@@ -167,14 +168,14 @@ export default function RaporDetayPage() {
     if (completionRate === 100) {
       return { 
         status: 'complete', 
-        message: 'Test tamamen tamamlandı',
+        message: 'Değerlendirme hazır',
         icon: CheckCircle,
         color: 'text-green-600'
       };
     } else if (completionRate >= 80) {
       return { 
         status: 'warning', 
-        message: `Test %${completionRate.toFixed(0)} tamamlandı`,
+        message: `%${completionRate.toFixed(0)} tamamlandı`,
         icon: AlertTriangle,
         color: 'text-yellow-600'
       };
@@ -269,7 +270,13 @@ export default function RaporDetayPage() {
       </div>
 
       {/* Dashboard - Özet Bilgiler */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={`grid gap-4 ${
+        testSonucu.testId === 'young-sema-olcegi-ysq' || testSonucu.testId === 'arizona-cinsel-yasanti-acyo'
+          ? 'grid-cols-1 sm:grid-cols-2' 
+          : testSonucu.mmpiSonuclari 
+            ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' 
+            : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+      }`}>
         {/* Danışan Bilgisi */}
         <Card>
           <CardContent className="p-4">
@@ -296,25 +303,27 @@ export default function RaporDetayPage() {
           </CardContent>
         </Card>
 
-        {/* Test Durumu */}
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              {testStatus && (
-                <>
-                  <testStatus.icon className={`h-8 w-8 ${testStatus.color} bg-gray-100 rounded-full p-2`} />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Durum</p>
-                    <p className="font-semibold">{testStatus.message}</p>
-                  </div>
-                </>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        {/* Test Durumu (Young Şema ve Arizona hariç) */}
+        {testSonucu.testId !== 'young-sema-olcegi-ysq' && testSonucu.testId !== 'arizona-cinsel-yasanti-acyo' && (
+          <Card>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                {testStatus && (
+                  <>
+                    <testStatus.icon className={`h-8 w-8 ${testStatus.color} bg-gray-100 rounded-full p-2`} />
+                    <div>
+                      <p className="text-sm text-muted-foreground">Durum</p>
+                      <p className="font-semibold">{testStatus.message}</p>
+                    </div>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
-        {/* Toplam Puan (MMPI olmayan testler için) */}
-        {!testSonucu.mmpiSonuclari && (
+        {/* Toplam Puan (MMPI, Young Şema ve Arizona olmayan testler için) */}
+        {!testSonucu.mmpiSonuclari && testSonucu.testId !== 'young-sema-olcegi-ysq' && testSonucu.testId !== 'arizona-cinsel-yasanti-acyo' && (
           <Card>
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -332,7 +341,10 @@ export default function RaporDetayPage() {
       {/* Ana İçerik - Tabbed Interface */}
       <Tabs defaultValue="overview" className="w-full">
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full min-w-[400px] grid-cols-5 mb-4">
+          <TabsList className={`grid w-full min-w-[400px] mb-4 ${
+            testSonucu.mmpiSonuclari ? 'grid-cols-5' : 
+            testSonucu.testId === 'young-sema-olcegi-ysq' || testSonucu.testId === 'arizona-cinsel-yasanti-acyo' ? 'grid-cols-2' : 'grid-cols-3'
+          }`}>
             <TabsTrigger value="overview" className="text-xs sm:text-sm">Genel Bakış</TabsTrigger>
             {testSonucu.mmpiSonuclari ? (
               <>
@@ -340,9 +352,9 @@ export default function RaporDetayPage() {
                 <TabsTrigger value="clinical" className="text-xs sm:text-sm">Klinik</TabsTrigger>
                 <TabsTrigger value="codes" className="text-xs sm:text-sm">Kodlar</TabsTrigger>
               </>
-            ) : (
+            ) : testSonucu.testId !== 'young-sema-olcegi-ysq' && testSonucu.testId !== 'arizona-cinsel-yasanti-acyo' ? (
               <TabsTrigger value="results" className="text-xs sm:text-sm">Sonuçlar</TabsTrigger>
-            )}
+            ) : null}
             <TabsTrigger value="details" className="text-xs sm:text-sm">Detaylar</TabsTrigger>
           </TabsList>
         </div>
@@ -357,14 +369,16 @@ export default function RaporDetayPage() {
               {/* SCL-90-R için özel grafik */}
               {testSonucu.testId === 'scl-90-r' ? (
                 <SCL90RChart testSonucu={testSonucu} showOverallScore={false} chartType="line" />
+              ) : testSonucu.testId === 'arizona-cinsel-yasanti-acyo' ? (
+                <ArizonaResult testSonucu={testSonucu} danisan={danisan} />
               ) : (
                 <TestResultChart testSonucu={testSonucu} showOverallScore={false} />
               )}
             </CardContent>
           </Card>
 
-          {/* MMPI olmayan testler için sonuç yorumu */}
-          {!testSonucu.mmpiSonuclari && (
+          {/* MMPI olmayan testler ve Young Şema Ölçeği, Arizona hariç diğer testler için sonuç yorumu */}
+          {!testSonucu.mmpiSonuclari && testSonucu.testId !== 'young-sema-olcegi-ysq' && testSonucu.testId !== 'arizona-cinsel-yasanti-acyo' && (
             <Card>
               <CardHeader>
                 <CardTitle>Sonuç Değerlendirmesi</CardTitle>
@@ -404,8 +418,8 @@ export default function RaporDetayPage() {
           </TabsContent>
         )}
 
-        {/* Standart Sonuçlar (MMPI olmayan testler) */}
-        {!testSonucu.mmpiSonuclari && (
+        {/* Standart Sonuçlar (MMPI olmayan testler ve Young Şema, Arizona hariç) */}
+        {!testSonucu.mmpiSonuclari && testSonucu.testId !== 'young-sema-olcegi-ysq' && testSonucu.testId !== 'arizona-cinsel-yasanti-acyo' && (
           <TabsContent value="results" className="space-y-6">
             <Card>
               <CardHeader>
@@ -455,7 +469,7 @@ export default function RaporDetayPage() {
                 {testSonucu.cevaplar.map((cevap, index) => (
                   <div key={cevap.soruId} className="flex justify-between items-center p-3 border rounded-lg hover:bg-secondary/30 transition-colors">
                     <span className="text-sm font-medium">
-                      Soru {parseInt(cevap.soruId)}
+                      Soru {isNaN(parseInt(cevap.soruId)) ? cevap.soruId : parseInt(cevap.soruId)}
                     </span>
                     <Badge 
                       variant={cevap.verilenPuan === -1 ? "destructive" : "secondary"}

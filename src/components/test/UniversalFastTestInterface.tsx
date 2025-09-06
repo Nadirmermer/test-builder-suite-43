@@ -18,7 +18,7 @@ import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { useAppSelector, useAppDispatch } from '@/hooks/useRedux';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { testSonucuOzelPuanlamaIleKaydet } from '@/store/slices/testSlice';
-import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
+import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli, calculateYoungSchemaScore } from '@/utils/testUtils';
 import { getTestInputSettings, convertKeyboardInputToAnswer } from '@/utils/testResponseUtils';
 import DemographicInfoModal from './DemographicInfoModal';
 import { danisanGetir } from '@/store/slices/danisanSlice';
@@ -413,6 +413,48 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
           description: "MMPI test sonuçları başarıyla hesaplandı ve kaydedildi."
         });
         navigate(createDanisanUrl(danisan!.adSoyad, danisan!.id!));
+      } else if (test.id === 'young-sema-olcegi-ysq') {
+        // Young Şema Ölçeği için özel puanlama
+        const cevapArray = Object.keys(cevaplar)
+          .sort((a, b) => parseInt(a) - parseInt(b))
+          .map(key => cevaplar[key]);
+        
+        const ysqSonuc = calculateYoungSchemaScore(cevapArray, test);
+        
+        if (ysqSonuc) {
+          // Alt ölçek puanlarını formatla
+          const altOlcekPuanlari = ysqSonuc.altOlcekler.reduce((acc, altOlcek) => {
+            acc[altOlcek.kisaAd] = {
+              toplamPuan: altOlcek.toplamPuan,
+              ortalamaPuan: altOlcek.toplamPuan, // Sadece toplam puan göster
+              ad: altOlcek.ad,
+              baskın: false // Baskınlık kontrolü yok
+            };
+            return acc;
+          }, {} as Record<string, { toplamPuan: number; ortalamaPuan: number; ad: string; baskın: boolean }>);
+          
+          const testSonucu = {
+            danisanId: danisanId,
+            testId: test.id,
+            testAdi: test.testAdi,
+            tamamlanmaTarihi: new Date(),
+            puan: ysqSonuc.toplamPuan,
+            sonucYorumu: `Test tamamlandı. Toplam puan: ${ysqSonuc.toplamPuan}`,
+            cevaplar: Object.entries(cevaplar).map(([soruId, verilenPuan]) => ({
+              soruId,
+              verilenPuan
+            })),
+            altOlcekPuanlari
+          };
+
+          await testSonucuService.ekle(testSonucu);
+          toast({
+            title: "Test Tamamlandı",
+            description: "Young Şema Ölçeği sonuçları başarıyla hesaplandı ve kaydedildi."
+          });
+          navigate(createDanisanUrl(danisan!.adSoyad, danisan!.id!));
+          return;
+        }
       } else {
         // Standart testler için normal puanlama
         const puanlar: Record<string, number> = {};

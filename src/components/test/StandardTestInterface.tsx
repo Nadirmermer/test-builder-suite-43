@@ -14,8 +14,8 @@ import { useAppDispatch } from '@/hooks/useRedux';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { testOturumuBaslat, cevapGuncelle, soruIndexGuncelle, testOturumuBitir, testSonucuKaydet } from '@/store/slices/testSlice';
 import { TestTanimi, TestOturumu, Danisan, TestSorusu } from '@/types';
-import { danisanService } from '@/lib/db';
-import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli } from '@/utils/testUtils';
+import { danisanService, testSonucuService } from '@/lib/db';
+import { getTestSorulari, getTestTalimatlar, isCinsiyetGerekli, isEgitimDurumuGerekli, isMedeniDurumGerekli, isYasGerekli, calculateSCL90RScore, calculateYoungSchemaScore } from '@/utils/testUtils';
 import { createDanisanUrl } from '@/utils/urlUtils';
 import { calculateMMPIScores, toPublicResults } from '@/lib/mmpi';
 import { toast } from '@/hooks/use-toast';
@@ -239,6 +239,9 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       ad: string;
       baskın?: boolean;
     }> | undefined;
+    
+    // Sonuç yorumunu başlat
+    let sonucYorumu = 'Sonuç yorumu bulunamadı';
 
     if (test.puanlamaTuru === 'scl-90-r' && test.altOlcekler) {
       // SCL-90-R puanlaması
@@ -267,7 +270,64 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       toplamPuan = Math.round((genelToplam / 90) * 100) / 100; // 90 soru için ortalama
       
     } else if (test.puanlamaTuru === 'coklu_alt_olcek' && test.altOlcekler) {
-      // Çoklu alt ölçek puanlaması
+      // Young Şema Ölçeği için özel puanlama
+      if (test.id === 'young-sema-olcegi-ysq') {
+        console.log('Young Şema Ölçeği tespit edildi, özel puanlama başlıyor...');
+        const cevapArray = Object.keys(oturum.cevaplar)
+          .sort((a, b) => parseInt(a) - parseInt(b))
+          .map(key => oturum.cevaplar[key]);
+        
+        console.log('Cevap array:', cevapArray);
+        console.log('Test objesi:', test);
+        
+        const ysqSonuc = calculateYoungSchemaScore(cevapArray, test);
+        
+        console.log('YSQ sonucu:', ysqSonuc);
+        
+        if (ysqSonuc) {
+          // Alt ölçek puanlarını formatla
+          altOlcekPuanlari = ysqSonuc.altOlcekler.reduce((acc, altOlcek) => {
+            acc[altOlcek.kisaAd] = {
+              toplamPuan: altOlcek.toplamPuan,
+              ortalamaPuan: altOlcek.toplamPuan, // Sadece toplam puan göster
+              ad: altOlcek.ad,
+              baskın: false // Baskınlık kontrolü yok
+            };
+            return acc;
+          }, {} as Record<string, { toplamPuan: number; ortalamaPuan: number; ad: string; baskın: boolean }>);
+          
+          console.log('Alt ölçek puanları:', altOlcekPuanlari);
+          
+          toplamPuan = ysqSonuc.toplamPuan;
+          sonucYorumu = `Test tamamlandı. Toplam puan: ${ysqSonuc.toplamPuan}`;
+          
+          const testSonucu = {
+            danisanId: danisanId,
+            testId: test.id,
+            testAdi: test.testAdi + " (Standart)",
+            tamamlanmaTarihi: new Date(),
+            puan: ysqSonuc.toplamPuan,
+            sonucYorumu: `Test tamamlandı. Toplam puan: ${ysqSonuc.toplamPuan}`,
+            cevaplar: Object.entries(oturum.cevaplar).map(([soruId, verilenPuan]) => ({
+              soruId,
+              verilenPuan
+            })),
+            altOlcekPuanlari
+          };
+
+          console.log('Kaydedilecek test sonucu:', testSonucu);
+
+          await testSonucuService.ekle(testSonucu);
+          toast({
+            title: "Test Tamamlandı",
+            description: "Young Şema Ölçeği sonuçları başarıyla hesaplandı ve kaydedildi."
+          });
+          navigate(createDanisanUrl(danisan!.adSoyad, danisan!.id!));
+          return;
+        }
+      }
+      
+      // Diğer çoklu alt ölçek testleri için standart puanlama
       altOlcekPuanlari = {};
       
       Object.entries(test.altOlcekler).forEach(([key, altOlcek]) => {
@@ -294,9 +354,6 @@ export default function StandardTestInterface({ test, danisanId, onComplete }: S
       // Basit puanlama
       toplamPuan = Object.values(oturum.cevaplar).reduce((toplam, puan) => toplam + puan, 0);
     }
-    
-    // Sonuç yorumunu bul
-    let sonucYorumu = 'Sonuç yorumu bulunamadı';
     
     if (test.puanlamaTuru === 'scl-90-r') {
       // SCL-90-R için özel yorum sistemi
