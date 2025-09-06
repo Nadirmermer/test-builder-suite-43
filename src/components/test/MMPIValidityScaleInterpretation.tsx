@@ -153,7 +153,7 @@ export default function MMPIValidityScaleInterpretation({ testSonucu, danisan }:
     dogumTarihi: danisan.dogumTarihi,
     medeniDurum: danisan.medeniDurum,
     egitimDurumu: danisan.egitimDurumu,
-    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadin'
+    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadın'
   } : undefined;
 
   // Geçerlik konfigürasyonu analizi

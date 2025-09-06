@@ -387,7 +387,7 @@ export default function MMPIClinicalScaleInterpretation({ testSonucu, danisanCin
                   // Mf ölçeği cinsiyet gerektirir
                   if (gender === 'Erkek' || gender === 'Kadin') {
                     const mfScale = new MfScale();
-                    interpretation = mfScale.getInterpretation(scale.tScore, gender as 'Erkek' | 'Kadin');
+                    interpretation = mfScale.getInterpretation(scale.tScore, gender as 'Erkek' | 'Kadın');
                   } else {
                     interpretation = {
                       tScore: scale.tScore,

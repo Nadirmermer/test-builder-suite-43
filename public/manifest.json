@@ -1,37 +1,20 @@
 {
-  "name": "PsikoTest - Nadir MERMER | Psikolojik Değerlendirme Sistemi",
+  "name": "PsikoTest - Psikolojik Değerlendirme Sistemi",
   "short_name": "PsikoTest",
-  "description": "Nadir MERMER tarafından geliştirilen profesyonel psikolojik test uygulama ve değerlendirme sistemi. MMPI, Beck Depresyon, Beck Anksiyete testleri ve kapsamlı raporlama özellikleri.",
+  "description": "Profesyonel psikolojik test uygulama ve değerlendirme sistemi",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#6366f1",
   "icons": [
     {
-      "src": "/logo.png",
+      "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/png"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/logo.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/x-icon"
     }
   ],
   "orientation": "portrait",
   "scope": "/",
   "lang": "tr",
-  "categories": ["health", "medical", "productivity", "psychology"],
-  "developer": {
-    "name": "Nadir MERMER",
-    "url": "https://instagram.com/nadirmermer"
-  },
-  "keywords": ["nadir mermer", "psikolog", "psikolojik test", "MMPI", "beck depresyon", "beck anksiyete", "mental sağlık"]
+  "categories": ["health", "medical", "productivity"]
 }

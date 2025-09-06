@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Users, TestTube, BarChart3, Settings, ArrowRight } from 'lucide-react';
+import { Users, TestTube, BarChart3, Settings, ArrowRight, Stethoscope } from 'lucide-react';
 import { useAppSelector } from '@/hooks/useRedux';
-
-function Index() {
+const Index = () => {
   const navigate = useNavigate();
   const {
     items: danisanlar
@@ -25,26 +24,17 @@ function Index() {
       return testDate.toDateString() === today.toDateString();
     }).length
   };
-  
-  return (
-    <div className="min-h-screen bg-gradient-subtle p-6">
+  return <div className="min-h-screen bg-gradient-subtle p-6">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <div className="w-20 h-20 rounded-xl bg-white shadow-medical border border-gray-200 overflow-hidden">
-              <img 
-                src="/logo.png" 
-                alt="PsikoTest Logo" 
-                className="w-full h-full object-cover"
-              />
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-primary rounded-xl shadow-medical">
+              <Stethoscope className="h-8 w-8 text-primary-foreground" />
             </div>
-            <div className="text-left">
-              <h1 className="text-4xl font-bold bg-gradient-medical bg-clip-text text-transparent">
-                PsikoTest
-              </h1>
-              <p className="text-primary font-medium text-lg">Psikolojik Değerlendirme Sistemi</p>
-            </div>
+            <h1 className="text-4xl font-bold bg-gradient-medical bg-clip-text text-transparent">
+              PsikoTest Uygulaması
+            </h1>
           </div>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Psikolojik değerlendirme testlerini dijital ortamda uygulayın, 
@@ -184,8 +174,6 @@ function Index() {
           </CardContent>
         </Card>
       </div>
-    </div>
-  );
-}
-
+    </div>;
+};
 export default Index;

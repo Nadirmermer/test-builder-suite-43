@@ -365,52 +365,25 @@ export default function UniversalFastTestInterface({ test, danisanId, onComplete
           navigate(createDanisanUrl(danisan!.adSoyad, danisan!.id!));
         }
       } else if (test.id === 'mmpi-2' || test.id === 'mmpi-2-rf') {
-        // MMPI testleri için özel puanlama
-        
-        // Cinsiyet bilgisini kontrol et
-        const cinsiyetBilgisi = danisan?.cinsiyet;
-        if (!cinsiyetBilgisi || cinsiyetBilgisi === 'Belirtmek istemiyorum') {
-          toast({
-            title: "Eksik Bilgi",
-            description: "MMPI testi için cinsiyet bilgisi gereklidir.",
-            variant: "destructive"
-          });
-          return;
-        }
-
-        // MMPI puanlama motoru ile hesaplama
-        const results = calculateMMPIScores(cevaplar, bosCevaplar, cinsiyetBilgisi === 'Kadin' ? 'Kadin' : 'Erkek');
-        const mmpiSonuclari = toPublicResults(results);
-
-        // Toplam T-skoru hesaplama (genel puan için)
-        const toplamTSkoru = Object.values(mmpiSonuclari.klinikOlcekler)
-          .reduce((sum, olcek) => sum + olcek.tSkoru, 0);
-
+        // MMPI testleri için özel puanlama - bu kısım şimdilik basit
         const testSonucu = {
           danisanId: danisanId,
           testId: test.id,
-          testAdi: test.testAdi + " (Hızlı)",
-          tamamlanmaTarihi: new Date(),
-          puan: Math.round(toplamTSkoru / Object.keys(mmpiSonuclari.klinikOlcekler).length) || 50,
-          sonucYorumu: 'MMPI test sonuçları hesaplandı.',
-          cevaplar: [
-            ...Object.entries(cevaplar).map(([soruId, verilenPuan]) => ({
-              soruId,
-              verilenPuan
-            })),
-            ...Array.from(bosCevaplar).map(soruId => ({
-              soruId,
-              verilenPuan: -1 // -1 = boş cevap işareti
-            }))
-          ],
-          mmpiSonuclari
+          testAdi: test.testAdi,
+          tamamlanmaTarihi: new Date().toISOString(),
+          puan: Object.keys(cevaplar).length, // Basit puan hesaplama
+          sonucYorumu: "MMPI test sonucu",
+          cevaplar: Object.entries(cevaplar).map(([soruId, puan]) => ({
+            soruId,
+            verilenPuan: puan
+          }))
         };
 
         await testSonucuService.ekle(testSonucu);
         
         toast({
           title: "Test Tamamlandı",
-          description: "MMPI test sonuçları başarıyla hesaplandı ve kaydedildi."
+          description: "MMPI test sonuçları başarıyla kaydedildi."
         });
         navigate(createDanisanUrl(danisan!.adSoyad, danisan!.id!));
       } else {
