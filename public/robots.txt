@@ -1,14 +1,3 @@
-User-agent: *
-Allow: /
-
-# Sitemap
-Sitemap: https://psikotest.netlify.app/sitemap.xml
-
-# SEO optimized for Nadir MERMER
-# PsikoTest - Psikolojik Değerlendirme Sistemi
-# MMPI, Beck Depresyon, Beck Anksiyete Testleri
-
-# Allow specific crawlers
 User-agent: Googlebot
 Allow: /
 
@@ -19,12 +8,6 @@ User-agent: Twitterbot
 Allow: /
 
 User-agent: facebookexternalhit
-Allow: /
-
-# Disallow sensitive areas
-Disallow: /api/
-Disallow: /admin/
-Disallow: /*.json$
 Allow: /
 
 User-agent: *
