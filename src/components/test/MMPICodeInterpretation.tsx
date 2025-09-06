@@ -35,7 +35,7 @@ export default function MMPICodeInterpretation({ testSonucu, danisan }: MMPICode
     dogumTarihi: danisan.dogumTarihi,
     medeniDurum: danisan.medeniDurum,
     egitimDurumu: danisan.egitimDurumu,
-    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadın'
+    cinsiyet: danisan.cinsiyet as 'Erkek' | 'Kadin'
   } : undefined;
 
   // T-skorlarını hazırla
